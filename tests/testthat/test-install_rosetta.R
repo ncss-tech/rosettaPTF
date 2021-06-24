@@ -1,5 +1,5 @@
-test_that("rosetta is available", {
-  avail <- reticulate::py_module_available("rosetta")
+test_that("rosetta module is available", {
+  avail <- rosetta_module_available()
   skip_if_not(avail)
   expect_true(avail)
 })

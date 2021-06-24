@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Install Rosetta Python package — install_rosetta • rosettaPTF</title>
+<title>Make predictions using a Rosetta object instance — Rosetta • rosettaPTF</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Install Rosetta Python package — install_rosetta" />
-<meta property="og:description" content="Wrapper around reticulate::py_install() to install the Rosetta Pedotransfer Function Python package" />
+<meta property="og:title" content="Make predictions using a Rosetta object instance — Rosetta" />
+<meta property="og:description" content="Make predictions using a Rosetta object instance" />
 
 
 
@@ -103,33 +103,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Install Rosetta Python package</h1>
+    <h1>Make predictions using a Rosetta object instance</h1>
     
-    <div class="hidden name"><code>install_rosetta.Rd</code></div>
+    <div class="hidden name"><code>Rosetta.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Wrapper around <code><a href='https://rdrr.io/pkg/reticulate/man/py_install.html'>reticulate::py_install()</a></code> to install the Rosetta Pedotransfer Function Python package</p>
+    <p>Make predictions using a Rosetta object instance</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_rosetta</span><span class='op'>(</span>envname <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='st'>"auto"</span>, conda <span class='op'>=</span> <span class='st'>"auto"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>Rosetta</span><span class='op'>(</span>rosetta_version <span class='op'>=</span> <span class='fl'>3</span>, model_code <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>envname</th>
-      <td><p>The name, or full path, of the environment in which Python packages are to be installed. When <code>NULL</code> (the default), the active environment as set by the <code>RETICULATE_PYTHON_ENV</code> variable will be used; if that is unset, then the <code>"r-reticulate"</code> environment will be used.</p></td>
+      <th>rosetta_version</th>
+      <td><p>Default: <code>3</code></p></td>
     </tr>
     <tr>
-      <th>method</th>
-      <td><p><code>"auto"</code>, <code>"virtualenv"</code>, or <code>"conda"</code>; Default: <code>"auto"</code></p></td>
-    </tr>
-    <tr>
-      <th>conda</th>
-      <td><p>Default: <code>"auto"</code></p></td>
+      <th>model_code</th>
+      <td><p>One of <code>2</code>, <code>3</code>, <code>4</code>, <code>5</code>, or <code>-1</code>. Corresponding to options described in <em>Details</em>.</p></td>
     </tr>
     </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>an instance of the <code>Rosetta</code> class defined by the Python module; suitable for running <code>predict</code> or <code>ann_predict</code> methods.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Explanation of Model Codes</h3>
+
+<ul>
+<li><p><code>2</code>: 	sand, silt, clay (<code>ssc</code>)</p></li>
+<li><p><code>3</code>: 	SSC + bulk density (<code>bd</code>)</p></li>
+<li><p><code>4</code>: 	SSC + BD + field capacity water content (<code>th33</code>)</p></li>
+<li><p><code>5</code>: 	SSC + BD + <code>th33</code> + wilting point water content (<code>th1500</code>)</p></li>
+<li><p><code>-1</code>: 	no result returned, inadequate or erroneous data</p></li>
+</ul>
+
 
 
   </div>
