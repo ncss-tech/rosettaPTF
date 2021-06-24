@@ -10,7 +10,13 @@ use_python(PYEXE_PATH, required = TRUE)
 
 options(reticulate.conda_binary = CONDA_PATH)
 
-install_rosetta(envname = PYENV_PATH)
+install_rosetta(pip = TRUE)
+
+rose <- get_rosetta_module()
+
+run_rosetta(list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
+predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
+
 #> Fetching package metadata ...............
 #> Solving package specifications:
 #>

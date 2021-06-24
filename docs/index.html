@@ -64,9 +64,150 @@
 <div id="rosettaptf" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#rosettaptf" class="anchor"></a>rosettaPTF</h1></div>
-<p>Tiny R package to wrap the stand-alone python implementation.</p>
-<p>Depends heavily on <a href="https://rstudio.github.io/reticulate/articles/package.html">reticulate</a></p>
-<p>Start here: <a href="https://cran.r-project.org/web/packages/reticulate/vignettes/python_packages.html" class="uri">https://cran.r-project.org/web/packages/reticulate/vignettes/python_packages.html</a></p>
+<p>An R package using {reticulate} to wrap the Python <a href="https://github.com/usda-ars-ussl/rosetta-soil">rosetta-soil</a> module.</p>
+<pre class="{r}"><code>library(rosettaPTF)</code></pre>
+<div id="install-rosetta-module" class="section level2">
+<h2 class="hasAnchor">
+<a href="#install-rosetta-module" class="anchor"></a>Install Rosetta Module</h2>
+<p>This method wraps <code><a href="https://rdrr.io/pkg/reticulate/man/py_install.html">reticulate::py_install()</a></code>. You can set up reticulate to install into a virtual environment or conda environment. The default will be the <code>"r-reticulate"</code> virtualenv.</p>
+<pre class="{r}"><code><a href="reference/install_rosetta.html">install_rosetta()</a></code></pre>
+</div>
+<div id="batch-rosetta-with-run_rosetta" class="section level2">
+<h2 class="hasAnchor">
+<a href="#batch-rosetta-with-run_rosetta" class="anchor"></a>Batch Rosetta with <code>run_rosetta()</code>
+</h2>
+<pre class="{r}"><code><a href="reference/run_rosetta.html">run_rosetta(list(c(30, 30, 40, 1.5), c(55, 25, 20),  c(55, 25, 20, 1.1)),
+            rosetta_version = 3)
+#&gt;   id model_code theta_r_mean theta_s_mean log10_alpha_mean log10_npar_mean
+#&gt; 1  1          3   0.11535773    0.4179120        -2.067139       0.1120102
+#&gt; 2  2          2   0.08613275    0.3888528        -1.898150       0.1347136
+#&gt; 3  3          3   0.09130753    0.4850320        -2.022388       0.1510716
+#&gt;   log10_Ksat_mean  theta_r_sd  theta_s_sd log10_alpha_sd log10_npar_sd
+#&gt; 1       0.8325407 0.013350113 0.009377977     0.08251142    0.01323413
+#&gt; 2       1.1858005 0.006014445 0.006273536     0.07481303    0.01160419
+#&gt; 3       1.9060148 0.012771407 0.013062171     0.10020312    0.01763982
+#&gt;   log10_Ksat_sd
+#&gt; 1    0.09245277
+#&gt; 2    0.08428578
+#&gt; 3    0.14163567</a></code></pre>
+</div>
+<div id="extended-output-with-rosetta-s3-class" class="section level2">
+<h2 class="hasAnchor">
+<a href="#extended-output-with-rosetta-s3-class" class="anchor"></a>Extended output with <code>Rosetta</code> S3 class</h2>
+<div id="make-a-rosetta-class-instance-for-running-extended-output-methods" class="section level3">
+<h3 class="hasAnchor">
+<a href="#make-a-rosetta-class-instance-for-running-extended-output-methods" class="anchor"></a>Make a <em>Rosetta</em> class instance for running extended output methods</h3>
+<p>Note that each instance of <em>Rosetta</em> has a fixed version and model code, so if you have heterogeneous input you need to iterate over model code.</p>
+<pre class="{r}"><code># defaults are version 3 and model code 3 (4 parameters: sand, silt, clay and bulk density)
+my_rosetta &lt;- Rosetta(rosetta_version = 3, model_code = 3)</code></pre>
+</div>
+<div id="standard-predictions-with-predict" class="section level3">
+<h3 class="hasAnchor">
+<a href="#standard-predictions-with-predict" class="anchor"></a>Standard predictions with <code>predict()</code>
+</h3>
+<pre class="{r}"><code><a href="https://rdrr.io/r/stats/predict.html">predict(my_rosetta, list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
+#&gt; [[1]]
+#&gt;            [,1]     [,2]      [,3]      [,4]      [,5]
+#&gt; [1,] 0.11535773 0.417912 -2.067139 0.1120102 0.8325407
+#&gt; [2,] 0.09130753 0.485032 -2.022388 0.1510716 1.9060148
+#&gt; 
+#&gt; [[2]]
+#&gt;            [,1]        [,2]       [,3]       [,4]       [,5]
+#&gt; [1,] 0.01335011 0.009377977 0.08251142 0.01323413 0.09245277
+#&gt; [2,] 0.01277141 0.013062171 0.10020312 0.01763982 0.14163567</a></code></pre>
+</div>
+<div id="extended-artificial-neural-network-output-with-ann_predict" class="section level3">
+<h3 class="hasAnchor">
+<a href="#extended-artificial-neural-network-output-with-ann_predict" class="anchor"></a>Extended Artificial Neural Network output with <code>ann_predict()</code>
+</h3>
+<pre class="{r}"><code><a href="reference/ann_predict.html">ann_predict(my_rosetta, list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
+#&gt; $var_names
+#&gt; $var_names[[1]]
+#&gt; b'theta_r'
+#&gt; 
+#&gt; $var_names[[2]]
+#&gt; b'theta_s'
+#&gt; 
+#&gt; $var_names[[3]]
+#&gt; b'alpha'
+#&gt; 
+#&gt; $var_names[[4]]
+#&gt; b'npar'
+#&gt; 
+#&gt; $var_names[[5]]
+#&gt; b'ks'
+#&gt; 
+#&gt; 
+#&gt; $sum_res_mean
+#&gt;            [,1]        [,2]
+#&gt; [1,]  0.1153577  0.09130753
+#&gt; [2,]  0.4179120  0.48503196
+#&gt; [3,] -2.0671385 -2.02238809
+#&gt; [4,]  0.1120102  0.15107161
+#&gt; [5,]  0.8325407  1.90601478
+#&gt; 
+#&gt; $sum_res_std
+#&gt;             [,1]       [,2]
+#&gt; [1,] 0.013350113 0.01277141
+#&gt; [2,] 0.009377977 0.01306217
+#&gt; [3,] 0.082511421 0.10020312
+#&gt; [4,] 0.013234131 0.01763982
+#&gt; [5,] 0.092452769 0.14163567
+#&gt; 
+#&gt; $sum_res_cov
+#&gt; , , 1
+#&gt; 
+#&gt;              [,1]         [,2]          [,3]          [,4]         [,5]
+#&gt; [1,] 1.782255e-04 3.719987e-05  5.300747e-05  2.278859e-05 5.965812e-05
+#&gt; [2,] 3.719987e-05 8.794645e-05  2.570007e-04  3.632187e-06 2.662337e-04
+#&gt; [3,] 5.300747e-05 2.570007e-04  6.808135e-03 -3.601399e-04 1.347519e-03
+#&gt; [4,] 2.278859e-05 3.632187e-06 -3.601399e-04  1.751422e-04 8.973559e-05
+#&gt; [5,] 5.965812e-05 2.662337e-04  1.347519e-03  8.973559e-05 8.547515e-03
+#&gt; 
+#&gt; , , 2
+#&gt; 
+#&gt;               [,1]          [,2]          [,3]          [,4]          [,5]
+#&gt; [1,]  1.631088e-04  2.342660e-05  2.087559e-05 -9.477980e-06 -0.0003382175
+#&gt; [2,]  2.342660e-05  1.706203e-04  3.156961e-04 -4.577936e-05  0.0005664825
+#&gt; [3,]  2.087559e-05  3.156961e-04  1.004067e-02 -7.685234e-04  0.0012668368
+#&gt; [4,] -9.477980e-06 -4.577936e-05 -7.685234e-04  3.111634e-04  0.0001828960
+#&gt; [5,] -3.382175e-04  5.664825e-04  1.266837e-03  1.828960e-04  0.0200606627
+#&gt; 
+#&gt; 
+#&gt; $sum_res_skew
+#&gt;             [,1]        [,2]
+#&gt; [1,] -4.52570431 -2.33577302
+#&gt; [2,] -0.01729594 -0.22228088
+#&gt; [3,] -0.18215435 -0.25961263
+#&gt; [4,] -0.15345973  0.04145318
+#&gt; [5,] -0.20386127 -0.35765020
+#&gt; 
+#&gt; $sum_res_kurt
+#&gt;            [,1]        [,2]
+#&gt; [1,] 36.6873026 16.85229297
+#&gt; [2,]  0.5975976  0.02966211
+#&gt; [3,]  0.3016512  0.11663125
+#&gt; [4,]  0.1342581  0.26557316
+#&gt; [5,]  0.3127817  0.54242091
+#&gt; 
+#&gt; $sum_res_bool
+#&gt;      [,1] [,2]
+#&gt; [1,] TRUE TRUE
+#&gt; [2,] TRUE TRUE
+#&gt; [3,] TRUE TRUE
+#&gt; [4,] TRUE TRUE
+#&gt; [5,] TRUE TRUE
+#&gt; 
+#&gt; $nsamp
+#&gt; [1] 2
+#&gt; 
+#&gt; $nout
+#&gt; [1] 5
+#&gt; 
+#&gt; $nin
+#&gt; [1] 4</a></code></pre>
+</div>
+</div>
 </div>
 
   </div>

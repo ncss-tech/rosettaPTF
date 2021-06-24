@@ -13,6 +13,7 @@
 #' - `-1`: 	no result returned, inadequate or erroneous data
 #'
 #' @return an instance of the `Rosetta` class defined by the Python module; suitable for running `predict` or `ann_predict` methods.
+#' @rdname Rosetta-class
 #' @export
 Rosetta <- function(rosetta_version = 3,
                     model_code = 3) {

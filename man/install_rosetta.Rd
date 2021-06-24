@@ -4,7 +4,7 @@
 \alias{install_rosetta}
 \title{Install Rosetta Python package}
 \usage{
-install_rosetta(envname = NULL, method = "auto", conda = "auto")
+install_rosetta(envname = NULL, method = "auto", conda = "auto", pip = FALSE)
 }
 \arguments{
 \item{envname}{The name, or full path, of the environment in which Python packages are to be installed. When \code{NULL} (the default), the active environment as set by the \code{RETICULATE_PYTHON_ENV} variable will be used; if that is unset, then the \code{"r-reticulate"} environment will be used.}
@@ -12,6 +12,8 @@ install_rosetta(envname = NULL, method = "auto", conda = "auto")
 \item{method}{\code{"auto"}, \code{"virtualenv"}, or \code{"conda"}; Default: \code{"auto"}}
 
 \item{conda}{Default: \code{"auto"}}
+
+\item{pip}{\emph{logical}. Use pip for package installation? This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.}
 }
 \description{
 Wrapper around \code{reticulate::py_install()} to install the Rosetta Pedotransfer Function Python package

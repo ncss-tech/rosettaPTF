@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Install Rosetta Python package — install_rosetta • rosettaPTF</title>
+<title>Run rosetta() method from Python module — run_rosetta • rosettaPTF</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Install Rosetta Python package — install_rosetta" />
-<meta property="og:description" content="Wrapper around reticulate::py_install() to install the Rosetta Pedotransfer Function Python package" />
+<meta property="og:title" content="Run rosetta() method from Python module — run_rosetta" />
+<meta property="og:description" content="Run rosetta() method from Python module" />
 
 
 
@@ -103,37 +103,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Install Rosetta Python package</h1>
+    <h1>Run <code>rosetta()</code> method from Python module</h1>
     
-    <div class="hidden name"><code>install_rosetta.Rd</code></div>
+    <div class="hidden name"><code>run_rosetta.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Wrapper around <code><a href='https://rdrr.io/pkg/reticulate/man/py_install.html'>reticulate::py_install()</a></code> to install the Rosetta Pedotransfer Function Python package</p>
+    <p>Run <code>rosetta()</code> method from Python module</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_rosetta</span>(envname = <span class='kw'>NULL</span>, method = <span class='st'>"auto"</span>, conda = <span class='st'>"auto"</span>, pip = <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>run_rosetta</span>(<span class='kw'>soildata</span>, rosetta_version = <span class='fl'>3</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>envname</th>
-      <td><p>The name, or full path, of the environment in which Python packages are to be installed. When <code>NULL</code> (the default), the active environment as set by the <code>RETICULATE_PYTHON_ENV</code> variable will be used; if that is unset, then the <code>"r-reticulate"</code> environment will be used.</p></td>
+      <th>soildata</th>
+      <td><p>A list of numeric vectors containing 3 to 6 elements: <code>"sand"</code>, <code>"silt"</code>, <code>"clay"</code>, <code>"bulkdensity"</code>, <code>"th33"</code>, <code>"th1500"</code></p></td>
     </tr>
     <tr>
-      <th>method</th>
-      <td><p><code>"auto"</code>, <code>"virtualenv"</code>, or <code>"conda"</code>; Default: <code>"auto"</code></p></td>
-    </tr>
-    <tr>
-      <th>conda</th>
-      <td><p>Default: <code>"auto"</code></p></td>
-    </tr>
-    <tr>
-      <th>pip</th>
-      <td><p><em>logical</em>. Use pip for package installation? This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.</p></td>
+      <th>rosetta_version</th>
+      <td><p>Default: 3</p></td>
     </tr>
     </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A <em>data.frame</em> containing <code>mean</code> and <code>stdev</code> for following five columns (parameters for van Genuchten-Mualem equation)</p><ul>
+<li><p><code>theta_r</code>, residual water content</p></li>
+<li><p><code>theta_s</code>, saturated water content</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/Log.html'>log10(alpha)</a></code>, 'alpha' shape parameter, log10(1/cm)</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/Log.html'>log10(npar)</a></code>, 'n' shape parameter</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/Log.html'>log10(Ksat)</a></code>, saturated hydraulic conductivity, log10(cm/day)</p></li>
+</ul>
 
 
   </div>

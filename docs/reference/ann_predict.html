@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Install Rosetta Python package — install_rosetta • rosettaPTF</title>
+<title>Get Artificial Neural Network Predictions and Statistics — ann_predict • rosettaPTF</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Install Rosetta Python package — install_rosetta" />
-<meta property="og:description" content="Wrapper around reticulate::py_install() to install the Rosetta Pedotransfer Function Python package" />
+<meta property="og:title" content="Get Artificial Neural Network Predictions and Statistics — ann_predict" />
+<meta property="og:description" content="Get Artificial Neural Network Predictions and Statistics" />
 
 
 
@@ -103,39 +103,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Install Rosetta Python package</h1>
+    <h1>Get Artificial Neural Network Predictions and Statistics</h1>
     
-    <div class="hidden name"><code>install_rosetta.Rd</code></div>
+    <div class="hidden name"><code>ann_predict.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Wrapper around <code><a href='https://rdrr.io/pkg/reticulate/man/py_install.html'>reticulate::py_install()</a></code> to install the Rosetta Pedotransfer Function Python package</p>
+    <p>Get Artificial Neural Network Predictions and Statistics</p>
     </div>
 
-    <pre class="usage"><span class='fu'>install_rosetta</span>(envname = <span class='kw'>NULL</span>, method = <span class='st'>"auto"</span>, conda = <span class='st'>"auto"</span>, pip = <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>ann_predict</span>(<span class='kw'>object</span>, <span class='kw'>soildata</span>, <span class='kw'>sum_data</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>envname</th>
-      <td><p>The name, or full path, of the environment in which Python packages are to be installed. When <code>NULL</code> (the default), the active environment as set by the <code>RETICULATE_PYTHON_ENV</code> variable will be used; if that is unset, then the <code>"r-reticulate"</code> environment will be used.</p></td>
+      <th>object</th>
+      <td><p><em>Rosetta</em> object containing class instance (e.g. from <code><a href='Rosetta.html'>Rosetta()</a></code>)</p></td>
     </tr>
     <tr>
-      <th>method</th>
-      <td><p><code>"auto"</code>, <code>"virtualenv"</code>, or <code>"conda"</code>; Default: <code>"auto"</code></p></td>
+      <th>soildata</th>
+      <td><p>A list containing vectors; with number of parameters matching the model type of <code>object</code></p></td>
     </tr>
     <tr>
-      <th>conda</th>
-      <td><p>Default: <code>"auto"</code></p></td>
-    </tr>
-    <tr>
-      <th>pip</th>
-      <td><p><em>logical</em>. Use pip for package installation? This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.</p></td>
+      <th>sum_data</th>
+      <td><p>Default: <code>TRUE</code></p></td>
     </tr>
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># ann_predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
