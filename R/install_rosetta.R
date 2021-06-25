@@ -9,4 +9,5 @@
 #' @importFrom reticulate py_install
 install_rosetta <- function(envname = NULL, method = "auto", conda = "auto", pip = FALSE) {
   reticulate::py_install("rosetta-soil", envname = envname, method = method, conda = conda, pip = pip)
+  .loadModules()
 }
