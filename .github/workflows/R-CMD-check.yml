@@ -74,9 +74,10 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
         
-      - name: Set up conda and reticulate
+      - name: Install Python dependencies
         run: |
-          conda activate r-reticulate
+          python -m pip install --upgrade pip
+          pip install rosetta-soil
 
       - name: Check
         env:
