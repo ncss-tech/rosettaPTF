@@ -1,6 +1,6 @@
 Package: rosettaPTF
-Title: Provides tools for calling Python Rosetta Pedotransfer Functions
-Version: 0.0.0.9000
+Title: Provides Tools for Calling Python Rosetta Pedotransfer Functions
+Version: 0.0.0.9001
 Authors@R: 
     person(given = "Andrew",
            family = "Brown",

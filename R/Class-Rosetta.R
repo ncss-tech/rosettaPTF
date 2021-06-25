@@ -31,9 +31,12 @@ Rosetta <- function(rosetta_version = 3,
 #' @export
 predict.Rosetta <- function(object,
                             soildata, ...) {
-  np <- reticulate::import('numpy')
-  object$object$predict(np$array(reticulate::r_to_py(soildata), dtype = "float"))
+  object$object$predict(numpy_module$array(reticulate::r_to_py(soildata), dtype = "float"))
 }
+
+
+ann_predict <- function(object, soildata, sum_data)
+  UseMethod("ann_predict")
 
 #' Get Artificial Neural Network Predictions and Statistics
 #' @param object _Rosetta_ object containing class instance (e.g. from `Rosetta()`)
@@ -44,12 +47,7 @@ predict.Rosetta <- function(object,
 #' # ann_predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 #' @importFrom reticulate r_to_py import
 #' @export
-ann_predict <- function(object, soildata, sum_data)
-  UseMethod("ann_predict")
-
-#' @export
 ann_predict.Rosetta <- function(object, soildata,
                                 sum_data = TRUE) {
-  np <- reticulate::import('numpy')
-  object$object$ann_predict(np$array(reticulate::r_to_py(soildata), dtype="float"), sum_data = sum_data)
+  object$object$ann_predict(numpy_module$array(reticulate::r_to_py(soildata), dtype="float"), sum_data = sum_data)
 }

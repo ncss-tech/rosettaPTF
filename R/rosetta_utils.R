@@ -13,6 +13,7 @@ SoilDataFromArray <- function(x) {
 #' Check if rosetta module can be found in local python environment
 #' @return _logical_
 #' @export
+#' @importFrom reticulate py_module_available
 rosetta_module_available <- function() {
   reticulate::py_module_available("rosetta")
 }
