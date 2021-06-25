@@ -1,4 +1,4 @@
-#' Get rosetta instance
+#' Get Rosetta module object reference
 #'
 #' @return An R object wrapping a Python module. Module attributes can be accessed via the `$` operator, or via `py_get_attr()`.
 #' @export

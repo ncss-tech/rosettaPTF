@@ -2,7 +2,7 @@
 % Please edit documentation in R/rosetta_utils.R
 \name{rosetta_module_available}
 \alias{rosetta_module_available}
-\title{Check if rosetta module can be found in local python environment}
+\title{Check if Rosetta module is available for import from local Python environment}
 \usage{
 rosetta_module_available()
 }
@@ -10,5 +10,5 @@ rosetta_module_available()
 \emph{logical}
 }
 \description{
-Check if rosetta module can be found in local python environment
+Check if Rosetta module is available for import from local Python environment
 }

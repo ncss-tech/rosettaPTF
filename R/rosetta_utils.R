@@ -1,16 +1,16 @@
 # rosetta utils
 
-#' Convert list of numeric vectors to SoilData python object
+#' Convert list of numeric vectors to _SoilData_ Python object
 #'
 #' @param x a list of numeric vectors
-#' @return a reference to a Rosetta SoilData python object instance
+#' @return an object reference to a Rosetta _SoilData_ Python object constructed from `x`
 #' @export
 SoilDataFromArray <- function(x) {
   rosetta_module$SoilData$from_array(x)
 }
 
 #
-#' Check if rosetta module can be found in local python environment
+#' Check if Rosetta module is available for import from local Python environment
 #' @return _logical_
 #' @export
 #' @importFrom reticulate py_module_available

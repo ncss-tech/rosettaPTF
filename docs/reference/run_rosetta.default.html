@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert list of numeric vectors to SoilData Python object — SoilDataFromArray • rosettaPTF</title>
+<title>Run rosetta() method from Python module — run_rosetta.default • rosettaPTF</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Convert list of numeric vectors to SoilData Python object — SoilDataFromArray" />
-<meta property="og:description" content="Convert list of numeric vectors to SoilData Python object" />
+<meta property="og:title" content="Run rosetta() method from Python module — run_rosetta.default" />
+<meta property="og:description" content="Run rosetta() method from Python module" />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rosettaPTF</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
       </span>
     </div>
 
@@ -103,29 +103,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert list of numeric vectors to <em>SoilData</em> Python object</h1>
+    <h1>Run <code>rosetta()</code> method from Python module</h1>
     
-    <div class="hidden name"><code>SoilDataFromArray.Rd</code></div>
+    <div class="hidden name"><code>run_rosetta.default.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Convert list of numeric vectors to <em>SoilData</em> Python object</p>
+    <p>Run <code>rosetta()</code> method from Python module</p>
     </div>
 
-    <pre class="usage"><span class='fu'>SoilDataFromArray</span>(<span class='kw'>x</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for default</span>
+<span class='fu'>run_rosetta</span>(<span class='kw'>soildata</span>, vars = <span class='kw'>NULL</span>, rosetta_version = <span class='fl'>3</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>a list of numeric vectors</p></td>
+      <th>soildata</th>
+      <td><p>A list of numeric vectors each containing 3 to 6 values: <code>"sand"</code>, <code>"silt"</code>, <code>"clay"</code>, <code>"bulkdensity"</code>, <code>"th33"</code>, <code>"th1500"</code> or a <em>data.frame</em> with 3 to 6 columns.</p></td>
+    </tr>
+    <tr>
+      <th>vars</th>
+      <td><p><em>character</em>. Optional: names and order of custom column names if <code>soildata</code> is a <em>data.frame</em>. Default <code>NULL</code> assumes input column order follows <code>sand</code>, <code>silt</code>, <code>clay</code>, <code>bulkdensity</code>, <code>th33</code>, <code>th1500</code> and does not check names.</p></td>
+    </tr>
+    <tr>
+      <th>rosetta_version</th>
+      <td><p>Default: 3</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>an object reference to a Rosetta <em>SoilData</em> Python object constructed from <code>x</code></p>
+    <p>A <em>data.frame</em> containing <code>mean</code> and <code>stdev</code> for following five columns (parameters for van Genuchten-Mualem equation)</p><ul>
+<li><p><code>theta_r</code>, residual water content</p></li>
+<li><p><code>theta_s</code>, saturated water content</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/Log.html'>log10(alpha)</a></code>, 'alpha' shape parameter, log10(1/cm)</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/Log.html'>log10(npar)</a></code>, 'n' shape parameter</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/Log.html'>log10(Ksat)</a></code>, saturated hydraulic conductivity, log10(cm/day)</p></li>
+</ul>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

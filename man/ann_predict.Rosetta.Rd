@@ -2,7 +2,7 @@
 % Please edit documentation in R/Class-Rosetta.R
 \name{ann_predict.Rosetta}
 \alias{ann_predict.Rosetta}
-\title{Get Artificial Neural Network Predictions and Statistics}
+\title{Extended \emph{Rosetta} Predictions, Parameter Distributions and Summary Statistics after Zhang & Schaap (2017)}
 \usage{
 \method{ann_predict}{Rosetta}(object, soildata, sum_data = TRUE)
 }
@@ -14,7 +14,7 @@
 \item{sum_data}{Default: \code{TRUE}}
 }
 \description{
-Get Artificial Neural Network Predictions and Statistics
+Extended \emph{Rosetta} Predictions, Parameter Distributions and Summary Statistics after Zhang & Schaap (2017)
 }
 \examples{
 # ann_predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))

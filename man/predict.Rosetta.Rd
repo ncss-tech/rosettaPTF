@@ -2,7 +2,7 @@
 % Please edit documentation in R/Class-Rosetta.R
 \name{predict.Rosetta}
 \alias{predict.Rosetta}
-\title{Get Extended Rosetta Predictions and Statistics}
+\title{Predict Rosetta Parameter Values and Standard Deviations from a \emph{Rosetta} instance}
 \usage{
 \method{predict}{Rosetta}(object, soildata, ...)
 }
@@ -14,7 +14,7 @@
 \item{...}{not used}
 }
 \description{
-Get Extended Rosetta Predictions and Statistics
+Predict Rosetta Parameter Values and Standard Deviations from a \emph{Rosetta} instance
 }
 \examples{
 # predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))

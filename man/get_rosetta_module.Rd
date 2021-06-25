@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_rosetta.R
 \name{get_rosetta_module}
 \alias{get_rosetta_module}
-\title{Get rosetta instance}
+\title{Get Rosetta module object reference}
 \usage{
 get_rosetta_module()
 }
@@ -10,5 +10,5 @@ get_rosetta_module()
 An R object wrapping a Python module. Module attributes can be accessed via the \code{$} operator, or via \code{py_get_attr()}.
 }
 \description{
-Get rosetta instance
+Get Rosetta module object reference
 }

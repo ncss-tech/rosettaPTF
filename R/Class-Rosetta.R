@@ -21,14 +21,14 @@ Rosetta <- function(rosetta_version = 3,
   structure(list(object = object), class = "Rosetta")
 }
 
-#' Get Extended Rosetta Predictions and Statistics
+#' Predict Rosetta Parameter Values and Standard Deviations from a _Rosetta_ instance
 #' @param object _Rosetta_ object containing class instance (e.g. from `Rosetta()`)
 #' @param soildata A list containing vectors; with number of parameters matching the model type of `object`
 #' @param ... not used
 #' @examples
 #' # predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 #' @importFrom reticulate r_to_py import
-#' @export
+#' @method predict Rosetta
 predict.Rosetta <- function(object,
                             soildata, ...) {
   object$object$predict(numpy_module$array(reticulate::r_to_py(soildata), dtype = "float"))
@@ -36,9 +36,9 @@ predict.Rosetta <- function(object,
 
 
 ann_predict <- function(object, soildata, sum_data)
-  UseMethod("ann_predict")
+  UseMethod("ann_predict", object)
 
-#' Get Artificial Neural Network Predictions and Statistics
+#' Extended _Rosetta_ Predictions, Parameter Distributions and Summary Statistics after Zhang & Schaap (2017)
 #' @param object _Rosetta_ object containing class instance (e.g. from `Rosetta()`)
 #' @param soildata A list containing vectors; with number of parameters matching the model type of `object`
 #' @param sum_data Default: `TRUE`

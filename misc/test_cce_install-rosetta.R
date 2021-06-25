@@ -5,8 +5,8 @@ ARCPY_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3"
 PYEXE_PATH <- file.path(ARCPY_PATH, "python.exe")
 CONDA_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/Scripts/conda.exe"
 
-use_python(PYEXE_PATH, required = TRUE)
-use_condaenv(ARCPY_PATH)
+reticulate::use_python(PYEXE_PATH, required = TRUE)
+reticulate::use_condaenv(ARCPY_PATH)
 options(reticulate.conda_binary = CONDA_PATH)
 
 # install rosetta if needed
@@ -36,3 +36,7 @@ predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 #>            [,1]        [,2]       [,3]       [,4]       [,5]
 #> [1,] 0.01335011 0.009377977 0.08251142 0.01323413 0.09245277
 #> [2,] 0.01277141 0.013062171 0.10020312 0.01763982 0.14163567
+#
+
+
+

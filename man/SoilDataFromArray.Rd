@@ -2,7 +2,7 @@
 % Please edit documentation in R/rosetta_utils.R
 \name{SoilDataFromArray}
 \alias{SoilDataFromArray}
-\title{Convert list of numeric vectors to SoilData python object}
+\title{Convert list of numeric vectors to \emph{SoilData} Python object}
 \usage{
 SoilDataFromArray(x)
 }
@@ -10,8 +10,8 @@ SoilDataFromArray(x)
 \item{x}{a list of numeric vectors}
 }
 \value{
-a reference to a Rosetta SoilData python object instance
+an object reference to a Rosetta \emph{SoilData} Python object constructed from \code{x}
 }
 \description{
-Convert list of numeric vectors to SoilData python object
+Convert list of numeric vectors to \emph{SoilData} Python object
 }
