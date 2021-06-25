@@ -43,7 +43,7 @@ jobs:
         with:
           python-version: '3.7' # Version range or exact version of a Python version to use, using SemVer's version range syntax
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-          
+   
       - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Query dependencies
@@ -73,6 +73,10 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
+        
+      - name: Set up conda and reticulate
+        run: |
+          conda activate r-reticulate
 
       - name: Check
         env:
