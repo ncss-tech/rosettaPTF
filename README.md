@@ -18,6 +18,8 @@ This method wraps `reticulate::py_install()`. You can set up reticulate to insta
 install_rosetta()
 ```
 
+Use the argument `pip = TRUE` to `install_rosetta()` if the command fails to locate a remote source of the `rosetta` module.
+
 ## Batch Rosetta with `run_rosetta()`
 
 ```{r}
