@@ -1,21 +1,30 @@
 #' Run `rosetta()` method from Python module
 #'
-#' @param soildata A list of numeric vectors each containing 3 to 6 values: `"sand"`, `"silt"`, `"clay"`, `"bulkdensity"`, `"th33"`, `"th1500"` or a _data.frame_ with 3 to 6 columns.
+#' @param soildata A list of numeric vectors each containing 3 to 6 values: `"sand"`, `"silt"`, `"clay"`, `"bulkdensity"`, `"th33"`, `"th1500"`, a _data.frame_ or _matrix_ with 3 to 6 columns OR a `Raster*`/`SpatRaster` object with 3 to 6 layers.
+#'
 #' @param vars _character_. Optional: names and order of custom column names if `soildata` is a _data.frame_. Default `NULL` assumes input column order follows `sand`, `silt`, `clay`, `bulkdensity`, `th33`, `th1500` and does not check names.
 #' @param rosetta_version Default: 3
 #'
 #' @return A _data.frame_ containing `mean` and `stdev` for following five columns (parameters for van Genuchten-Mualem equation)
-#' -	`theta_r`, residual water content
-#' -	`theta_s`, saturated water content
-#' -	`log10(alpha)`, 'alpha' shape parameter, log10(1/cm)
-#' -	`log10(npar)`, 'n' shape parameter
-#' -	`log10(Ksat)`, saturated hydraulic conductivity, log10(cm/day)
+#' -	`"theta_r"`, residual water content
+#' -	`"theta_s"`, saturated water content
+#' -	`"log10(alpha)"`, 'alpha' shape parameter, log10(1/cm)
+#' -	`"log10(npar)"`, 'n' shape parameter
+#' -	`"log10(Ksat)"`, saturated hydraulic conductivity, log10(cm/day)
 #' @aliases run_rosetta
 #' @rdname run_rosetta
 #' @export
 run_rosetta.default <- function(soildata,
                                 vars = NULL,
-                                rosetta_version = 3) {
+                                rosetta_version = 3,
+                                file = NULL,
+                                nrows = NULL,
+                                overwrite = NULL) {
+
+  if (is.numeric(soildata)) {
+    soildata <- as.data.frame(t(soildata))
+    run_rosetta.data.frame(soildata = soildata, vars = vars, rosetta_version = rosetta_version)
+  }
 
   # identify records with enough data
   good.idx <- which(sapply(soildata, length) >= 3)
@@ -46,7 +55,10 @@ run_rosetta.default <- function(soildata,
 #' @export
 run_rosetta <- function(soildata,
                         vars = NULL,
-                        rosetta_version = 3)
+                        rosetta_version = 3,
+                        file = NULL,
+                        nrows = NULL,
+                        overwrite = NULL)
   UseMethod("run_rosetta", soildata)
 
 #' @export
@@ -54,53 +66,135 @@ run_rosetta <- function(soildata,
 #' @importFrom stats na.omit
 run_rosetta.data.frame <- function(soildata,
                                    vars = NULL,
-                                   rosetta_version = 3) {
+                                   rosetta_version = 3,
+                                   file = NULL,
+                                   nrows = NULL,
+                                   overwrite = NULL) {
 
-  if (inherits(soildata, 'data.frame')) {
-    soildata <- as.data.frame(soildata)
-    nid <- nrow(soildata)
+  # soildata <- as.data.frame(soildata)
+  nid <- nrow(soildata)
 
-    if (ncol(soildata) < 3) {
-      stop("if `soildata` is a data.frame it must contain three to six columns: `sand`, `silt`, and `clay` are required; optionally including `bulkdensity` and water retention (`th33` and `th1500`) values. You can specify custom column names and order with the `vars` argument.", call. = FALSE)
-    }
-
-    if (!is.null(vars)) {
-      if (!all(vars %in% colnames(soildata))) {
-        stop("all custom parameter names in `vars` must be present in `soildata`", call. = FALSE)
-      } else {
-        # re-arrange and subset to match vars order
-        soildata <- soildata[,vars[seq_along(colnames(soildata))]]
-      }
-    }
-
-    soildatatemplate <- data.frame(sand = numeric(nid),
-                                   silt = numeric(nid),
-                                   clay = numeric(nid),
-                                   bulkdensity = numeric(nid),
-                                   th33 = numeric(nid),
-                                   th1500 = numeric(nid))
-    soildatatemplate[] <- NA_real_
-    soildatatemplate[,1:ncol(soildata)] <- soildata
-    soildatain <- unlist(apply(soildatatemplate, 1,
-                               function(x) list(as.numeric(na.omit(as.numeric(x))))),
-                         recursive = FALSE)
-  } else {
-    soildatain <- soildata
+  if (ncol(soildata) < 3) {
+    stop(
+      "if `soildata` is a data.frame it must contain three to six columns: `sand`, `silt`, and `clay` are required; optionally including `bulkdensity` and water retention (`th33` and `th1500`) values. You can specify custom column names and order with the `vars` argument.",
+      call. = FALSE
+    )
   }
-  run_rosetta.default(soildatain, vars=vars, rosetta_version=rosetta_version)
+
+  if (!is.null(vars)) {
+    if (!all(vars %in% colnames(soildata))) {
+      stop("all custom parameter names in `vars` must be present in `soildata`",
+           call. = FALSE)
+    } else {
+      # re-arrange and subset to match vars order
+      soildata <- soildata[, vars[seq_along(colnames(soildata))]]
+    }
+  }
+
+  soildatatemplate <- data.frame(
+    sand = numeric(nid),
+    silt = numeric(nid),
+    clay = numeric(nid),
+    bulkdensity = numeric(nid),
+    th33 = numeric(nid),
+    th1500 = numeric(nid)
+  )
+  soildatatemplate[] <- NA_real_
+  soildatatemplate[, 1:ncol(soildata)] <- soildata
+  soildatain <- unlist(apply(soildatatemplate, 1,
+                             function(x)
+                               list(as.numeric(
+                                 na.omit(as.numeric(x))
+                               ))),
+                       recursive = FALSE)
+  run_rosetta.default(soildatain, vars = vars, rosetta_version = rosetta_version)
 }
 
 #' @export
 #' @rdname run_rosetta
-#' @importFrom raster as.data.frame
-run_rosetta.RasterStack <- function(soildata,
+run_rosetta.matrix <- function(soildata,
                                vars = NULL,
-                               rosetta_version = 3) {
-  res <- run_rosetta(raster::as.data.frame(soildata), vars = vars, rosetta_version = rosetta_version)
-  resstackout <- soildata
-  for(i in 1:ncol(res)) {
-    resstackout[[i]] <- res[[i]]
-  }
-  names(resstackout) <- colnames(res)
-  resstackout
+                               rosetta_version = 3,
+                               file = NULL,
+                               nrows = NULL,
+                               overwrite = NULL) {
+  run_rosetta(as.data.frame(soildata), vars = vars, rosetta_version = 3)
 }
+
+#' @export
+#' @rdname run_rosetta
+#' @importFrom terra rast
+run_rosetta.RasterStack <- function(soildata,
+                                    vars = NULL,
+                                    rosetta_version = 3,
+                                    file = paste0(tempfile(),".grd"),
+                                    nrows = nrow(soildata),
+                                    overwrite = TRUE) {
+  ## for in memory only, can just convert to data.frame and use that method
+  # res <- run_rosetta(raster::as.data.frame(soildata),
+  #                    vars = vars,
+  #                    rosetta_version = rosetta_version)
+  # resstackout <- soildata
+  # for(i in 1:ncol(res)) {
+  #   resstackout[[i]] <- res[[i]]
+  # }
+  # names(resstackout) <- colnames(res)
+  # resstackout
+  run_rosetta(terra::rast(soildata))
+}
+
+#' @export
+#' @rdname run_rosetta
+#' @importFrom terra rast
+run_rosetta.RasterBrick <- function(soildata,
+                                    vars = NULL,
+                                    rosetta_version = 3,
+                                    file = paste0(tempfile(),".grd"),
+                                    nrows = nrow(soildata),
+                                    overwrite = TRUE) {
+  run_rosetta(terra::rast(soildata))
+}
+
+#' @param file path to write incremental raster processing output for large inputs that do not fit in memory; passed to `terra::writeStart()` and used only for processing _SpatRaster_ or _Raster*_ input; defaults to a temporary file created by `tempfile()` if needed
+#' @param nrows number of rows to use per block; passed to `terra::readValues()` `terra::writeValues()`; used only for processing _SpatRaster_ or _Raster*_ input; defaults to number of rows in dataset if needed
+#' @param overwrite logical; overwrite `file`? passed to `terra::writeStart()`; defaults to `TRUE` if needed
+#' @export
+#' @rdname run_rosetta
+#' @importFrom terra rast readStart writeStart readValues writeValues writeStop readStop `nlyr<-`
+run_rosetta.SpatRaster <- function(soildata,
+                                   vars = NULL,
+                                   rosetta_version = 3,
+                                   file = paste0(tempfile(),".grd"),
+                                   nrows = nrow(soildata),
+                                   overwrite = TRUE) {
+  terra::readStart(soildata)
+
+  # create template brick
+  out <- terra::rast(soildata)
+  cnm <- c("id", "model_code", "theta_r_mean", "theta_s_mean", "log10_alpha_mean",
+           "log10_npar_mean", "log10_Ksat_mean", "theta_r_sd", "theta_s_sd",
+           "log10_alpha_sd", "log10_npar_sd", "log10_Ksat_sd")
+  terra::nlyr(out) <- length(cnm)
+  names(out) <- cnm
+  out_info <- terra::writeStart(out, filename = file, overwrite = overwrite)
+
+  start_row <- seq(1, out_info$nrows, nrows)
+  n_row <- diff(c(start_row, out_info$nrows + 1))
+
+  for(i in seq_along(start_row)) {
+    if (n_row[i] > 0) {
+      foo <- run_rosetta(terra::readValues(soildata, row = start_row[i], nrows = n_row[i], dataframe = TRUE))
+      terra::writeValues(out, as.matrix(foo), start_row[i], nrows = n_row[i])
+    }
+  }
+
+  out <- terra::writeStop(out)
+  terra::readStop(soildata)
+
+  # replace NaN with NA_real_
+  terra::values(out)[is.nan(terra::values(out))] <- NA_real_
+  out
+}
+
+# TODO:
+# run_rosetta.SpatRasterDataset

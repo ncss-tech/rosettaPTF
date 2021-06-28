@@ -4,30 +4,87 @@
 \alias{run_rosetta.default}
 \alias{run_rosetta}
 \alias{run_rosetta.data.frame}
+\alias{run_rosetta.matrix}
 \alias{run_rosetta.RasterStack}
+\alias{run_rosetta.RasterBrick}
+\alias{run_rosetta.SpatRaster}
 \title{Run \code{rosetta()} method from Python module}
 \usage{
-\method{run_rosetta}{default}(soildata, vars = NULL, rosetta_version = 3)
+\method{run_rosetta}{default}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  file = NULL,
+  nrows = NULL,
+  overwrite = NULL
+)
 
-\method{run_rosetta}{data.frame}(soildata, vars = NULL, rosetta_version = 3)
+\method{run_rosetta}{data.frame}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  file = NULL,
+  nrows = NULL,
+  overwrite = NULL
+)
 
-\method{run_rosetta}{RasterStack}(soildata, vars = NULL, rosetta_version = 3)
+\method{run_rosetta}{matrix}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  file = NULL,
+  nrows = NULL,
+  overwrite = NULL
+)
+
+\method{run_rosetta}{RasterStack}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  file = paste0(tempfile(), ".grd"),
+  nrows = nrow(soildata),
+  overwrite = TRUE
+)
+
+\method{run_rosetta}{RasterBrick}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  file = paste0(tempfile(), ".grd"),
+  nrows = nrow(soildata),
+  overwrite = TRUE
+)
+
+\method{run_rosetta}{SpatRaster}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  file = paste0(tempfile(), ".grd"),
+  nrows = nrow(soildata),
+  overwrite = TRUE
+)
 }
 \arguments{
-\item{soildata}{A list of numeric vectors each containing 3 to 6 values: \code{"sand"}, \code{"silt"}, \code{"clay"}, \code{"bulkdensity"}, \code{"th33"}, \code{"th1500"} or a \emph{data.frame} with 3 to 6 columns.}
+\item{soildata}{A list of numeric vectors each containing 3 to 6 values: \code{"sand"}, \code{"silt"}, \code{"clay"}, \code{"bulkdensity"}, \code{"th33"}, \code{"th1500"}, a \emph{data.frame} or \emph{matrix} with 3 to 6 columns OR a \verb{Raster*}/\code{SpatRaster} object with 3 to 6 layers.}
 
 \item{vars}{\emph{character}. Optional: names and order of custom column names if \code{soildata} is a \emph{data.frame}. Default \code{NULL} assumes input column order follows \code{sand}, \code{silt}, \code{clay}, \code{bulkdensity}, \code{th33}, \code{th1500} and does not check names.}
 
 \item{rosetta_version}{Default: 3}
+
+\item{file}{path to write incremental raster processing output for large inputs that do not fit in memory; passed to \code{terra::writeStart()} and used only for processing \emph{SpatRaster} or \emph{Raster*} input; defaults to a temporary file created by \code{tempfile()} if needed}
+
+\item{nrows}{number of rows to use per block; passed to \code{terra::readValues()} \code{terra::writeValues()}; used only for processing \emph{SpatRaster} or \emph{Raster*} input; defaults to number of rows in dataset if needed}
+
+\item{overwrite}{logical; overwrite \code{file}? passed to \code{terra::writeStart()}; defaults to \code{TRUE} if needed}
 }
 \value{
 A \emph{data.frame} containing \code{mean} and \code{stdev} for following five columns (parameters for van Genuchten-Mualem equation)
 \itemize{
-\item \code{theta_r}, residual water content
-\item \code{theta_s}, saturated water content
-\item \code{log10(alpha)}, 'alpha' shape parameter, log10(1/cm)
-\item \code{log10(npar)}, 'n' shape parameter
-\item \code{log10(Ksat)}, saturated hydraulic conductivity, log10(cm/day)
+\item \code{"theta_r"}, residual water content
+\item \code{"theta_s"}, saturated water content
+\item \code{"log10(alpha)"}, 'alpha' shape parameter, log10(1/cm)
+\item \code{"log10(npar)"}, 'n' shape parameter
+\item \code{"log10(Ksat)"}, saturated hydraulic conductivity, log10(cm/day)
 }
 }
 \description{

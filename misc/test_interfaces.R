@@ -5,10 +5,11 @@ ARCPY_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3"
 PYEXE_PATH <- file.path(ARCPY_PATH, "python.exe")
 CONDA_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/Scripts/conda.exe"
 
-reticulate::use_python(PYEXE_PATH, required = TRUE)
-reticulate::use_condaenv(ARCPY_PATH)
-options(reticulate.conda_binary = CONDA_PATH)
-
+if (file.exists(PYEXE_PATH)) {
+  reticulate::use_python(PYEXE_PATH, required = TRUE)
+  reticulate::use_condaenv(ARCPY_PATH)
+  options(reticulate.conda_binary = CONDA_PATH)
+}
 # convenient and "tidy" interfaces to rosetta
 
 # data.frame interface: using default column order
@@ -34,7 +35,7 @@ res <- mukey.wcs(aoi = list(aoi=c(-114.16, 47.65, -114.08, 47.68), crs='+init=ep
 varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
 resprop <- get_SDA_property(property = varnames,
                             method = "Dominant Component (numeric)",
-                            mukeys = unique(values(res$gNATSGO.map.unit.keys)))
+                            mukeys = unique(terra::values(res$gNATSGO.map.unit.keys)))
 soildata <- resprop[complete.cases(resprop), c("mukey", varnames)]
 resrose <- run_rosetta(soildata[,varnames])
 resrose$mukey <- soildata$mukey
@@ -42,14 +43,26 @@ levels(res) <- merge(levels(res)[[1]], resprop, by.x = "ID", by.y = "mukey", all
 levels(res) <- merge(levels(res)[[1]], resrose, by.x = "ID", by.y = "mukey", all.x = TRUE)
 plot(res, "log10_Ksat_mean")
 
-# working with a raster stack (use case for each cell has "unique" values)
-resstack <- stack(
-  deratify(res, "sandtotal_r"),
-  deratify(res, "silttotal_r"),
-  deratify(res, "claytotal_r"),
-  deratify(res, "dbthirdbar_r")
-)
+# working with a raster stack
+resstack <- stack(lapply(c("sandtotal_r","silttotal_r","claytotal_r","dbthirdbar_r"),
+                         function(x) deratify(res, x)))
+plot(resstack)
 
-# rasterstack to data.frame interface (one call on all cells)
-test2 <- run_rosetta(resstack)
-plot(test2, "log10_Ksat_mean")
+# data.frame v.s. raster interface
+smallstack_raster <- raster::crop(resstack, raster::extent(resstack) / 10)
+smallstack_terra <- terra::crop(terra::rast(resstack), terra::ext(resstack) / 10)
+
+# convert rasterstack to data.frame, works if it fits in memory
+system.time(test1 <- run_rosetta(as.data.frame(smallstack_raster)))
+system.time(test1 <- run_rosetta(as.data.frame(smallstack_terra)))
+
+# run calculations in blocks using a temporary file to store output, return a SpatRaster
+system.time(test2 <- run_rosetta(smallstack_raster))
+system.time(test2 <- run_rosetta(smallstack_terra))
+
+# set a specific block size (smaller calls to run_rosetta)
+system.time(test3 <- run_rosetta(smallstack_raster, nrows = 20))
+system.time(test3 <- run_rosetta(smallstack_terra, nrows = 20))
+
+plot(test2[c("theta_r_mean", "log10_Ksat_mean")])
+

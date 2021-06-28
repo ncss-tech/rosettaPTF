@@ -20,10 +20,10 @@ Make a Rosetta object instance for running \code{predict()} methods
 \details{
 \subsection{Explanation of Model Codes}{
 \itemize{
-\item \code{2}: 	sand, silt, clay (\code{ssc})
-\item \code{3}: 	SSC + bulk density (\code{bd})
-\item \code{4}: 	SSC + BD + field capacity water content (\code{th33})
-\item \code{5}: 	SSC + BD + \code{th33} + wilting point water content (\code{th1500})
+\item \code{2}: 	sand, silt, clay ("SSC")
+\item \code{3}: 	sand, silt, clay + bulk density ("BD")
+\item \code{4}: 	sand, silt, clay + bulk density + field capacity water content (1/3 bar or 33 kPa tension)
+\item \code{5}: 	sand, silt, clay + bulk density + field capacity water content + wilting point water content (15 bar or 1500 kPa tension)
 \item \code{-1}: 	no result returned, inadequate or erroneous data
 }
 }

@@ -6,10 +6,10 @@
 #' @param model_code One of `2`, `3`, `4`, `5`, or `-1`. Corresponding to options described in _Details_.
 #' @details
 #' ## Explanation of Model Codes
-#' - `2`: 	sand, silt, clay (`ssc`)
-#' - `3`: 	SSC + bulk density (`bd`)
-#' - `4`: 	SSC + BD + field capacity water content (`th33`)
-#' - `5`: 	SSC + BD + `th33` + wilting point water content (`th1500`)
+#' - `2`: 	sand, silt, clay ("SSC")
+#' - `3`: 	sand, silt, clay + bulk density ("BD")
+#' - `4`: 	sand, silt, clay + bulk density + field capacity water content (1/3 bar or 33 kPa tension)
+#' - `5`: 	sand, silt, clay + bulk density + field capacity water content + wilting point water content (15 bar or 1500 kPa tension)
 #' - `-1`: 	no result returned, inadequate or erroneous data
 #'
 #' @return an instance of the `Rosetta` class defined by the Python module; suitable for running `predict` or `ann_predict` methods.
