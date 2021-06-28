@@ -17,6 +17,7 @@
 run_rosetta.default <- function(soildata,
                                 vars = NULL,
                                 rosetta_version = 3,
+                                cores = 1,
                                 file = NULL,
                                 nrows = NULL,
                                 overwrite = NULL) {
@@ -56,6 +57,7 @@ run_rosetta.default <- function(soildata,
 run_rosetta <- function(soildata,
                         vars = NULL,
                         rosetta_version = 3,
+                        cores = 1,
                         file = NULL,
                         nrows = NULL,
                         overwrite = NULL)
@@ -67,6 +69,7 @@ run_rosetta <- function(soildata,
 run_rosetta.data.frame <- function(soildata,
                                    vars = NULL,
                                    rosetta_version = 3,
+                                   cores = 1,
                                    file = NULL,
                                    nrows = NULL,
                                    overwrite = NULL) {
@@ -115,6 +118,7 @@ run_rosetta.data.frame <- function(soildata,
 run_rosetta.matrix <- function(soildata,
                                vars = NULL,
                                rosetta_version = 3,
+                               cores = 1,
                                file = NULL,
                                nrows = NULL,
                                overwrite = NULL) {
@@ -127,6 +131,7 @@ run_rosetta.matrix <- function(soildata,
 run_rosetta.RasterStack <- function(soildata,
                                     vars = NULL,
                                     rosetta_version = 3,
+                                    cores = 1,
                                     file = paste0(tempfile(),".grd"),
                                     nrows = nrow(soildata),
                                     overwrite = TRUE) {
@@ -149,21 +154,24 @@ run_rosetta.RasterStack <- function(soildata,
 run_rosetta.RasterBrick <- function(soildata,
                                     vars = NULL,
                                     rosetta_version = 3,
+                                    cores = 1,
                                     file = paste0(tempfile(),".grd"),
                                     nrows = nrow(soildata),
                                     overwrite = TRUE) {
   run_rosetta(terra::rast(soildata))
 }
-
+#' @param cores number of cores; used only for processing _SpatRaster_ or _Raster*_ input
 #' @param file path to write incremental raster processing output for large inputs that do not fit in memory; passed to `terra::writeStart()` and used only for processing _SpatRaster_ or _Raster*_ input; defaults to a temporary file created by `tempfile()` if needed
 #' @param nrows number of rows to use per block; passed to `terra::readValues()` `terra::writeValues()`; used only for processing _SpatRaster_ or _Raster*_ input; defaults to number of rows in dataset if needed
 #' @param overwrite logical; overwrite `file`? passed to `terra::writeStart()`; defaults to `TRUE` if needed
 #' @export
 #' @rdname run_rosetta
 #' @importFrom terra rast readStart writeStart readValues writeValues writeStop readStop `nlyr<-`
+#' @importFrom parallel makeCluster stopCluster parRapply
 run_rosetta.SpatRaster <- function(soildata,
                                    vars = NULL,
                                    rosetta_version = 3,
+                                   cores = 1,
                                    file = paste0(tempfile(),".grd"),
                                    nrows = nrow(soildata),
                                    overwrite = TRUE) {
@@ -181,10 +189,31 @@ run_rosetta.SpatRaster <- function(soildata,
   start_row <- seq(1, out_info$nrows, nrows)
   n_row <- diff(c(start_row, out_info$nrows + 1))
 
-  for(i in seq_along(start_row)) {
-    if (n_row[i] > 0) {
-      foo <- run_rosetta(terra::readValues(soildata, row = start_row[i], nrows = n_row[i], dataframe = TRUE))
-      terra::writeValues(out, as.matrix(foo), start_row[i], nrows = n_row[i])
+  if (cores > 1 && out_info$nrows*ncol(soildata) > 20000) {
+    cls <- parallel::makeCluster(cores)
+    on.exit(parallel::stopCluster(cls))
+
+    # TODO: can blocks be parallelized?
+    for(i in seq_along(start_row)) {
+      if (n_row[i] > 0) {
+        blockdata <- terra::readValues(soildata, row = start_row[i], nrows = n_row[i], dataframe = TRUE)
+        ids <- 1:nrow(blockdata)
+        # soilDB makeChunks logic; what is tradeoff between chunk size and number of requests?
+        # run_rosetta is a "costly" function and not particularly fast, so in theory parallel would help
+
+        # parallel within-block processing
+        X <- split(blockdata, rep(seq(from = 1, to = floor(length(ids) / 20000) + 1), each = 20000)[1:length(ids)])
+        r <- do.call('rbind', parallel::clusterApply(cls, X, function(x) rosettaPTF::run_rosetta(x)))
+
+        terra::writeValues(out, as.matrix(r), start_row[i], nrows = n_row[i])
+      }
+    }
+  } else {
+    for(i in seq_along(start_row)) {
+      if (n_row[i] > 0) {
+        foo <- rosettaPTF::run_rosetta(terra::readValues(soildata, row = start_row[i], nrows = n_row[i], dataframe = TRUE))
+        terra::writeValues(out, as.matrix(foo), start_row[i], nrows = n_row[i])
+      }
     }
   }
 

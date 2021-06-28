@@ -86,4 +86,24 @@ test_that("run on SSURGO data", {
                 all(table(test1$log10_alpha_mean) ==
                       table(as.numeric(terra::values(test3$log10_alpha_mean)))))
 
+  system.time(test4 <- rosettaPTF::run_rosetta(smallstack, cores = 1))
+  system.time(test5 <- rosettaPTF::run_rosetta(smallstack, cores = 2))
+
+  expect_true(inherits(test4, 'SpatRaster') &&
+                all(table(test1$log10_alpha_mean) ==
+                      table(as.numeric(terra::values(test4$log10_alpha_mean)))))
+
+  expect_true(inherits(test5, 'SpatRaster') &&
+                all(table(test1$log10_alpha_mean) ==
+                      table(as.numeric(terra::values(test5$log10_alpha_mean)))))
+  if (FALSE) {
+    system.time(test6 <- rosettaPTF::run_rosetta(smallstack, nrows = 100, cores = 1))
+    system.time(test7 <- rosettaPTF::run_rosetta(smallstack, nrows = 100, cores = 2))
+
+    # it fits in memory
+    system.time(test8 <- rosettaPTF::run_rosetta(smallstack, cores = 1))
+    system.time(test9 <- rosettaPTF::run_rosetta(smallstack, cores = 2))
+    system.time(test10 <- rosettaPTF::run_rosetta(smallstack, cores = 8))
+  }
+
 })

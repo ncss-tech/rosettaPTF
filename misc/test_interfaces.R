@@ -1,15 +1,8 @@
-library(reticulate)
 library(rosettaPTF)
 
-ARCPY_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3"
-PYEXE_PATH <- file.path(ARCPY_PATH, "python.exe")
-CONDA_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/Scripts/conda.exe"
+# setup for USDA computers using ArcPro Python installation
+source("misc/setup_CCE.R")
 
-if (file.exists(PYEXE_PATH)) {
-  reticulate::use_python(PYEXE_PATH, required = TRUE)
-  reticulate::use_condaenv(ARCPY_PATH)
-  options(reticulate.conda_binary = CONDA_PATH)
-}
 # convenient and "tidy" interfaces to rosetta
 
 # data.frame interface: using default column order
@@ -64,5 +57,5 @@ system.time(test2 <- run_rosetta(smallstack_terra))
 system.time(test3 <- run_rosetta(smallstack_raster, nrows = 20))
 system.time(test3 <- run_rosetta(smallstack_terra, nrows = 20))
 
-plot(test2[c("theta_r_mean", "log10_Ksat_mean")])
+plot(test2["log10_Ksat_mean"])
 

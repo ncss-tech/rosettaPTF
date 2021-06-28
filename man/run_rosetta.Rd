@@ -14,6 +14,7 @@
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  cores = 1,
   file = NULL,
   nrows = NULL,
   overwrite = NULL
@@ -23,6 +24,7 @@
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  cores = 1,
   file = NULL,
   nrows = NULL,
   overwrite = NULL
@@ -32,6 +34,7 @@
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  cores = 1,
   file = NULL,
   nrows = NULL,
   overwrite = NULL
@@ -41,6 +44,7 @@
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  cores = 1,
   file = paste0(tempfile(), ".grd"),
   nrows = nrow(soildata),
   overwrite = TRUE
@@ -50,6 +54,7 @@
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  cores = 1,
   file = paste0(tempfile(), ".grd"),
   nrows = nrow(soildata),
   overwrite = TRUE
@@ -59,6 +64,7 @@
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  cores = 1,
   file = paste0(tempfile(), ".grd"),
   nrows = nrow(soildata),
   overwrite = TRUE
@@ -70,6 +76,8 @@
 \item{vars}{\emph{character}. Optional: names and order of custom column names if \code{soildata} is a \emph{data.frame}. Default \code{NULL} assumes input column order follows \code{sand}, \code{silt}, \code{clay}, \code{bulkdensity}, \code{th33}, \code{th1500} and does not check names.}
 
 \item{rosetta_version}{Default: 3}
+
+\item{cores}{number of cores; used only for processing \emph{SpatRaster} or \emph{Raster*} input}
 
 \item{file}{path to write incremental raster processing output for large inputs that do not fit in memory; passed to \code{terra::writeStart()} and used only for processing \emph{SpatRaster} or \emph{Raster*} input; defaults to a temporary file created by \code{tempfile()} if needed}
 
