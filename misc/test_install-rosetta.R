@@ -1,13 +1,7 @@
-library(reticulate)
 library(rosettaPTF)
 
-ARCPY_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3"
-PYEXE_PATH <- file.path(ARCPY_PATH, "python.exe")
-CONDA_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/Scripts/conda.exe"
-
-reticulate::use_python(PYEXE_PATH, required = TRUE)
-reticulate::use_condaenv(ARCPY_PATH)
-options(reticulate.conda_binary = CONDA_PATH)
+# setup for USDA computers using ArcPro Python installation
+source("misc/setup_CCE.R")
 
 # install rosetta if needed
 if (!rosettaPTF::rosetta_module_available())

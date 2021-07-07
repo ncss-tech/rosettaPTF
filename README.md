@@ -31,7 +31,7 @@ After installing a new version of the `rosetta` module you may need to restart y
 
 ## Batch Rosetta with `run_rosetta()`
 
-Batch runs using `list`, `data.frame` or `RasterStack` inputs are supported.
+Batch runs using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` inputs are supported.
 
 
 ### `list()` Input Example
