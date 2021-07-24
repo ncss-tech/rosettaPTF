@@ -1,7 +1,7 @@
 library(rosettaPTF)
 
-# setup for USDA computers using ArcPro Python installation
-source("misc/setup_CCE.R")
+# attempt to set up python
+rosettaPTF:::.findPython()
 
 # convenient and "tidy" interfaces to rosetta
 
@@ -24,16 +24,23 @@ run_rosetta(data.frame(
 # SDA example interface (calculate rosetta values by mapunit, and use RAT to display)
 library(soilDB)
 library(raster)
-res <- mukey.wcs(aoi = list(aoi=c(-114.16, 47.65, -114.08, 47.68), crs='+init=epsg:4326'))
+
+res <- mukey.wcs(aoi = list(aoi = c(-114.16, 47.65,-114.08, 47.68), crs = 'EPSG:4326'))
+
 varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
+
 resprop <- get_SDA_property(property = varnames,
                             method = "Dominant Component (numeric)",
                             mukeys = unique(terra::values(res$gNATSGO.map.unit.keys)))
+
 soildata <- resprop[complete.cases(resprop), c("mukey", varnames)]
+
 resrose <- run_rosetta(soildata[,varnames])
 resrose$mukey <- soildata$mukey
+
 levels(res) <- merge(levels(res)[[1]], resprop, by.x = "ID", by.y = "mukey", all.x = TRUE)
 levels(res) <- merge(levels(res)[[1]], resrose, by.x = "ID", by.y = "mukey", all.x = TRUE)
+
 plot(res, "log10_Ksat_mean")
 
 # working with a raster stack

@@ -1,12 +1,19 @@
 Package: rosettaPTF
 Title: Python Rosetta Pedotransfer Functions
-Version: 0.0.0.9003
+Version: 0.0.0.9004
 Authors@R: 
     person(given = "Andrew",
            family = "Brown",
            role = c("aut", "cre"),
            email = "andrew.g.brown@usda.gov")
-Description: This package provides wrappers around Python methods developed by Marcel Schaap and Yonggen Zhang. The codebase is now maintained by U.S. Department of Agriculture employees. This R package is intended to provide a wrapper for use cases that involve many thousands of calls to the pedotransfer function. Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoing provided by the soilDB R package `ROSETTA()` method.
+Description: This package provides wrappers around Python Rosetta Pedotransfer Functions developed by Marcel Schaap and Yonggen Zhang. The codebase is now maintained by U.S. Department of Agriculture employees. This R package is intended to provide a wrapper for use cases that involve many thousands of calls to the pedotransfer function. Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoing provided by the soilDB R package `ROSETTA()` method.
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "numpy"),
+      list(package = "rosetta-soil")
+    )
+  )
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true

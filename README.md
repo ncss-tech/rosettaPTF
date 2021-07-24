@@ -5,34 +5,69 @@
 
 # rosettaPTF
 
-An R package using {reticulate} to wrap the Python [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) (or `rosetta`) module which contains several versions of the Rosetta pedotransfer functions. This wrapper is primarily intended for more demanding use cases (e.g. calling Rosetta on each cell in a stack of raster data)
+An R package using {reticulate} to wrap the Python [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) module which contains several versions of the [ROSETTA](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html) pedotransfer functions. 
 
-Note that there are several interfaces to these methods and a public web service described in detail here: http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html. For small amounts of input data consider using the interactive version that has copy/paste functionality: https://www.handbook60.org/rosetta
+The [ROSETTA](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html) model relies on a minimum of 3 soil properties, with increasing (expected) accuracy as additional properties are included:
 
-First, load the `rosetta` module by loading the R package.
+  *  required, `sand`, `silt`, `clay`: USDA soil texture separates (percentages) that sum to 100%
 
-```{r}
-library(rosettaPTF)
+  *  optional, `bulk density (any moisture basis)`: mass per volume after accounting for >2mm fragments, units of grams/cm3
+
+  *  optional, `volumetric water content at 33 kPa`: roughly “field capacity” for most soils, units of cm3/cm3
+
+  *  optional, `volumetric water content at 1500 kPa`: roughly “permanent wilting point” for most plants, units of cm3/cm3
+
+For small amounts of data consider using the interactive version that has copy/paste functionality: https://www.handbook60.org/rosetta. 
+
+This package is primarily intended for more demanding use cases such as calling ROSETTA on each cell in a stack of raster data.
+
+## Set up {reticulate}
+
+If you are using this package for the first time you will need to have Python installed and download the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. {reticulate} offers `reticulate::install_python()` and `reticulate::install_miniconda()` to download and set up an up-to-date Python/Conda environment. If the automatic configuration fails you can set `options(rosettaPTF.python_path = "path/to/python")`.
+
+The {rosettaPTF} `find_python()` method wraps `reticulate::py_config()`. 
+
+```r
+rosettaPTF::find_python()
 ```
 
-## Install Rosetta Module
+`find_python()` provides several heuristics for setting up {reticulate} to use Python in commonly installed locations. 
 
-If you are using this package for the first time you will need to install the Python dependencies.
+### Using Existing Python Installations
 
-The `install_rosetta()` method wraps `reticulate::py_install()`. You can set up reticulate to install into a virtual or conda environment. The default environment name will be `"r-reticulate"`.
+The additional heuristics in `find_python()` include the Python 3 Conda environment associated with ArcGIS Pro or QGIS or common system installation locations. When attempting to install and load the package for the first time you should be prompted to set up a suitable environment.
 
-```{r}
-install_rosetta()
+When calling `find_python()` you can optionally specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to use path to ArcGIS Pro Python/Conda environment, for example:
+
+```r
+options(rosettaPTF.arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
+rosettaPTF::find_python()
 ```
 
-Use the argument `pip = TRUE` to use `pip` rather than `conda` package sources.
+This will locate both the ArcGIS Pro Conda environment and Python binaries.
 
-After installing a new version of the `rosetta` module you may need to restart your R session before continuing.
+## Install `rosetta-soil` Python Module
+
+The {rosettaPTF} `install_rosetta()` method wraps `reticulate::py_install("rosetta-soil")`. 
+
+By installing the R package you should already have `rosetta-soil` installed as it is explicitly set as a {reticulate}/Python dependency in the DESCRIPTION file.
+
+You can use `install_rosetta()` to install into custom environments as needed by specifying `envname`. 
+After installing a new version of the module you may need to restart your R session before continuing.
+
+```r
+rosettaPTF::install_rosetta()
+```
 
 ## Batch Rosetta with `run_rosetta()`
 
-Batch runs using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` inputs are supported.
+First, load the `rosetta-soil` module by loading the R package.
 
+```r
+library(rosettaPTF)
+```
+
+Batch runs using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` inputs are supported.
 
 ### `list()` Input Example
 
@@ -90,7 +125,7 @@ library(soilDB)
 library(raster)
 
 # obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)
-res <- mukey.wcs(aoi = list(aoi=c(-114.16, 47.65, -114.08, 47.68), crs='+init=epsg:4326'))
+res <- mukey.wcs(aoi = list(aoi = c(-114.16, 47.65,-114.08, 47.68), crs = 'EPSG:4326'))
 
 # request input data from SDA
 varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")

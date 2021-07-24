@@ -10,35 +10,11 @@
 \alias{run_rosetta.SpatRaster}
 \title{Run \code{rosetta()} method from Python module}
 \usage{
-\method{run_rosetta}{default}(
-  soildata,
-  vars = NULL,
-  rosetta_version = 3,
-  cores = 1,
-  file = NULL,
-  nrows = NULL,
-  overwrite = NULL
-)
+\method{run_rosetta}{default}(soildata, vars = NULL, rosetta_version = 3, ...)
 
-\method{run_rosetta}{data.frame}(
-  soildata,
-  vars = NULL,
-  rosetta_version = 3,
-  cores = 1,
-  file = NULL,
-  nrows = NULL,
-  overwrite = NULL
-)
+\method{run_rosetta}{data.frame}(soildata, vars = NULL, rosetta_version = 3, ...)
 
-\method{run_rosetta}{matrix}(
-  soildata,
-  vars = NULL,
-  rosetta_version = 3,
-  cores = 1,
-  file = NULL,
-  nrows = NULL,
-  overwrite = NULL
-)
+\method{run_rosetta}{matrix}(soildata, vars = NULL, rosetta_version = 3, ...)
 
 \method{run_rosetta}{RasterStack}(
   soildata,
@@ -73,9 +49,11 @@
 \arguments{
 \item{soildata}{A list of numeric vectors each containing 3 to 6 values: \code{"sand"}, \code{"silt"}, \code{"clay"}, \code{"bulkdensity"}, \code{"th33"}, \code{"th1500"}, a \emph{data.frame} or \emph{matrix} with 3 to 6 columns OR a \verb{Raster*}/\code{SpatRaster} object with 3 to 6 layers.}
 
-\item{vars}{\emph{character}. Optional: names and order of custom column names if \code{soildata} is a \emph{data.frame}. Default \code{NULL} assumes input column order follows \code{sand}, \code{silt}, \code{clay}, \code{bulkdensity}, \code{th33}, \code{th1500} and does not check names.}
+\item{vars}{\emph{character}. Optional: names and order of custom column names if \code{soildata} is a \emph{data.frame}, \emph{RasterStack}, \emph{RasterBrick} or \emph{SpatRaster}. Default \code{NULL} assumes input column order follows \code{sand}, \code{silt}, \code{clay}, \code{bulkdensity}, \code{th33}, \code{th1500} and does not check names.}
 
 \item{rosetta_version}{Default: 3}
+
+\item{...}{additional arguments not used}
 
 \item{cores}{number of cores; used only for processing \emph{SpatRaster} or \emph{Raster*} input}
 

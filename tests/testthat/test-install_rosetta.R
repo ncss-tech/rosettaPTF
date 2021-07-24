@@ -1,22 +1,27 @@
-test_that("rosetta module is available", {
+test_that("rosetta-soil module can be installed", {
 
-  # check for ArcPro environment python EXE, and use it if present (USDA CCE machines)
-  ARCPY_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3"
-  PYEXE_PATH <- file.path(ARCPY_PATH, "python.exe")
-  CONDA_PATH <- "C:/Program Files/ArcGIS/Pro/bin/Python/Scripts/conda.exe"
+  # rosetta may be available
+  avail <- rosetta_module_available()
 
-  if (file.exists(PYEXE_PATH)) {
-    message("\n\nUsing ArcGIS Pro conda environment/python.exe for testing...\n\n")
-    reticulate::use_python(PYEXE_PATH, required = TRUE)
-    reticulate::use_condaenv(ARCPY_PATH)
-    options(reticulate.conda_binary = CONDA_PATH)
+  # install rosetta (does not fail if already installed)
+  cat("\n\n")
+
+  # use pip (if available) or use ArcGIS Pro Conda environment (if available)
+  res <- install_rosetta(pip = TRUE, arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python/")
+
+  cat("\n\n")
+
+  # res is TRUE if both rosetta-soil and numpy have been imported / can be loaded
+  expect_true(res)
+
+  # note with a skip when we didn't install something new
+  if (avail) {
+    skip('rosetta-soil module was already installed')
   }
 
-  # install rosetta if needed
-  if (!rosetta_module_available()) {
-    install_rosetta(pip = TRUE)
-  }
+})
 
+test_that("rosetta-soil module is available", {
   # should be available
   avail <- rosetta_module_available()
   expect_true(avail)

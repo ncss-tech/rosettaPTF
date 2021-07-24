@@ -4,17 +4,28 @@
 \alias{install_rosetta}
 \title{Install Rosetta Python package}
 \usage{
-install_rosetta(envname = NULL, method = "auto", conda = "auto", pip = FALSE)
+install_rosetta(
+  envname = NULL,
+  method = "auto",
+  conda = "auto",
+  pip = FALSE,
+  arcpy_path = getOption("rosettaPTF.arcpy_path")
+)
 }
 \arguments{
-\item{envname}{The name, or full path, of the environment in which Python packages are to be installed. When \code{NULL} (the default), the active environment as set by the \code{RETICULATE_PYTHON_ENV} variable will be used; if that is unset, then the \code{"r-reticulate"} environment will be used.}
+\item{envname}{The name, or full path, of the environment in which Python packages are to be installed. When \code{NULL} (default), the active environment (\code{RETICULATE_PYTHON_ENV} variable) will be used; if that is unset, then the \code{"r-reticulate"} environment will be used.}
 
 \item{method}{\code{"auto"}, \code{"virtualenv"}, or \code{"conda"}; Default: \code{"auto"}}
 
 \item{conda}{Default: \code{"auto"}}
 
-\item{pip}{\emph{logical}. Use pip for package installation? This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.}
+\item{pip}{\emph{logical}. Use \code{pip} for package installation? This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.}
+
+\item{arcpy_path}{Argument passed to \code{find_python()}. Path to ArcGIS Pro Python installation e.g. ``. Set as \code{NULL} (default) to prevent use of ArcGIS Pro instance.}
 }
 \description{
 Wrapper around \code{reticulate::py_install()} to install the Rosetta Pedotransfer Function Python package
+}
+\details{
+From \code{reticulate::py_install()}: On Linux and OS X the "virtualenv" method will be used by default ("conda" will be used if virtualenv isn't available). On Windows, the "conda" method is always used.
 }
