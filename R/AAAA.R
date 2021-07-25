@@ -12,11 +12,11 @@ numpy_module <- NULL
 
   # delay load modules (will be loaded when accessed via $)
   if (is.null(rosetta_module)) {
-    rosetta_module <<- reticulate::import("rosetta", delay_load = TRUE)
+    try(rosetta_module <<- reticulate::import("rosetta", delay_load = TRUE), silent = TRUE)
   }
 
   if (is.null(numpy_module)) {
-    numpy_module <<- reticulate::import('numpy', delay_load = TRUE)
+    try(numpy_module <<- reticulate::import('numpy', delay_load = TRUE), silent = TRUE)
   }
 
   !is.null(rosetta_module) && !is.null(numpy_module)
@@ -27,8 +27,8 @@ numpy_module <- NULL
 .onLoad <- function(libname, pkgname) {
 
   # TODO: is configure_environment needed?
-  if (reticulate::configure_environment(pkgname)) {
+  # if (reticulate::configure_environment(pkgname)) {
     .loadModules()
-  }
+  # }
 
 }

@@ -25,7 +25,7 @@ A common problem with {reticulate} is not pointing at the correct (or any) \code
 
 Use \code{reticulate::install_miniconda()} if you'd like to install a Miniconda Python environment. Conda is default on Windows.
 
-For devices with limited ability to install new software that have ArcGIS Pro installed (some USDA computers), this method looks for a Python installation in \code{"C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3"} and Conda executable in \code{"C:/Program Files/ArcGIS/Pro/bin/Python/Scripts"}. The base file path to "Python" directory can be customized using the \code{arcpy_path} argument.
+For devices with limited ability to install new software that have ArcGIS Pro installed (some USDA computers), this method can look for a Python installation in \code{"C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3"} and Conda executable in \code{"C:/Program Files/ArcGIS/Pro/bin/Python/Scripts"}. The base file path to "Python" directory can be customized using the \code{arcpy_path} argument.
 }
 
 \subsection{Linux and OS X}{

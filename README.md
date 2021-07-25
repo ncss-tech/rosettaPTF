@@ -23,19 +23,15 @@ This package is primarily intended for more demanding use cases such as calling 
 
 ## Set up {reticulate}
 
-If you are using this package for the first time you will need to have Python installed and download the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. {reticulate} offers `reticulate::install_python()` and `reticulate::install_miniconda()` to download and set up an up-to-date Python/Conda environment. If the automatic configuration fails you can set `options(rosettaPTF.python_path = "path/to/python")`.
-
-The {rosettaPTF} `find_python()` method wraps `reticulate::py_config()`. 
+If you are using this package for the first time you will need to have Python installed and download the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. {reticulate} offers `reticulate::install_python()` and `reticulate::install_miniconda()` to download and set up an up-to-date Python/Conda environment. 
 
 ```r
 rosettaPTF::find_python()
 ```
 
-`find_python()` provides several heuristics for setting up {reticulate} to use Python in commonly installed locations. 
+`find_python()` provides several heuristics for setting up {reticulate} to use Python in commonly installed locations. The {rosettaPTF} `find_python()` method wraps `reticulate::py_discover_config()` and `reticulate::use_python()` with custom handling for ArcGIS Pro Conda environments. If the automatic configuration fails you can set `options(rosettaPTF.python_path = "path/to/python")`.
 
 ### Using Existing Python Installations
-
-The additional heuristics in `find_python()` include the Python 3 Conda environment associated with ArcGIS Pro or QGIS or common system installation locations. When attempting to install and load the package for the first time you should be prompted to set up a suitable environment.
 
 When calling `find_python()` you can optionally specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to use path to ArcGIS Pro Python/Conda environment, for example:
 
@@ -44,20 +40,19 @@ options(rosettaPTF.arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 rosettaPTF::find_python()
 ```
 
-This will locate both the ArcGIS Pro Conda environment and Python binaries.
+This should locate both the ArcGIS Pro Conda environment and Python binaries.
 
 ## Install `rosetta-soil` Python Module
 
 The {rosettaPTF} `install_rosetta()` method wraps `reticulate::py_install("rosetta-soil")`. 
 
-By installing the R package you should already have `rosetta-soil` installed as it is explicitly set as a {reticulate}/Python dependency in the DESCRIPTION file.
-
-You can use `install_rosetta()` to install into custom environments as needed by specifying `envname`. 
-After installing a new version of the module you may need to restart your R session before continuing.
+By installing the R package you should have `rosetta-soil` installed as it is set as a {reticulate}/Python dependency in the DESCRIPTION file.
 
 ```r
 rosettaPTF::install_rosetta()
 ```
+
+You can use `install_rosetta()` to install into custom environments as needed by specifying `envname`. After installing a new version of the module you may need to restart your R session before continuing.
 
 ## Batch Rosetta with `run_rosetta()`
 
@@ -67,7 +62,9 @@ First, load the `rosetta-soil` module by loading the R package.
 library(rosettaPTF)
 ```
 
-Batch runs using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` inputs are supported.
+Batch runs using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` inputs are supported. 
+
+The default order of inputs is: sand, silt, clay, bulk density (any basis), water content (field capacity; 33 kPa), water content (permanent wilting point; 1500 kPa); of which the first three are required. If you specify field capacity water content, you must specify bulk density. If you specify permanent wilting point water content you must also specify bulk density and field capacity water content.
 
 ### `list()` Input Example
 
@@ -90,6 +87,8 @@ run_rosetta(list(c(30, 30, 40, 1.5), c(55, 25, 20),  c(55, 25, 20, 1.1)),
 #> 2    0.08428578
 #> 3    0.14163567
 ```
+
+Output `model_code` reflects the number of parameters in the input. 
 
 ### `data.frame()` Input Example
 
@@ -114,7 +113,6 @@ run_rosetta(data.frame(
 #>   log10_Ksat_sd
 #> 1    0.08709446
 ```
-
 
 ### Soil Data Access / SSURGO Mapunit Aggregate Input Example
 

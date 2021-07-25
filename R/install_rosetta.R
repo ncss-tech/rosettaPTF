@@ -5,7 +5,7 @@
 #' @param envname The name, or full path, of the environment in which Python packages are to be installed. When `NULL` (default), the active environment (`RETICULATE_PYTHON_ENV` variable) will be used; if that is unset, then the `"r-reticulate"` environment will be used.
 #' @param method `"auto"`, `"virtualenv"`, or `"conda"`; Default: `"auto"`
 #' @param conda Default: `"auto"`
-#' @param pip _logical_. Use `pip` for package installation? This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.
+#' @param pip _logical_. Use `pip` for package installation? Default: `TRUE`. This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.
 #' @param arcpy_path Argument passed to `find_python()`. Path to ArcGIS Pro Python installation e.g. ``. Set as `NULL` (default) to prevent use of ArcGIS Pro instance.
 #' @details From `reticulate::py_install()`: On Linux and OS X the "virtualenv" method will be used by default ("conda" will be used if virtualenv isn't available). On Windows, the "conda" method is always used.
 #'
@@ -16,7 +16,7 @@
 install_rosetta <- function(envname = NULL,
                             method = "auto",
                             conda = "auto",
-                            pip = FALSE,
+                            pip = TRUE,
                             arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 
   # use heuristics to find python executable
