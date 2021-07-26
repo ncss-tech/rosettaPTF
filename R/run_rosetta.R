@@ -2,9 +2,9 @@
 #'
 #' @param soildata A list of numeric vectors each containing 3 to 6 values: `"sand"`, `"silt"`, `"clay"`, `"bulkdensity"`, `"th33"`, `"th1500"`, a _data.frame_ or _matrix_ with 3 to 6 columns OR a `Raster*`/`SpatRaster` object with 3 to 6 layers.
 #'
-#' @param vars _character_. Optional: names and order of custom column names if `soildata` is a _data.frame_. Default `NULL` assumes input column order follows `sand`, `silt`, `clay`, `bulkdensity`, `th33`, `th1500` and does not check names.
+#' @param vars _character_. Optional: names and order of custom column names if `soildata` is a _data.frame_, _RasterStack_, _RasterBrick_ or _SpatRaster_. Default `NULL` assumes input column order follows `sand`, `silt`, `clay`, `bulkdensity`, `th33`, `th1500` and does not check names.
 #' @param rosetta_version Default: 3
-#'
+#' @param ... additional arguments not used
 #' @return A _data.frame_ containing `mean` and `stdev` for following five columns (parameters for van Genuchten-Mualem equation)
 #' -	`"theta_r"`, residual water content
 #' -	`"theta_s"`, saturated water content
@@ -16,11 +16,7 @@
 #' @export
 run_rosetta.default <- function(soildata,
                                 vars = NULL,
-                                rosetta_version = 3,
-                                cores = 1,
-                                file = NULL,
-                                nrows = NULL,
-                                overwrite = NULL) {
+                                rosetta_version = 3, ...) {
 
   if (is.numeric(soildata)) {
     soildata <- as.data.frame(t(soildata))
@@ -69,10 +65,7 @@ run_rosetta <- function(soildata,
 run_rosetta.data.frame <- function(soildata,
                                    vars = NULL,
                                    rosetta_version = 3,
-                                   cores = 1,
-                                   file = NULL,
-                                   nrows = NULL,
-                                   overwrite = NULL) {
+                                   ...) {
 
   # soildata <- as.data.frame(soildata)
   nid <- nrow(soildata)
@@ -118,10 +111,7 @@ run_rosetta.data.frame <- function(soildata,
 run_rosetta.matrix <- function(soildata,
                                vars = NULL,
                                rosetta_version = 3,
-                               cores = 1,
-                               file = NULL,
-                               nrows = NULL,
-                               overwrite = NULL) {
+                               ...) {
   run_rosetta(as.data.frame(soildata), vars = vars, rosetta_version = 3)
 }
 
@@ -145,7 +135,15 @@ run_rosetta.RasterStack <- function(soildata,
   # }
   # names(resstackout) <- colnames(res)
   # resstackout
-  run_rosetta(terra::rast(soildata))
+  run_rosetta(
+    terra::rast(soildata),
+    vars = vars,
+    rosetta_version = rosetta_version,
+    cores = cores,
+    file = file,
+    nrows = nrows,
+    overwrite = overwrite
+  )
 }
 
 #' @export
@@ -158,7 +156,14 @@ run_rosetta.RasterBrick <- function(soildata,
                                     file = paste0(tempfile(),".grd"),
                                     nrows = nrow(soildata),
                                     overwrite = TRUE) {
-  run_rosetta(terra::rast(soildata))
+  run_rosetta(terra::rast(soildata),
+              vars = vars,
+              rosetta_version = rosetta_version,
+              cores = cores,
+              file = file,
+              nrows = nrows,
+              overwrite = overwrite
+  )
 }
 #' @param cores number of cores; used only for processing _SpatRaster_ or _Raster*_ input
 #' @param file path to write incremental raster processing output for large inputs that do not fit in memory; passed to `terra::writeStart()` and used only for processing _SpatRaster_ or _Raster*_ input; defaults to a temporary file created by `tempfile()` if needed
@@ -203,7 +208,9 @@ run_rosetta.SpatRaster <- function(soildata,
 
         # parallel within-block processing
         X <- split(blockdata, rep(seq(from = 1, to = floor(length(ids) / 20000) + 1), each = 20000)[1:length(ids)])
-        r <- do.call('rbind', parallel::clusterApply(cls, X, function(x) rosettaPTF::run_rosetta(x)))
+        r <- do.call('rbind', parallel::clusterApply(cls, X, function(x) rosettaPTF::run_rosetta(x,
+                                                                                                 vars = vars,
+                                                                                                 rosetta_version = rosetta_version)))
 
         terra::writeValues(out, as.matrix(r), start_row[i], nrows = n_row[i])
       }
@@ -211,7 +218,9 @@ run_rosetta.SpatRaster <- function(soildata,
   } else {
     for(i in seq_along(start_row)) {
       if (n_row[i] > 0) {
-        foo <- rosettaPTF::run_rosetta(terra::readValues(soildata, row = start_row[i], nrows = n_row[i], dataframe = TRUE))
+        foo <- rosettaPTF::run_rosetta(terra::readValues(soildata, row = start_row[i], nrows = n_row[i], dataframe = TRUE),
+                                       vars = vars,
+                                       rosetta_version = rosetta_version)
         terra::writeValues(out, as.matrix(foo), start_row[i], nrows = n_row[i])
       }
     }
