@@ -83,15 +83,14 @@
 <p>If you are using this package for the first time you will need to have Python installed and download the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. {reticulate} offers <code><a href="https://rdrr.io/pkg/reticulate/man/install_python.html">reticulate::install_python()</a></code> and <code><a href="https://rdrr.io/pkg/reticulate/man/install_miniconda.html">reticulate::install_miniconda()</a></code> to download and set up an up-to-date Python/Conda environment.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p><code><a href="reference/find_python.html">find_python()</a></code> provides several heuristics for setting up {reticulate} to use Python in commonly installed locations. The {rosettaPTF} <code><a href="reference/find_python.html">find_python()</a></code> method wraps <code><a href="https://rdrr.io/pkg/reticulate/man/py_discover_config.html">reticulate::py_discover_config()</a></code> and <code><a href="https://rdrr.io/pkg/reticulate/man/use_python.html">reticulate::use_python()</a></code> with custom handling for ArcGIS Pro Conda environments. If the automatic configuration fails you can set <code><a href="https://rdrr.io/r/base/options.html">options(rosettaPTF.python_path = "path/to/python")</a></code>.</p>
+<p><code><a href="reference/find_python.html">find_python()</a></code> provides heuristics for setting up {reticulate} to use Python in commonly installed locations. The {rosettaPTF} does custom handling for ArcGIS Pro Conda environments. If the automatic configuration fails you can set <code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv(RETICULATE_PYTHON = "path/to/python")</a></code> for {reticulate}.</p>
 <div id="using-existing-python-installations" class="section level3">
 <h3 class="hasAnchor">
 <a href="#using-existing-python-installations" class="anchor"></a>Using Existing Python Installations</h3>
 <p>When calling <code><a href="reference/find_python.html">find_python()</a></code> you can optionally specify the <code>arcpy_path</code> argument or the <code>rosettaPTF.arcpy_path</code> option to use path to ArcGIS Pro Python/Conda environment, for example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>rosettaPTF.arcpy_path <span class="op">=</span> <span class="st">"C:/Program Files/ArcGIS/Pro/bin/Python"</span><span class="op">)</span>
-<span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>This should locate both the ArcGIS Pro Conda environment and Python binaries.</p>
+<code class="sourceCode R"><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span>arcpy_path <span class="op">=</span> <span class="st">"C:/Program Files/ArcGIS/Pro/bin/Python"</span><span class="op">)</span></code></pre></div>
+<p>This should locate both the ArcGIS Pro Conda environment and Python binaries in “C:/Program Files/ArcGIS/Pro/bin/Python”.</p>
 </div>
 </div>
 <div id="install-rosetta-soil-python-module" class="section level2">

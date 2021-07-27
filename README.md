@@ -29,18 +29,17 @@ If you are using this package for the first time you will need to have Python in
 rosettaPTF::find_python()
 ```
 
-`find_python()` provides several heuristics for setting up {reticulate} to use Python in commonly installed locations. The {rosettaPTF} `find_python()` method wraps `reticulate::py_discover_config()` and `reticulate::use_python()` with custom handling for ArcGIS Pro Conda environments. If the automatic configuration fails you can set `options(rosettaPTF.python_path = "path/to/python")`.
+`find_python()` provides heuristics for setting up {reticulate} to use Python in commonly installed locations. The {rosettaPTF} does custom handling for ArcGIS Pro Conda environments. If the automatic configuration fails you can set `Sys.setenv(RETICULATE_PYTHON = "path/to/python")` for {reticulate}.
 
 ### Using Existing Python Installations
 
 When calling `find_python()` you can optionally specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to use path to ArcGIS Pro Python/Conda environment, for example:
 
 ```r
-options(rosettaPTF.arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
-rosettaPTF::find_python()
+rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 ```
 
-This should locate both the ArcGIS Pro Conda environment and Python binaries.
+This should locate both the ArcGIS Pro Conda environment and Python binaries in "C:/Program Files/ArcGIS/Pro/bin/Python".
 
 ## Install `rosetta-soil` Python Module
 
