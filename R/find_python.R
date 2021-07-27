@@ -60,6 +60,7 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
     message("\n\nUsing ArcGIS Pro conda environment/python.exe\n\n")
 
     res <- try( {
+
       subres <- reticulate::use_python(PYEXE_PATH, required = TRUE)
       reticulate::use_condaenv(ARCPY_PATH)
 
@@ -80,9 +81,11 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 
     # python path from py_config() result
     res <- try(reticulate::py_config(), silent = TRUE)
+
     if (!inherits(res, 'try-error')) {
       res <- res[["python"]]
     }
+
   }
 
   if (inherits(res, 'try-error')) {
