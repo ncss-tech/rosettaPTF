@@ -1,6 +1,8 @@
 #' Heuristics to Find Python
 #'
-#' If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup. This method wraps `reticulate::py_config()`.
+#' If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup. This method wraps `reticulate::py_discover_config()`.
+#' @param envname Default: `NULL`; Passed as a preference in `reticulate::py_discover_config()` As in `reticulate::py_install()`:	The name, or full path, of the environment in which Python packages are to be installed. When NULL (the default), the active environment as set by the RETICULATE_PYTHON_ENV variable will be used; if that is unset, then the r-reticulate environment will be used.
+#'
 #' @param arcpy_path Optional: Path to ArcGIS Pro Python installation. For example: `"C:/Program Files/ArcGIS/Pro/bin/Python"`. Set as `NULL` to prevent use of ArcGIS Pro instance.
 #'
 #'@details
@@ -27,13 +29,18 @@
 #' find_python()
 #'
 #' @importFrom reticulate py_config py_discover_config use_python use_condaenv conda_binary
-find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
+find_python <- function(envname = NULL,
+                        arcpy_path = getOption("rosettaPTF.arcpy_path")) {
+
+  if (is.null(envname)) {
+    envname <- Sys.getenv("RETICULATE_PYTHON_ENV", "r-reticulate")
+  }
 
   pypath_before <- getOption("rosettaPTF.python_path")
 
   if (is.null(pypath_before)) {
 
-    pypath <- try(.find_python(pypath = pypath_before, arcpy_path = arcpy_path))
+    pypath <- try(.find_python(envname = envname, pypath = pypath_before, arcpy_path = arcpy_path))
 
     if (!inherits(pypath, 'try-error')){
       options(rosettaPTF.python_path = pypath)
@@ -44,7 +51,8 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
   getOption("rosettaPTF.python_path")
 }
 
-.find_python <- function(pypath = getOption("rosettaPTF.python_path"),
+.find_python <- function(envname = "r-reticulate",
+                         pypath = getOption("rosettaPTF.python_path"),
                          arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 
   # check for ArcPro environment python EXE, and use it if present (USDA non-privileged machines)
@@ -78,12 +86,12 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 
   # other cases of Conda or virtualenv
   } else {
-
     # python path from py_config() result
-    res <- try(reticulate::py_config(), silent = TRUE)
+    res <- try(reticulate::py_discover_config(use_environment = envname), silent = TRUE)
 
     if (!inherits(res, 'try-error')) {
       res <- res[["python"]]
+      res <- try(reticulate::use_python(res, required = TRUE), silent = TRUE)
     }
 
   }

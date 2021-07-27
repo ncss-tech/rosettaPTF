@@ -24,7 +24,7 @@ install_rosetta <- function(envname = NULL,
   if (!is.null(arcpy_path)){
     pypath <- arcpy_path
   } else {
-    pypath <- find_python(arcpy_path = arcpy_path)
+    pypath <- find_python(envname = envname, arcpy_path = arcpy_path)
   }
 
   if (!is.null(pypath)) {

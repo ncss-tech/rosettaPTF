@@ -4,16 +4,18 @@
 \alias{find_python}
 \title{Heuristics to Find Python}
 \usage{
-find_python(arcpy_path = getOption("rosettaPTF.arcpy_path"))
+find_python(envname = NULL, arcpy_path = getOption("rosettaPTF.arcpy_path"))
 }
 \arguments{
+\item{envname}{Default: \code{NULL}; Passed as a preference in \code{reticulate::py_discover_config()} As in \code{reticulate::py_install()}:    The name, or full path, of the environment in which Python packages are to be installed. When NULL (the default), the active environment as set by the RETICULATE_PYTHON_ENV variable will be used; if that is unset, then the r-reticulate environment will be used.}
+
 \item{arcpy_path}{Optional: Path to ArcGIS Pro Python installation. For example: \code{"C:/Program Files/ArcGIS/Pro/bin/Python"}. Set as \code{NULL} to prevent use of ArcGIS Pro instance.}
 }
 \value{
 character path to \code{python} or \code{NULL} if no suitable environment can be found. The result is stored as the package option \code{rosettaPTF.python_path}.
 }
 \description{
-If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup. This method wraps \code{reticulate::py_config()}.
+If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup. This method wraps \code{reticulate::py_discover_config()}.
 }
 \details{
 If you have Python set up correctly you should be able to run \code{reticulate::py_config()} or \code{reticulate::py_discover_config()} and discover your shared library.
