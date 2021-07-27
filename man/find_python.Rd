@@ -15,7 +15,7 @@ find_python(envname = NULL, arcpy_path = getOption("rosettaPTF.arcpy_path"))
 character path to \code{python} or \code{NULL} if no suitable environment can be found. The result is stored as the package option \code{rosettaPTF.python_path}.
 }
 \description{
-If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup. This method wraps \code{reticulate::py_discover_config()}.
+If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup.
 }
 \details{
 If you have Python set up correctly you should be able to run \code{reticulate::py_config()} or \code{reticulate::py_discover_config()} and discover your shared library.

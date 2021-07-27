@@ -1,6 +1,7 @@
 #' Heuristics to Find Python
 #'
-#' If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup. This method wraps `reticulate::py_discover_config()`.
+#' If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup.
+#'
 #' @param envname Default: `NULL`; Passed as a preference in `reticulate::py_discover_config()` As in `reticulate::py_install()`:	The name, or full path, of the environment in which Python packages are to be installed. When NULL (the default), the active environment as set by the RETICULATE_PYTHON_ENV variable will be used; if that is unset, then the r-reticulate environment will be used.
 #'
 #' @param arcpy_path Optional: Path to ArcGIS Pro Python installation. For example: `"C:/Program Files/ArcGIS/Pro/bin/Python"`. Set as `NULL` to prevent use of ArcGIS Pro instance.
@@ -28,7 +29,7 @@
 #'
 #' find_python()
 #'
-#' @importFrom reticulate py_config py_discover_config use_python use_condaenv conda_binary
+#' @importFrom reticulate use_python use_condaenv conda_binary
 find_python <- function(envname = NULL,
                         arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 
@@ -79,20 +80,22 @@ find_python <- function(envname = NULL,
       subres
     }, silent = TRUE)
 
-  # user specified python
-  } else if (length(pypath) > 0 && file.exists(pypath)) {
 
-    res <- try(reticulate::use_python(pypath, required = TRUE), silent = TRUE)
+  # User can/should use regular reticulate methods for this
 
-  # other cases of Conda or virtualenv
-  } else {
-    # python path from py_config() result
-    res <- try(reticulate::py_discover_config(use_environment = envname), silent = TRUE)
-
-    if (!inherits(res, 'try-error')) {
-      res <- res[["python"]]
-      res <- try(reticulate::use_python(res, required = TRUE), silent = TRUE)
-    }
+  # # user specified python
+  # } else if (length(pypath) > 0 && file.exists(pypath)) {
+  #
+  #   res <- try(reticulate::use_python(pypath, required = TRUE), silent = TRUE)
+  #
+  # # other cases of Conda or virtualenv
+  # } else {
+  #   # python path from py_config() result
+  #   res <- try(reticulate::py_discover_config(use_environment = envname), silent = TRUE)
+  #   if (!inherits(res, 'try-error')) {
+  #     res <- res[["python"]]
+  #     res <- try(reticulate::use_python(res, required = TRUE), silent = TRUE)
+  #   }
 
   }
 
