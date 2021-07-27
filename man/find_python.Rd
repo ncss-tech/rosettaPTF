@@ -13,11 +13,9 @@ find_python(arcpy_path = getOption("rosettaPTF.arcpy_path"))
 character path to \code{python} or \code{NULL} if no suitable environment can be found. The result is stored as the package option \code{rosettaPTF.python_path}.
 }
 \description{
-If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup.
+If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup. This method wraps \code{reticulate::py_config()}.
 }
 \details{
-This method wraps \code{reticulate::py_discover_config()} and \code{reticulate::use_python()}; it provides several heuristics for setting up {reticulate} to use Python in commonly installed locations.
-
 If you have Python set up correctly you should be able to run \code{reticulate::py_config()} or \code{reticulate::py_discover_config()} and discover your shared library.
 
 A common problem with {reticulate} is not pointing at the correct (or any) \code{python} binary or \code{libpython} shared library. Use \code{reticulate::use_python("/path/to/python", required = TRUE)} to set the path or, alternately, be sure \code{python} can be found on your PATH. {reticulate} has a preference for Python environments that have \code{numpy} installed.

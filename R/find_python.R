@@ -1,9 +1,6 @@
 #' Heuristics to Find Python
 #'
-#' If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup.
-#'
-#' This method wraps `reticulate::py_discover_config()` and `reticulate::use_python()`; it provides several heuristics for setting up {reticulate} to use Python in commonly installed locations.
-#'
+#' If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup. This method wraps `reticulate::py_config()`.
 #' @param arcpy_path Optional: Path to ArcGIS Pro Python installation. For example: `"C:/Program Files/ArcGIS/Pro/bin/Python"`. Set as `NULL` to prevent use of ArcGIS Pro instance.
 #'
 #'@details
@@ -81,10 +78,11 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
   # other cases of Conda or virtualenv
   } else {
 
-    # python path from py_discover_config() result
-    res <- reticulate::py_discover_config()
-    res <- try(reticulate::use_python(res[["python"]], required = TRUE), silent = TRUE)
-
+    # python path from py_config() result
+    res <- try(reticulate::py_config(), silent = TRUE)
+    if (!inherits(res, 'try-error')) {
+      res <- res[["python"]]
+    }
   }
 
   if (inherits(res, 'try-error')) {
