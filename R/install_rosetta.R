@@ -18,14 +18,24 @@ install_rosetta <- function(envname = NULL,
                             conda = "auto",
                             pip = TRUE,
                             arcpy_path = getOption("rosettaPTF.arcpy_path")) {
+  pypath <- NULL
 
   # use heuristics to find python executable
-  find_python(arcpy_path = arcpy_path)
+  if (!is.null(arcpy_path)){
+    pypath <- arcpy_path
+  } else {
+    pypath <- find_python(arcpy_path = arcpy_path)
+  }
 
-  # get rosetta-soil (and numpy if needed)
-  reticulate::py_install("rosetta-soil", envname = envname, method = method, conda = conda, pip = pip)
+  if (!is.null(pypath)) {
 
-  # load modules globally in package (prevents having to reload rosettaPTF library in session)
-  .loadModules()
+    # get rosetta-soil (and numpy if needed)
+    reticulate::py_install("rosetta-soil", envname = envname, method = method, conda = conda, pip = pip)
+
+    # load modules globally in package (prevents having to reload rosettaPTF library in session)
+    .loadModules()
+  } else {
+    message("Skipping install")
+  }
 
 }

@@ -50,10 +50,6 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 .find_python <- function(pypath = getOption("rosettaPTF.python_path"),
                          arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 
-  if (!is.null(pypath)) {
-    return(pypath)
-  }
-
   # check for ArcPro environment python EXE, and use it if present (USDA non-privileged machines)
   ARCPY_PATH <- file.path(arcpy_path, "envs/arcgispro-py3")
   PYEXE_PATH <- file.path(ARCPY_PATH, "python.exe")
@@ -74,6 +70,8 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
       subres <- reticulate::use_python(PYEXE_PATH, required = TRUE)
       reticulate::use_condaenv(ARCPY_PATH)
       options(reticulate.conda_binary = CONDA_PATH)
+      options(rosettaPTF.python_path = PYEXE_PATH)
+      options(rosettaPTF.arcpy_path = ARCPY_PATH)
       subres
     }, silent = TRUE)
 
@@ -93,25 +91,35 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
       reticulate::virtualenv_create("r-reticulate")
     }
 
-    # will prompt user to install miniconda if cannot find shared lib
-    res <- try(reticulate::py_discover_config(), silent = TRUE)
+    # this has unintended side effect of picking bad python instances creating a config-error loop
+    # res <- try(reticulate::py_discover_config(), silent = TRUE)
 
     # look for common install locations of python
-    if (inherits(res, 'try-error')) {
+    if (!is.null(pypath)) {
+      return(pypath)
+    } else if (is.null(res) || inherits(res, 'try-error') || res[["version"]] < "3.6") {
 
       # prefer local over root
       if (file.exists(PYTHON_USR_LOCAL_BIN)) {
 
         res <- try(reticulate::use_python(PYTHON_USR_LOCAL_BIN, required = TRUE), silent = TRUE)
+        return(PYTHON_USR_LOCAL_BIN)
 
       } else if (file.exists(PYTHON_USR_BIN)) {
+
         # TODO: should this be an option?
         res <- try(reticulate::use_python(PYTHON_USR_BIN, required = TRUE), silent = TRUE)
+        return(PYTHON_USR_BIN)
+
+      } else {
+        .install_python_message()
+        return(NULL)
       }
 
     } else {
       # python path from py_config() result
       res <-  try(reticulate::use_python(res[["python"]], required = TRUE), silent = TRUE)
+      return(res[["python"]])
     }
 
   }
