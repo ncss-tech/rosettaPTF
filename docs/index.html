@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Python Rosetta Pedotransfer Functions">
-<meta property="og:description" content="This package provides wrappers around Python methods developed by Marcel Schaap and Yonggen Zhang. The codebase is now maintained by U.S. Department of Agriculture employees. This R package is intended to provide a wrapper for use cases that involve many thousands of calls to the pedotransfer function. Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoing provided by the soilDB R package `ROSETTA()` method.">
+<meta property="og:description" content="R frontend for Python implementation of the Rosetta pedotransfer function model. Rosetta predicts parameters for the van Genuchten unsaturated soil hydraulic properties model, using as input basic soil characterization data: sand, silt, and clay, bulk density and water content. The codebase is now maintained by Dr. Todd Skaggs and other U.S. Department of Agriculture employees. This R package is intended to provide for use cases that involve many thousands of calls to the pedotransfer function. Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoints provided by the soilDB R package `ROSETTA()` method.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">rosettaPTF</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
       </span>
     </div>
 
@@ -45,6 +45,9 @@
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
@@ -64,31 +67,57 @@
 <div id="rosettaptf" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#rosettaptf" class="anchor"></a>rosettaPTF</h1></div>
-<p>An R package using {reticulate} to wrap the Python <a href="https://github.com/usda-ars-ussl/rosetta-soil">rosetta-soil</a> (or <code>rosetta</code>) module which contains several versions of the Rosetta pedotransfer functions. This wrapper is primarily intended for more demanding use cases (e.g. calling Rosetta on each cell in a stack of raster data)</p>
-<p>Note that there are several interfaces to these methods and a public web service described in detail here: <a href="http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html" class="uri">http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html</a>. For small amounts of input data consider using the interactive version that has copy/paste functionality: <a href="https://www.handbook60.org/rosetta" class="uri">https://www.handbook60.org/rosetta</a></p>
-<p>First, load the <code>rosetta</code> module by loading the R package.</p>
-<pre class="{r}"><code>library(rosettaPTF)</code></pre>
-<div id="install-rosetta-module" class="section level2">
+<p>An R package using {reticulate} to wrap the Python <a href="https://github.com/usda-ars-ussl/rosetta-soil">rosetta-soil</a> module which contains several versions of the <a href="http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html">ROSETTA</a> pedotransfer functions.</p>
+<p>The <a href="http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html">ROSETTA</a> model relies on a minimum of 3 soil properties, with increasing (expected) accuracy as additional properties are included:</p>
+<ul>
+<li><p>required, <code>sand</code>, <code>silt</code>, <code>clay</code>: USDA soil texture separates (percentages) that sum to 100%</p></li>
+<li><p>optional, <code>bulk density (any moisture basis)</code>: mass per volume after accounting for &gt;2mm fragments, units of grams/cm3</p></li>
+<li><p>optional, <code>volumetric water content at 33 kPa</code>: roughly “field capacity” for most soils, units of cm3/cm3</p></li>
+<li><p>optional, <code>volumetric water content at 1500 kPa</code>: roughly “permanent wilting point” for most plants, units of cm3/cm3</p></li>
+</ul>
+<p>For small amounts of data consider using the interactive version that has copy/paste functionality: <a href="https://www.handbook60.org/rosetta" class="uri">https://www.handbook60.org/rosetta</a>.</p>
+<p>This package is primarily intended for more demanding use cases such as calling ROSETTA on each cell in a stack of raster data.</p>
+<div id="set-up-reticulate" class="section level2">
 <h2 class="hasAnchor">
-<a href="#install-rosetta-module" class="anchor"></a>Install Rosetta Module</h2>
-<p>If you are using this package for the first time you will need to install the Python dependencies.</p>
-<p>The <code><a href="reference/install_rosetta.html">install_rosetta()</a></code> method wraps <code><a href="https://rdrr.io/pkg/reticulate/man/py_install.html">reticulate::py_install()</a></code>. You can set up reticulate to install into a virtual or conda environment. The default environment name will be <code>"r-reticulate"</code>.</p>
-<pre class="{r}"><code><a href="reference/install_rosetta.html">install_rosetta()</a></code></pre>
-<p>Use the argument <code>pip = TRUE</code> to use <code>pip</code> rather than <code>conda</code> package sources.</p>
-<p>After installing a new version of the <code>rosetta</code> module you may need to restart your R session before continuing.</p>
+<a href="#set-up-reticulate" class="anchor"></a>Set up {reticulate}</h2>
+<p>If you are using this package for the first time you will need to have Python installed and download the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. {reticulate} offers <code><a href="https://rdrr.io/pkg/reticulate/man/install_python.html">reticulate::install_python()</a></code> and <code><a href="https://rdrr.io/pkg/reticulate/man/install_miniconda.html">reticulate::install_miniconda()</a></code> to download and set up an up-to-date Python/Conda environment.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p><code><a href="reference/find_python.html">find_python()</a></code> provides several heuristics for setting up {reticulate} to use Python in commonly installed locations. The {rosettaPTF} <code><a href="reference/find_python.html">find_python()</a></code> method wraps <code><a href="https://rdrr.io/pkg/reticulate/man/py_discover_config.html">reticulate::py_discover_config()</a></code> and <code><a href="https://rdrr.io/pkg/reticulate/man/use_python.html">reticulate::use_python()</a></code> with custom handling for ArcGIS Pro Conda environments. If the automatic configuration fails you can set <code><a href="https://rdrr.io/r/base/options.html">options(rosettaPTF.python_path = "path/to/python")</a></code>.</p>
+<div id="using-existing-python-installations" class="section level3">
+<h3 class="hasAnchor">
+<a href="#using-existing-python-installations" class="anchor"></a>Using Existing Python Installations</h3>
+<p>When calling <code><a href="reference/find_python.html">find_python()</a></code> you can optionally specify the <code>arcpy_path</code> argument or the <code>rosettaPTF.arcpy_path</code> option to use path to ArcGIS Pro Python/Conda environment, for example:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>rosettaPTF.arcpy_path <span class="op">=</span> <span class="st">"C:/Program Files/ArcGIS/Pro/bin/Python"</span><span class="op">)</span>
+<span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>This should locate both the ArcGIS Pro Conda environment and Python binaries.</p>
+</div>
+</div>
+<div id="install-rosetta-soil-python-module" class="section level2">
+<h2 class="hasAnchor">
+<a href="#install-rosetta-soil-python-module" class="anchor"></a>Install <code>rosetta-soil</code> Python Module</h2>
+<p>The {rosettaPTF} <code><a href="reference/install_rosetta.html">install_rosetta()</a></code> method wraps <code><a href="https://rdrr.io/pkg/reticulate/man/py_install.html">reticulate::py_install("rosetta-soil")</a></code>.</p>
+<p>By installing the R package you should have <code>rosetta-soil</code> installed as it is set as a {reticulate}/Python dependency in the DESCRIPTION file.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/install_rosetta.html">install_rosetta</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>You can use <code><a href="reference/install_rosetta.html">install_rosetta()</a></code> to install into custom environments as needed by specifying <code>envname</code>. After installing a new version of the module you may need to restart your R session before continuing.</p>
 </div>
 <div id="batch-rosetta-with-run_rosetta" class="section level2">
 <h2 class="hasAnchor">
 <a href="#batch-rosetta-with-run_rosetta" class="anchor"></a>Batch Rosetta with <code>run_rosetta()</code>
 </h2>
+<p>First, load the <code>rosetta-soil</code> module by loading the R package.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">rosettaPTF</span><span class="op">)</span></code></pre></div>
 <p>Batch runs using <code>list</code>, <code>data.frame</code>, <code>matrix</code>, <code>RasterStack</code>, <code>RasterBrick</code> and <code>SpatRaster</code> inputs are supported.</p>
+<p>The default order of inputs is: sand, silt, clay, bulk density (any basis), water content (field capacity; 33 kPa), water content (permanent wilting point; 1500 kPa); of which the first three are required. If you specify field capacity water content, you must specify bulk density. If you specify permanent wilting point water content you must also specify bulk density and field capacity water content.</p>
 <div id="list-input-example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#list-input-example" class="anchor"></a><code>list()</code> Input Example</h3>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="reference/run_rosetta.default.html">run_rosetta</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>),  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span>)),
-            rosetta_version = <span class="fl">3</span>)
-</pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/run_rosetta.default.html">run_rosetta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span><span class="op">)</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span>,
+            rosetta_version <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>#&gt;   id model_code theta_r_mean theta_s_mean log10_alpha_mean log10_npar_mean
 #&gt; 1  1          3   0.11535773    0.4179120        -2.067139       0.1120102
 #&gt; 2  2          2   0.08613275    0.3888528        -1.898150       0.1347136
@@ -101,19 +130,19 @@
 #&gt; 1    0.09245277
 #&gt; 2    0.08428578
 #&gt; 3    0.14163567</code></pre>
+<p>Output <code>model_code</code> reflects the number of parameters in the input.</p>
 </div>
 <div id="dataframe-input-example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#dataframe-input-example" class="anchor"></a><code>data.frame()</code> Input Example</h3>
 <p>The <code>data.frame</code> interface allows for using using custom column names and order. If the <code>vars</code> argument is not specified it is assumed that the columns are in the order specified in the <code><a href="reference/run_rosetta.default.html">run_rosetta()</a></code> manual page.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="reference/run_rosetta.default.html">run_rosetta</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
-  d = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">NA</span>, <span class="fl">1.5</span>),
-  b = <span class="fl">60</span>,
-  a = <span class="fl">20</span>,
-  c = <span class="fl">20</span>
-), vars = <span class="kw">letters</span>[<span class="fl">1</span><span class="op">:</span><span class="fl">4</span>])
-</pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/run_rosetta.default.html">run_rosetta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+  d <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">1.5</span><span class="op">)</span>,
+  b <span class="op">=</span> <span class="fl">60</span>,
+  a <span class="op">=</span> <span class="fl">20</span>,
+  c <span class="op">=</span> <span class="fl">20</span>
+<span class="op">)</span>, vars <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>#&gt;   id model_code theta_r_mean theta_s_mean log10_alpha_mean log10_npar_mean
 #&gt; 1  1          2   0.08994502    0.4301366        -2.426236       0.1756873
 #&gt; 2  2          3   0.08495731    0.3887858        -2.318826       0.1598879
@@ -127,33 +156,32 @@
 <h3 class="hasAnchor">
 <a href="#soil-data-access--ssurgo-mapunit-aggregate-input-example" class="anchor"></a>Soil Data Access / SSURGO Mapunit Aggregate Input Example</h3>
 <p>This example pulls mapunit/component data from Soil Data Access (SDA). We use the {soilDB} function <code><a href="https://rdrr.io/pkg/soilDB/man/get_SDA_property.html">get_SDA_property()</a></code> to obtain representative values for sand, silt, clay, and bulk density (1/3 bar), we run Rosetta on the resulting data.frame (one row per mapunit) then use raster attribute table (RAT) to display the results (1:1 with <code>mukey</code>).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://ncss-tech.github.io/AQP">soilDB</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://rspatial.org/raster">raster</a></span>)
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ncss-tech.github.io/AQP/">soilDB</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster">raster</a></span><span class="op">)</span>
 
 <span class="co"># obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)</span>
-<span class="kw">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/soilDB/man/mukey.wcs.html">mukey.wcs</a></span>(aoi = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(aoi=<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">114.16</span>, <span class="fl">47.65</span>, <span class="op">-</span><span class="fl">114.08</span>, <span class="fl">47.68</span>), crs=<span class="st">'+init=epsg:4326'</span>))
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/soilDB/man/mukey.wcs.html">mukey.wcs</a></span><span class="op">(</span>aoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>aoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">114.16</span>, <span class="fl">47.65</span>,<span class="op">-</span><span class="fl">114.08</span>, <span class="fl">47.68</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">'EPSG:4326'</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># request input data from SDA</span>
-<span class="kw">varnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sandtotal_r"</span>, <span class="st">"silttotal_r"</span>, <span class="st">"claytotal_r"</span>, <span class="st">"dbthirdbar_r"</span>)
-<span class="kw">resprop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/soilDB/man/get_SDA_property.html">get_SDA_property</a></span>(property = <span class="kw">varnames</span>,
-                            method = <span class="st">"Dominant Component (numeric)"</span>,
-                            mukeys = <span class="fu"><a href="https://rdrr.io/pkg/raster/man/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/raster/man/getValues.html">values</a></span>(<span class="kw">res</span><span class="op">$</span><span class="kw">gNATSGO.map.unit.keys</span>)))
+<span class="va">varnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sandtotal_r"</span>, <span class="st">"silttotal_r"</span>, <span class="st">"claytotal_r"</span>, <span class="st">"dbthirdbar_r"</span><span class="op">)</span>
+<span class="va">resprop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/soilDB/man/get_SDA_property.html">get_SDA_property</a></span><span class="op">(</span>property <span class="op">=</span> <span class="va">varnames</span>,
+                            method <span class="op">=</span> <span class="st">"Dominant Component (numeric)"</span>,
+                            mukeys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/unique.html">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getValues.html">values</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">gNATSGO.map.unit.keys</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># keep only those where we have a complete set of 4 parameters (sand, silt, clay, bulk density; model code #3)</span>
-<span class="kw">soildata</span> <span class="op">&lt;-</span> <span class="kw">resprop</span>[<span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span>(<span class="kw">resprop</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"mukey"</span>, <span class="kw">varnames</span>)]
+<span class="va">soildata</span> <span class="op">&lt;-</span> <span class="va">resprop</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html">complete.cases</a></span><span class="op">(</span><span class="va">resprop</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mukey"</span>, <span class="va">varnames</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co"># run Rosetta on the mapunit-level aggregate data</span>
-<span class="kw">resrose</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.default.html">run_rosetta</a></span>(<span class="kw">soildata</span>[,<span class="kw">varnames</span>])
-<span class="kw">resrose</span><span class="op">$</span><span class="kw">mukey</span> <span class="op">&lt;-</span> <span class="kw">soildata</span><span class="op">$</span><span class="kw">mukey</span>
+<span class="va">resrose</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.default.html">run_rosetta</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">[</span>,<span class="va">varnames</span><span class="op">]</span><span class="op">)</span>
+<span class="va">resrose</span><span class="op">$</span><span class="va">mukey</span> <span class="op">&lt;-</span> <span class="va">soildata</span><span class="op">$</span><span class="va">mukey</span>
 
 <span class="co"># merge property (input) and rosetta parameters (output) into RAT</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">levels</a></span>(<span class="kw">res</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/merge.html">merge</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">levels</a></span>(<span class="kw">res</span>)[[<span class="fl">1</span>]], <span class="kw">resprop</span>, by.x = <span class="st">"ID"</span>, by.y = <span class="st">"mukey"</span>, all.x = <span class="fl">TRUE</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">levels</a></span>(<span class="kw">res</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/merge.html">merge</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">levels</a></span>(<span class="kw">res</span>)[[<span class="fl">1</span>]], <span class="kw">resrose</span>, by.x = <span class="st">"ID"</span>, by.y = <span class="st">"mukey"</span>, all.x = <span class="fl">TRUE</span>)
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">levels</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/merge.html">merge</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">levels</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">resprop</span>, by.x <span class="op">=</span> <span class="st">"ID"</span>, by.y <span class="op">=</span> <span class="st">"mukey"</span>, all.x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">levels</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/merge.html">merge</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">levels</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">resrose</span>, by.x <span class="op">=</span> <span class="st">"ID"</span>, by.y <span class="op">=</span> <span class="st">"mukey"</span>, all.x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># make a plot of the predicted Ksat</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span>(<span class="kw">res</span>, <span class="st">"log10_Ksat_mean"</span>)
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">res</span>, <span class="st">"log10_Ksat_mean"</span><span class="op">)</span></code></pre></div>
 <p><img src="https://i.imgur.com/Kop8y2t.png"></p>
 </div>
 <div id="rasterstack-input-example" class="section level3">
@@ -161,20 +189,19 @@
 <a href="#rasterstack-input-example" class="anchor"></a><em>RasterStack</em> Input Example</h3>
 <p>The above example shows how to create raster output based on <em>discrete</em> (SSURGO polygon derived) data. A more general case is when each raster cell has “unique” values (i.e. <em>continuous</em> raster inputs). <code><a href="reference/run_rosetta.default.html">run_rosetta()</a></code> has an S3 method defined for <em>RasterStack</em> input.</p>
 <p>We previously merged the input data from SDA (an ordinary <em>data.frame</em>) into the RAT of <code>res</code>; exploiting the linkage between <code>mukey</code> and raster cells to make the map. For comparison with the <code>mukey</code> results above we stack de-ratified input layers and create a new <em>RasterStack</em>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">resstack</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html">stack</a></span>(
-  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">deratify</a></span>(<span class="kw">res</span>, <span class="st">"sandtotal_r"</span>),
-  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">deratify</a></span>(<span class="kw">res</span>, <span class="st">"silttotal_r"</span>),
-  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">deratify</a></span>(<span class="kw">res</span>, <span class="st">"claytotal_r"</span>),
-  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">deratify</a></span>(<span class="kw">res</span>, <span class="st">"dbthirdbar_r"</span>)
-)
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resstack</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html">stack</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">deratify</a></span><span class="op">(</span><span class="va">res</span>, <span class="st">"sandtotal_r"</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">deratify</a></span><span class="op">(</span><span class="va">res</span>, <span class="st">"silttotal_r"</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">deratify</a></span><span class="op">(</span><span class="va">res</span>, <span class="st">"claytotal_r"</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html">deratify</a></span><span class="op">(</span><span class="va">res</span>, <span class="st">"dbthirdbar_r"</span><span class="op">)</span>
+<span class="op">)</span>
 
 <span class="co"># RasterStack to data.frame interface (one call on all cells)</span>
-<span class="kw">test2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.default.html">run_rosetta</a></span>(<span class="kw">resstack</span>)
+<span class="va">test2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.default.html">run_rosetta</a></span><span class="op">(</span><span class="va">resstack</span><span class="op">)</span>
 
 <span class="co"># make a plot of the predicted Ksat (identical to mukey-based results)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span>(<span class="kw">test2</span>, <span class="st">"log10_Ksat_mean"</span>)
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">test2</span>, <span class="st">"log10_Ksat_mean"</span><span class="op">)</span></code></pre></div>
 <p><img src="https://i.imgur.com/BswebdW.png"></p>
 <p>You will notice the results for Ksat distrbution are identical, but the latter approach takes significantly longer to run. This is the difference of estimating ~40 (mapunit keys) versus ~30,000 (total number of cells) sets of Rosetta parameters.</p>
 </div>
@@ -186,16 +213,15 @@
 <h3 class="hasAnchor">
 <a href="#make-a-rosetta-class-instance-for-running-extended-output-methods" class="anchor"></a>Make a <em>Rosetta</em> class instance for running extended output methods</h3>
 <p>Note that each instance of <em>Rosetta</em> has a fixed version and model code, so if you have heterogeneous input you need to iterate over model code.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="co"># defaults are version 3 and model code 3 (4 parameters: sand, silt, clay and bulk density)</span>
-<span class="kw">my_rosetta</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Rosetta.html">Rosetta</a></span>(rosetta_version = <span class="fl">3</span>, model_code = <span class="fl">3</span>)
-</pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># defaults are version 3 and model code 3 (4 parameters: sand, silt, clay and bulk density)</span>
+<span class="va">my_rosetta</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Rosetta.html">Rosetta</a></span><span class="op">(</span>rosetta_version <span class="op">=</span> <span class="fl">3</span>, model_code <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="predict-rosetta-parameter-values-and-standard-deviations-from-a-rosetta-instance" class="section level3">
 <h3 class="hasAnchor">
 <a href="#predict-rosetta-parameter-values-and-standard-deviations-from-a-rosetta-instance" class="anchor"></a><code>predict()</code> Rosetta Parameter Values and Standard Deviations from a <em>Rosetta</em> instance</h3>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/predict.html">predict</a></span>(<span class="kw">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span>)))
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/predict.html">predict</a></span><span class="op">(</span><span class="va">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;            [,1]     [,2]      [,3]      [,4]      [,5]</span>
 <span class="co">#&gt; [1,] 0.11535773 0.417912 -2.067139 0.1120102 0.8325407</span>
@@ -204,16 +230,14 @@
 <span class="co">#&gt; [[2]]</span>
 <span class="co">#&gt;            [,1]        [,2]       [,3]       [,4]       [,5]</span>
 <span class="co">#&gt; [1,] 0.01335011 0.009377977 0.08251142 0.01323413 0.09245277</span>
-<span class="co">#&gt; [2,] 0.01277141 0.013062171 0.10020312 0.01763982 0.14163567</span>
-</pre></div>
+<span class="co">#&gt; [2,] 0.01277141 0.013062171 0.10020312 0.01763982 0.14163567</span></code></pre></div>
 </div>
 <div id="extended-rosetta-predictions-parameter-distributions-and-summary-statistics-after-zhang--schaap-2017-with-ann_predict" class="section level3">
 <h3 class="hasAnchor">
 <a href="#extended-rosetta-predictions-parameter-distributions-and-summary-statistics-after-zhang--schaap-2017-with-ann_predict" class="anchor"></a>Extended <em>Rosetta</em> Predictions, Parameter Distributions and Summary Statistics after Zhang &amp; Schaap (2017) with <code>ann_predict()</code>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu">ann_predict</span>(<span class="kw">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span>)))
-</pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">ann_predict</span><span class="op">(</span><span class="va">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>#&gt; $var_names
 #&gt; $var_names[[1]]
 #&gt; b'theta_r'
