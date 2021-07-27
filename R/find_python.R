@@ -29,7 +29,7 @@
 #'
 #' find_python()
 #'
-#' @importFrom reticulate py_config py_discover_config use_python use_condaenv conda_binary virtualenv_exists virtualenv_create
+#' @importFrom reticulate py_config py_discover_config use_python use_condaenv conda_binary
 find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 
   pypath_before <- getOption("rosettaPTF.python_path")
@@ -55,10 +55,6 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
   PYEXE_PATH <- file.path(ARCPY_PATH, "python.exe")
   CONDA_PATH <- file.path(arcpy_path, "Scripts/conda.exe")
 
-  # common install locations of python3
-  PYTHON_USR_BIN <- "/usr/bin/python3"
-  PYTHON_USR_LOCAL_BIN <- "/usr/local/bin/python3"
-
   res <- NULL
 
   # if ArcGIS Pro is installed
@@ -69,9 +65,11 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
     res <- try( {
       subres <- reticulate::use_python(PYEXE_PATH, required = TRUE)
       reticulate::use_condaenv(ARCPY_PATH)
+
       options(reticulate.conda_binary = CONDA_PATH)
       options(rosettaPTF.python_path = PYEXE_PATH)
-      options(rosettaPTF.arcpy_path = ARCPY_PATH)
+      options(rosettaPTF.arcpy_path = arcpy_path)
+
       subres
     }, silent = TRUE)
 
@@ -82,45 +80,10 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
 
   # other cases of Conda or virtualenv
   } else {
-    conda_exists <- !inherits(try(reticulate::conda_binary(), silent = TRUE), 'try-error')
-    venv_exists <- reticulate::virtualenv_exists("r-reticulate")
 
-    # try to have reticulate do it
-    if (!conda_exists && !venv_exists) {
-      # create r-reticulate if needed
-      reticulate::virtualenv_create("r-reticulate")
-    }
-
-    # this has unintended side effect of picking bad python instances creating a config-error loop
-    # res <- try(reticulate::py_discover_config(), silent = TRUE)
-
-    # look for common install locations of python
-    if (!is.null(pypath)) {
-      return(pypath)
-    } else if (is.null(res) || inherits(res, 'try-error') || res[["version"]] < "3.6") {
-
-      # prefer local over root
-      if (file.exists(PYTHON_USR_LOCAL_BIN)) {
-
-        res <- try(reticulate::use_python(PYTHON_USR_LOCAL_BIN, required = TRUE), silent = TRUE)
-        return(PYTHON_USR_LOCAL_BIN)
-
-      } else if (file.exists(PYTHON_USR_BIN)) {
-
-        # TODO: should this be an option?
-        res <- try(reticulate::use_python(PYTHON_USR_BIN, required = TRUE), silent = TRUE)
-        return(PYTHON_USR_BIN)
-
-      } else {
-        .install_python_message()
-        return(NULL)
-      }
-
-    } else {
-      # python path from py_config() result
-      res <-  try(reticulate::use_python(res[["python"]], required = TRUE), silent = TRUE)
-      return(res[["python"]])
-    }
+    # python path from py_discover_config() result
+    res <- reticulate::py_discover_config()
+    res <- try(reticulate::use_python(res[["python"]], required = TRUE), silent = TRUE)
 
   }
 
