@@ -4,9 +4,11 @@
 \alias{find_python}
 \title{Heuristics to Find Python}
 \usage{
-find_python(arcpy_path = getOption("rosettaPTF.arcpy_path"))
+find_python(envname = NULL, arcpy_path = getOption("rosettaPTF.arcpy_path"))
 }
 \arguments{
+\item{envname}{As in \code{reticulate::py_install()}:    The name, or full path, of the environment in which Python packages are to be installed. When NULL (the default), the active environment as set by the RETICULATE_PYTHON_ENV variable will be used; if that is unset, then the r-reticulate environment will be used.}
+
 \item{arcpy_path}{Optional: Path to ArcGIS Pro Python installation. For example: \code{"C:/Program Files/ArcGIS/Pro/bin/Python"}. Set as \code{NULL} to prevent use of ArcGIS Pro instance.}
 }
 \value{
@@ -16,8 +18,6 @@ character path to \code{python} or \code{NULL} if no suitable environment can be
 If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup.
 }
 \details{
-This method wraps \code{reticulate::py_discover_config()} and \code{reticulate::use_python()}; it provides several heuristics for setting up {reticulate} to use Python in commonly installed locations.
-
 If you have Python set up correctly you should be able to run \code{reticulate::py_config()} or \code{reticulate::py_discover_config()} and discover your shared library.
 
 A common problem with {reticulate} is not pointing at the correct (or any) \code{python} binary or \code{libpython} shared library. Use \code{reticulate::use_python("/path/to/python", required = TRUE)} to set the path or, alternately, be sure \code{python} can be found on your PATH. {reticulate} has a preference for Python environments that have \code{numpy} installed.

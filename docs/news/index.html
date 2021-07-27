@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make a Rosetta object instance for running predict() methods — Rosetta • rosettaPTF</title>
+<title>Changelog • rosettaPTF</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,7 @@
 
 
 
-<meta property="og:title" content="Make a Rosetta object instance for running predict() methods — Rosetta" />
-<meta property="og:description" content="Make a Rosetta object instance for running predict() methods" />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -59,7 +58,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -106,54 +105,69 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Make a Rosetta object instance for running <code>predict()</code> methods</h1>
-    
-    <div class="hidden name"><code>Rosetta-class.Rd</code></div>
+      <h1 data-toc-skip>Changelog <small></small></h1>
+      
     </div>
 
-    <div class="ref-description">
-    <p>Make a Rosetta object instance for running <code><a href='https://rdrr.io/pkg/raster/man/predict.html'>predict()</a></code> methods</p>
-    </div>
-
-    <pre class="usage"><span class='fu'>Rosetta</span><span class='op'>(</span>rosetta_version <span class='op'>=</span> <span class='fl'>3</span>, model_code <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>rosetta_version</th>
-      <td><p>Default: <code>3</code></p></td>
-    </tr>
-    <tr>
-      <th>model_code</th>
-      <td><p>One of <code>2</code>, <code>3</code>, <code>4</code>, <code>5</code>, or <code>-1</code>. Corresponding to options described in <em>Details</em>.</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>an instance of the <code>Rosetta</code> class defined by the Python module; suitable for running <code>predict</code> or <code>ann_predict</code> methods.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Explanation of Model Codes</h3>
-
+    <div id="rosettaptf-0009004" class="section level1">
+<h1 class="page-header" data-toc-text="0.0.0.9004">
+<a href="#rosettaptf-0009004" class="anchor"></a>rosettaPTF 0.0.0.9004</h1>
 <ul>
-<li><p><code>2</code>: 	sand, silt, clay ("SSC")</p></li>
-<li><p><code>3</code>: 	sand, silt, clay + bulk density ("BD")</p></li>
-<li><p><code>4</code>: 	sand, silt, clay + bulk density + field capacity water content (1/3 bar or 33 kPa tension)</p></li>
-<li><p><code>5</code>: 	sand, silt, clay + bulk density + field capacity water content + wilting point water content (15 bar or 1500 kPa tension)</p></li>
-<li><p><code>-1</code>: 	no result returned, inadequate or erroneous data</p></li>
+<li>Clarified virtual and Conda environments for {reticulate} setup in function documentation and README
+<ul>
+<li>Add <code><a href="../reference/find_python.html">find_python()</a></code> helper method
+<ul>
+<li>This method is called when you load the package with <code><a href="https://rdrr.io/r/base/library.html">library(rosettaPTF)</a></code> AND in individual calls to <code><a href="../reference/install_rosetta.html">rosettaPTF::install_rosetta()</a></code>
+</li>
+<li>Sets the package option <code>rosettaPTF.python_path</code> and returns the value</li>
 </ul>
-
-
-
+</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/run_rosetta.default.html">run_rosetta()</a></code>
+<ul>
+<li>Pass through variable order (<code>vars</code>) and parallel/block processing arguments (<code>core</code>, <code>file</code>, <code>nrows</code>, <code>overwrite</code>) to SpatRaster method for Raster* objects</li>
+</ul>
+</li>
+</ul>
+</div>
+    <div id="rosettaptf-0009003" class="section level1">
+<h1 class="page-header" data-toc-text="0.0.0.9003">
+<a href="#rosettaptf-0009003" class="anchor"></a>rosettaPTF 0.0.0.9003</h1>
+<ul>
+<li>Use {terra} internally for raster data inputs and outputs</li>
+<li>Add S3 <code><a href="../reference/run_rosetta.default.html">run_rosetta()</a></code> methods for <code>matrix</code>, <code>RasterBrick</code> and <code>SpatRaster</code>
+</li>
+</ul>
+</div>
+    <div id="rosettaptf-0009002" class="section level1">
+<h1 class="page-header" data-toc-text="0.0.0.9002">
+<a href="#rosettaptf-0009002" class="anchor"></a>rosettaPTF 0.0.0.9002</h1>
+<ul>
+<li>Add S3 <code><a href="../reference/run_rosetta.default.html">run_rosetta()</a></code> methods for <code>data.frame</code> and <code>RasterStack</code>
+</li>
+</ul>
+</div>
+    <div id="rosettaptf-0009001" class="section level1">
+<h1 class="page-header" data-toc-text="0.0.0.9001">
+<a href="#rosettaptf-0009001" class="anchor"></a>rosettaPTF 0.0.0.9001</h1>
+<ul>
+<li>Initial R package</li>
+<li>Use {reticulate} to handle install of Python modules: <code>rosetta-soil</code>, <code>numpy</code>
+</li>
+<li>Provide <code>list</code>-input interface; directly coercible to Python data structures used for <code><a href="../reference/run_rosetta.default.html">run_rosetta()</a></code>
+</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
 
 

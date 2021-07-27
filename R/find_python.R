@@ -2,7 +2,7 @@
 #'
 #' If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup.
 #'
-#' This method wraps `reticulate::py_discover_config()` and `reticulate::use_python()`; it provides several heuristics for setting up {reticulate} to use Python in commonly installed locations.
+#' @param envname As in `reticulate::py_install()`:	The name, or full path, of the environment in which Python packages are to be installed. When NULL (the default), the active environment as set by the RETICULATE_PYTHON_ENV variable will be used; if that is unset, then the r-reticulate environment will be used.
 #'
 #' @param arcpy_path Optional: Path to ArcGIS Pro Python installation. For example: `"C:/Program Files/ArcGIS/Pro/bin/Python"`. Set as `NULL` to prevent use of ArcGIS Pro instance.
 #'
@@ -29,14 +29,19 @@
 #'
 #' find_python()
 #'
-#' @importFrom reticulate py_config py_discover_config use_python use_condaenv conda_binary virtualenv_exists virtualenv_create
-find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
+#' @importFrom reticulate use_python use_condaenv conda_binary
+find_python <- function(envname = NULL,
+                        arcpy_path = getOption("rosettaPTF.arcpy_path")) {
+
+  if (is.null(envname)) {
+    envname <- Sys.getenv("RETICULATE_PYTHON_ENV", "r-reticulate")
+  }
 
   pypath_before <- getOption("rosettaPTF.python_path")
 
   if (is.null(pypath_before)) {
 
-    pypath <- try(.find_python(pypath = pypath_before, arcpy_path = arcpy_path))
+    pypath <- try(.find_python(envname = envname, pypath = pypath_before, arcpy_path = arcpy_path))
 
     if (!inherits(pypath, 'try-error')){
       options(rosettaPTF.python_path = pypath)
@@ -47,21 +52,14 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
   getOption("rosettaPTF.python_path")
 }
 
-.find_python <- function(pypath = getOption("rosettaPTF.python_path"),
+.find_python <- function(envname = "r-reticulate",
+                         pypath = getOption("rosettaPTF.python_path"),
                          arcpy_path = getOption("rosettaPTF.arcpy_path")) {
-
-  if (!is.null(pypath)) {
-    return(pypath)
-  }
 
   # check for ArcPro environment python EXE, and use it if present (USDA non-privileged machines)
   ARCPY_PATH <- file.path(arcpy_path, "envs/arcgispro-py3")
   PYEXE_PATH <- file.path(ARCPY_PATH, "python.exe")
   CONDA_PATH <- file.path(arcpy_path, "Scripts/conda.exe")
-
-  # common install locations of python3
-  PYTHON_USR_BIN <- "/usr/bin/python3"
-  PYTHON_USR_LOCAL_BIN <- "/usr/local/bin/python3"
 
   res <- NULL
 
@@ -71,48 +69,33 @@ find_python <- function(arcpy_path = getOption("rosettaPTF.arcpy_path")) {
     message("\n\nUsing ArcGIS Pro conda environment/python.exe\n\n")
 
     res <- try( {
+
       subres <- reticulate::use_python(PYEXE_PATH, required = TRUE)
       reticulate::use_condaenv(ARCPY_PATH)
+
       options(reticulate.conda_binary = CONDA_PATH)
+      options(rosettaPTF.python_path = PYEXE_PATH)
+      options(rosettaPTF.arcpy_path = arcpy_path)
+
       subres
     }, silent = TRUE)
 
-  # user specified python
-  } else if (length(pypath) > 0 && file.exists(pypath)) {
 
-    res <- try(reticulate::use_python(pypath, required = TRUE), silent = TRUE)
+  # User can/should use regular reticulate methods for this
 
-  # other cases of Conda or virtualenv
-  } else {
-    conda_exists <- !inherits(try(reticulate::conda_binary(), silent = TRUE), 'try-error')
-    venv_exists <- reticulate::virtualenv_exists("r-reticulate")
-
-    # try to have reticulate do it
-    if (!conda_exists && !venv_exists) {
-      # create r-reticulate if needed
-      reticulate::virtualenv_create("r-reticulate")
-    }
-
-    # will prompt user to install miniconda if cannot find shared lib
-    res <- try(reticulate::py_discover_config(), silent = TRUE)
-
-    # look for common install locations of python
-    if (inherits(res, 'try-error')) {
-
-      # prefer local over root
-      if (file.exists(PYTHON_USR_LOCAL_BIN)) {
-
-        res <- try(reticulate::use_python(PYTHON_USR_LOCAL_BIN, required = TRUE), silent = TRUE)
-
-      } else if (file.exists(PYTHON_USR_BIN)) {
-        # TODO: should this be an option?
-        res <- try(reticulate::use_python(PYTHON_USR_BIN, required = TRUE), silent = TRUE)
-      }
-
-    } else {
-      # python path from py_config() result
-      res <-  try(reticulate::use_python(res[["python"]], required = TRUE), silent = TRUE)
-    }
+  # # user specified python
+  # } else if (length(pypath) > 0 && file.exists(pypath)) {
+  #
+  #   res <- try(reticulate::use_python(pypath, required = TRUE), silent = TRUE)
+  #
+  # # other cases of Conda or virtualenv
+  # } else {
+  #   # python path from py_config() result
+  #   res <- try(reticulate::py_discover_config(use_environment = envname), silent = TRUE)
+  #   if (!inherits(res, 'try-error')) {
+  #     res <- res[["python"]]
+  #     res <- try(reticulate::use_python(res, required = TRUE), silent = TRUE)
+  #   }
 
   }
 

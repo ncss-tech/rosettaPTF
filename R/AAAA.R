@@ -1,14 +1,19 @@
 rosetta_module <- NULL
 numpy_module <- NULL
 
-#' @importFrom reticulate import py_available use_python
+.install_python_message <- function() message("Python was not found on this system.\nTry setting the path manually with `options(rosettaPTF.python_path='/path/to/python')` or `options(rosettaPTF.arcpy_path='C:/path/to/ArcPro/Python')`")
+
+#' @importFrom reticulate import
 .loadModules <-  function() {
 
-  pypath <- find_python()
+  # leave it up to reticulate
 
-  if (!reticulate::py_available() && is.null(pypath)) {
-    message("Python was not found on this system.\nTry setting the path manually with `options(rosettaPTF.python_path='/path/to/python')`")
-  }
+  # # sometimes finds unsuitable python instance
+  # pypath <- find_python()
+  #
+  # if (!reticulate::py_available() && is.null(pypath)) {
+  #   .install_python_message()
+  # }
 
   # delay load modules (will be loaded when accessed via $)
   if (is.null(rosetta_module)) {
