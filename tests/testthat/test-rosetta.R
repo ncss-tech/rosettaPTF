@@ -1,10 +1,16 @@
 test_that("run_rosetta() works", {
+  skip_if_not(py_module_available("numpy"))
+  skip_if_not(py_module_available("rosetta"))
+
   res <- run_rosetta(list(c(30, 30, 40, 1.5), c(55, 25, 20),  c(55, 25, 20, 1.1)),
                      rosetta_version = 3)
   expect_true(inherits(res, 'data.frame'))
 })
 
 test_that("data.frame interface", {
+
+  skip_if_not(py_module_available("numpy"))
+  skip_if_not(py_module_available("rosetta"))
 
   # data.frame interface: using default column order
   expect_true(inherits(run_rosetta(data.frame(
@@ -24,6 +30,9 @@ test_that("data.frame interface", {
 })
 
 test_that("run on SSURGO data", {
+  skip_if_not(py_module_available("numpy"))
+  skip_if_not(py_module_available("rosetta"))
+
   data("MUKEY_WCS", package = "rosettaPTF")
   res <- terra::rast(MUKEY_WCS, crs = "EPSG:6350")
   terra::ext(res) <- c(-114.16, 47.65, -114.08, 47.68)
