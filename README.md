@@ -1,13 +1,14 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ncss-tech/rosettaPTF/workflows/R-CMD-check/badge.svg)](https://github.com/ncss-tech/rosettaPTF/actions)
 [![HTML Docs](https://camo.githubusercontent.com/f7ba98e46ecd14313e0e8a05bec3f92ca125b8f36302a5b1679d4a949bccbe31/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f63732d48544d4c2d696e666f726d6174696f6e616c)](https://ncss-tech.github.io/rosettaPTF/docs/)
+[![codecov](https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3)](https://codecov.io/gh/ncss-tech/rosettaPTF)
 <!-- badges: end -->
 
 # rosettaPTF
 
-An R package using {reticulate} to wrap the Python [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) module which contains several versions of the [ROSETTA](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html) pedotransfer functions. 
+Rosetta is a neural network-based model for predicting unsaturated soil hydraulic parameters from basic soil characterization data. The model predicts parameters for the van Genuchten unsaturated soil hydraulic properties model, using sand, silt, and clay, bulk density and water content. 
 
-The [ROSETTA](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html) model relies on a minimum of 3 soil properties, with increasing (expected) accuracy as additional properties are included:
+The hierarchical ROSETTA model relies on a minimum of 3 soil properties, with increasing (expected) accuracy as additional properties are added:
 
   *  required, `sand`, `silt`, `clay`: USDA soil texture separates (percentages) that sum to 100%
 
@@ -17,9 +18,20 @@ The [ROSETTA](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html) model reli
 
   *  optional, `volumetric water content at 1500 kPa`: roughly “permanent wilting point” for most plants, units of cm3/cm3
 
-For small amounts of data consider using the interactive version that has copy/paste functionality: https://www.handbook60.org/rosetta. 
 
-This package is primarily intended for more demanding use cases such as calling ROSETTA on each cell in a stack of raster data.
+## Backend
+
+The [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) module is a Python package maintained by Dr. Todd Skaggs (USDA-ARS) and other U.S. Department of Agriculture employees. 
+
+## Frontend (rosettaPTF)
+
+rosettaPTF uses {reticulate} to wrap the Python rosetta-soil pedotransfer functions and provide them in an R environment. 
+
+This R package is intended to provide for use cases that involve many thousands of calls to the pedotransfer function. High-throughput access to the pedotransfer functions is possible using RasterStack (raster) or SpatRaster (terra) objects in the R environment. 
+
+### Other options
+
+Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoints provided by the soilDB R package `ROSETTA()` method. For small amounts of data consider using the interactive version that has copy/paste functionality: https://www.handbook60.org/rosetta. 
 
 ## Set up {reticulate}
 
@@ -296,9 +308,9 @@ ann_predict(my_rosetta, list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 
 Three versions of the ROSETTA model are available, selected using `rosetta_version` argument.
 
-  - `rosetta_version` 1 - Schaap, M.G., F.J. Leij, and M.Th. van Genuchten. 2001. ROSETTA: a computer program for estimating soil hydraulic parameters with hierarchical pedotransfer functions. Journal of Hydrology 251(3-4): 163-176. doi: \doi{10.1016/S0022-1694(01)00466-8}.
+  - `rosetta_version` 1 - Schaap, M.G., F.J. Leij, and M.Th. van Genuchten. 2001. ROSETTA: a computer program for estimating soil hydraulic parameters with hierarchical pedotransfer functions. Journal of Hydrology 251(3-4): 163-176. doi: 10.1016/S0022-1694(01)00466-8.
 
-  - `rosetta_version` 2 - Schaap, M.G., A. Nemes, and M.T. van Genuchten. 2004. Comparison of Models for Indirect Estimation of Water Retention and Available Water in Surface Soils. Vadose Zone Journal 3(4): 1455-1463. doi: \doi{10.2136/vzj2004.1455}.
+  - `rosetta_version` 2 - Schaap, M.G., A. Nemes, and M.T. van Genuchten. 2004. Comparison of Models for Indirect Estimation of Water Retention and Available Water in Surface Soils. Vadose Zone Journal 3(4): 1455-1463. doi: 10.2136/vzj2004.1455.
 
-  - `rosetta_version` 3 - Zhang, Y., and M.G. Schaap. 2017. Weighted recalibration of the Rosetta pedotransfer model with improved estimates of hydraulic parameter distributions and summary statistics (Rosetta3). Journal of Hydrology 547: 39-53. doi: \doi{10.1016/j.jhydrol.2017.01.004}.
+  - `rosetta_version` 3 - Zhang, Y., and M.G. Schaap. 2017. Weighted recalibration of the Rosetta pedotransfer model with improved estimates of hydraulic parameter distributions and summary statistics (Rosetta3). Journal of Hydrology 547: 39-53. doi: 10.1016/j.jhydrol.2017.01.004.
 
