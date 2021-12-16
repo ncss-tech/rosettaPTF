@@ -23,6 +23,16 @@ The hierarchical ROSETTA model relies on a minimum of 3 soil properties, with in
 
 The [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) module is a Python package maintained by Dr. Todd Skaggs (USDA-ARS) and other U.S. Department of Agriculture employees. 
 
+The Rosetta pedotransfer function predicts five parameters for the van Genuchten model of unsaturated soil hydraulic properties
+
+ - theta_r : residual volumetric water content
+ - theta_s : saturated volumetric water content
+ - log10(alpha) : retention shape parameter `[log10(1/cm)]`
+ - log10(n) : retention shape parameter
+ - log10(ksat) : saturated hydraulic conductivity `[log10(cm/d)]`
+
+For each set of input data a mean and standard deviation of each parameter is given.
+
 ## Frontend (rosettaPTF)
 
 rosettaPTF uses {reticulate} to wrap the Python rosetta-soil pedotransfer functions and provide them in an R environment. 
