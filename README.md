@@ -8,84 +8,100 @@
 
 Rosetta is a neural network-based model for predicting unsaturated soil hydraulic parameters from basic soil characterization data. The model predicts parameters for the van Genuchten unsaturated soil hydraulic properties model, using sand, silt, and clay, bulk density and water content. 
 
-The hierarchical ROSETTA model relies on a minimum of 3 soil properties, with increasing (expected) accuracy as additional properties are added:
+{rosettaPTF} uses {reticulate} to wrap the Python [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) module: providing several versions of the [Rosetta](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html) pedotransfer functions in an R environment.
 
-  *  required, `sand`, `silt`, `clay`: USDA soil texture separates (percentages) that sum to 100%
+This package is primarily intended for more demanding use cases (such as calling Rosetta "continuously" on each cell in a stack of rasters), or for accessing the uncertainty and shape metrics from Zhang & Schaap (2017). High-throughput input to the pedotransfer function is possible by using RasterStack ([raster](https://github.com/rspatial/raster/)) or SpatRaster ([terra](https://github.com/rspatial/terra/)) objects as input.
 
-  *  optional, `bulk density (any moisture basis)`: mass per volume after accounting for >2mm fragments, units of grams/cm3
+## Install {rosettaPTF}
 
-  *  optional, `volumetric water content at 33 kPa`: roughly “field capacity” for most soils, units of cm3/cm3
+First, install the package from GitHub:
 
-  *  optional, `volumetric water content at 1500 kPa`: roughly “permanent wilting point” for most plants, units of cm3/cm3
-
-
-## Backend
-
-The [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) module is a Python package maintained by Dr. Todd Skaggs (USDA-ARS) and other U.S. Department of Agriculture employees. 
-
-The Rosetta pedotransfer function predicts five parameters for the van Genuchten model of unsaturated soil hydraulic properties
-
- - theta_r : residual volumetric water content
- - theta_s : saturated volumetric water content
- - log10(alpha) : retention shape parameter `[log10(1/cm)]`
- - log10(n) : retention shape parameter
- - log10(ksat) : saturated hydraulic conductivity `[log10(cm/d)]`
-
-For each set of input data a mean and standard deviation of each parameter is given.
-
-## Frontend (rosettaPTF)
-
-rosettaPTF uses {reticulate} to wrap the Python rosetta-soil pedotransfer functions and provide them in an R environment. 
-
-This R package is intended to provide for use cases that involve many thousands of calls to the pedotransfer function. High-throughput access to the pedotransfer functions is possible using RasterStack (raster) or SpatRaster (terra) objects in the R environment. 
-
-### Other options
-
-Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoints provided by the soilDB R package `ROSETTA()` method. For small amounts of data consider using the interactive version that has copy/paste functionality: https://www.handbook60.org/rosetta. 
-
-## Set up {reticulate}
-
-If you are using this package for the first time you will need to have Python installed and download the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. {reticulate} offers `reticulate::install_python()` and `reticulate::install_miniconda()` to download and set up an up-to-date Python/Conda environment. 
-
-```r
-rosettaPTF::find_python()
+```{r}
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("ncss-tech/rosettaPTF")
 ```
 
-`find_python()` provides heuristics for setting up {reticulate} to use Python in commonly installed locations. The {rosettaPTF} does custom handling for ArcGIS Pro Conda environments. If the automatic configuration fails you can set `Sys.setenv(RETICULATE_PYTHON = "path/to/python")` for {reticulate}.
-
-### Using Existing Python Installations
-
-When calling `find_python()` you can optionally specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to use path to ArcGIS Pro Python/Conda environment, for example:
-
-```r
-rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
-```
-
-This should locate both the ArcGIS Pro Conda environment and Python binaries in "C:/Program Files/ArcGIS/Pro/bin/Python".
-
-## Install `rosetta-soil` Python Module
-
-The {rosettaPTF} `install_rosetta()` method wraps `reticulate::py_install("rosetta-soil")`. 
-
-By installing the R package you should have `rosetta-soil` installed as it is set as a {reticulate}/Python dependency in the DESCRIPTION file.
-
-```r
-rosettaPTF::install_rosetta()
-```
-
-You can use `install_rosetta()` to install into custom environments as needed by specifying `envname`. After installing a new version of the module you may need to restart your R session before continuing.
-
-## Batch Rosetta with `run_rosetta()`
-
-First, load the `rosetta-soil` module by loading the R package.
+Then load the `rosetta-soil` module by loading the R package. If you do not have an available `python` installation or `rosetta-soil` module you will be notified.
 
 ```r
 library(rosettaPTF)
 ```
 
-Batch runs using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` inputs are supported. 
+### `rosetta-soil` Python module
 
-The default order of inputs is: sand, silt, clay, bulk density (any basis), water content (field capacity; 33 kPa), water content (permanent wilting point; 1500 kPa); of which the first three are required. If you specify field capacity water content, you must specify bulk density. If you specify permanent wilting point water content you must also specify bulk density and field capacity water content.
+The [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) module is a Python package maintained by Dr. Todd Skaggs (USDA-ARS) and other U.S. Department of Agriculture employees. 
+
+The Rosetta pedotransfer function predicts five parameters for the van Genuchten model of unsaturated soil hydraulic properties
+
+ - `theta_r` : residual volumetric water content
+ - `theta_s` : saturated volumetric water content
+ - `log10(alpha)` : retention shape parameter `[log10(1/cm)]`
+ - `log10(n)` : retention shape parameter (also referred to as `npar`)
+ - `log10(ksat)` : saturated hydraulic conductivity `[log10(cm/d)]`
+
+For each set of input data a mean and standard deviation of each parameter is given.
+
+Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoints provided by the soilDB R package `ROSETTA()` method. For small amounts of data consider using the interactive version that has copy/paste functionality: https://www.handbook60.org/rosetta. 
+
+# Input Data
+
+The [Rosetta](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html) model relies on a minimum of 3 soil properties, with increasing (expected) accuracy as additional properties are included:
+
+  *  Required, `sand`, `silt`, `clay`: USDA soil texture separates (percentages) that sum to 100%
+
+  *  Optional, `bulk density (any moisture basis)`: mass per volume after accounting for >2mm fragments, units of grams/cm3
+
+  *  Optional, `volumetric water content at 33 kPa`: roughly “field capacity” for most soils, units of cm3/cm3
+
+  *  Optional, `volumetric water content at 1500 kPa`: roughly “permanent wilting point” for most plants, units of cm3/cm3
+
+The default order of inputs is: `sand`, `silt`, `clay`, `bulk density (any basis)`, `water content (field capacity; 33 kPa)`, `water content (permanent wilting point; 1500 kPa)` of which the first three are required. 
+
+If you specify field capacity water content, you must specify bulk density. If you specify permanent wilting point water content you must also specify bulk density and field capacity water content.
+
+## {reticulate} Setup 
+
+If you are using this package for the first time you will need to have Python installed and you will need to download the necessary modules. 
+
+You can set up {reticulate} to install modules into a virtual or Conda environment. {reticulate} offers `reticulate::install_python()` and `reticulate::install_miniconda()` to download and set up Python/Conda if you have not yet done so. 
+
+### Finding the `python` binaries
+
+```r
+rosettaPTF::find_python()
+```
+
+`find_python()` provides heuristics for setting up {reticulate} to use Python in commonly installed locations. 
+
+The first attempt makes use of `Sys.which()` to find installations available in the user path directory.
+
+`find_python()` also provides an option for using ArcGIS Pro Conda environments--which may be needed for users who cannot install Conda by some other means. To use this option specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to locate both the ArcGIS Pro Conda environment and Python binaries in _C:/Program Files/ArcGIS/Pro/bin/Python_, for example:
+
+```r
+rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
+```
+
+If automatic configuration via `find_python()` fails (returns `NULL`) you can manually set a path to the `python` executable with the {reticulate} `RETICULATE_PYTHON` environment variable: `Sys.setenv(RETICULATE_PYTHON = "path/to/python")` or `reticulate::use_python("path/to/python")`
+
+### Install `rosetta-soil` Python Module
+
+The {rosettaPTF} `install_rosetta()` method wraps `reticulate::py_install("rosetta-soil")`. 
+
+You can use `install_rosetta()` to install into custom environments by specifying `envname` as needed. After installing a new version of the module you should restart your R session.
+
+```r
+rosettaPTF::install_rosetta()
+```
+
+Alternately, to install the module manually with `pip` you can run the following command. This assumes a Python 3 binary called `python` can be found on your path.
+
+```sh
+python -m pip install rosetta-soil
+```
+
+## `run_rosetta()`
+
+Batch runs of Rosetta models can be done using using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` objects as input. 
 
 ### `list()` Input Example
 
@@ -137,7 +153,7 @@ run_rosetta(data.frame(
 
 ### Soil Data Access / SSURGO Mapunit Aggregate Input Example
 
-This example pulls mapunit/component data from Soil Data Access (SDA). We use the {soilDB} function `get_SDA_property()` to obtain representative values for sand, silt, clay, and bulk density (1/3 bar), we run Rosetta on the resulting data.frame (one row per mapunit) then use raster attribute table (RAT) to display the results (1:1 with `mukey`).
+This example pulls mapunit/component data from Soil Data Access (SDA). We use the {soilDB} function `get_SDA_property()` to obtain representative values for `sand`, `silt`, `clay`, and `bulk density (1/3 bar)` we run Rosetta on the resulting data.frame (one row per mapunit) then use raster attribute table (RAT) to display the results (1:1 with `mukey`).
 
 ```r
 library(soilDB)
@@ -192,7 +208,7 @@ plot(test2, "log10_Ksat_mean")
 
 ![](https://i.imgur.com/BswebdW.png)
 
-You will notice the results for Ksat distrbution are identical, but the latter approach takes significantly longer to run. This is the difference of estimating ~40 (mapunit keys) versus ~30,000 (total number of cells) sets of Rosetta parameters.
+You will notice the results for Ksat distribution are identical since the same input values were used, but the latter approach took longer to run. The time difference is the difference of estimating ~40 (1 estimate per mapunit key) versus ~30,000 (1 estimate per raster cell) sets of Rosetta parameters.
 
 ## Extended Output with `Rosetta` S3 Class
 
