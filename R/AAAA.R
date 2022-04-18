@@ -5,15 +5,21 @@ numpy_module <- NULL
 
 #' @importFrom reticulate import
 .loadModules <-  function() {
+  pypath <- NULL
 
   # leave it up to reticulate
+  if (is.null(find_python())) {
+    # sometimes finds unsuitable python instance
+    x <- Sys.which("python")
+    if (length(x) > 0) {
+      options(rosettaPTF.python_path = x[1])
+      pypath <- find_python()
+    }
+  }
 
-  # # sometimes finds unsuitable python instance
-  # pypath <- find_python()
-  #
-  # if (!reticulate::py_available() && is.null(pypath)) {
-  #   .install_python_message()
-  # }
+  if (!reticulate::py_available() && is.null(pypath)) {
+    .install_python_message()
+  }
 
   # delay load modules (will be loaded when accessed via $)
   if (is.null(rosetta_module)) {
@@ -31,7 +37,6 @@ numpy_module <- NULL
 #' @importFrom reticulate configure_environment
 .onLoad <- function(libname, pkgname) {
 
-  # TODO: is configure_environment needed?
   # if (reticulate::configure_environment(pkgname)) {
     .loadModules()
   # }

@@ -1,3 +1,17 @@
+# rosettaPTF 0.1.1
+
+* Improvements to `find_python()` (now uses user path `python` if defined, and calls `reticulate::use_python()` as needed)
+
+* Changed `.onLoad()` behavior (should reduce amount of custom Python settings needed)
+
+# rosettaPTF 0.1.0
+ 
+* Updated unit tests to skip if required Python modules are not installed
+
+# rosettaPTF 0.0.0.9005
+
+* Fixes for `find_python()` heuristics
+
 # rosettaPTF 0.0.0.9004
 
 * Clarified virtual and Conda environments for {reticulate} setup in function documentation and README
