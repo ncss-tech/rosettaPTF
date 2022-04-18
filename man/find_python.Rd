@@ -4,10 +4,16 @@
 \alias{find_python}
 \title{Heuristics to Find Python}
 \usage{
-find_python(envname = NULL, arcpy_path = getOption("rosettaPTF.arcpy_path"))
+find_python(
+  envname = NULL,
+  pypath = NULL,
+  arcpy_path = getOption("rosettaPTF.arcpy_path")
+)
 }
 \arguments{
 \item{envname}{As in \code{reticulate::py_install()}:    The name, or full path, of the environment in which Python packages are to be installed. When NULL (the default), the active environment as set by the RETICULATE_PYTHON_ENV variable will be used; if that is unset, then the r-reticulate environment will be used.}
+
+\item{pypath}{Optional: Path to \code{python} executable}
 
 \item{arcpy_path}{Optional: Path to ArcGIS Pro Python installation. For example: \code{"C:/Program Files/ArcGIS/Pro/bin/Python"}. Set as \code{NULL} to prevent use of ArcGIS Pro instance.}
 }
