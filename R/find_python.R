@@ -29,7 +29,7 @@
 #'
 #' find_python()
 #'
-#' @importFrom reticulate use_python use_condaenv conda_binary
+#' @importFrom reticulate use_python use_condaenv conda_binary py_config py_discover_config
 find_python <- function(envname = NULL,
                         pypath = NULL,
                         arcpy_path = getOption("rosettaPTF.arcpy_path")) {
@@ -57,8 +57,8 @@ find_python <- function(envname = NULL,
 }
 
 .find_python <- function(envname = "r-reticulate",
-                         pypath = getOption("rosettaPTF.python_path"),
-                         arcpy_path = getOption("rosettaPTF.arcpy_path")) {
+                         pypath = getOption("rosettaPTF.python_path", default = NULL),
+                         arcpy_path = getOption("rosettaPTF.arcpy_path", default = NULL)) {
 
   # check for ArcPro environment python EXE, and use it if present (USDA non-privileged machines)
   ARCPY_PATH <- file.path(arcpy_path, "envs/arcgispro-py3")
@@ -67,9 +67,31 @@ find_python <- function(envname = NULL,
 
   res <- NULL
   if (length(pypath) == 0) {
-    py <- Sys.which("python")
-    if (length(py) > 0) {
-      pypath <- py[1]
+
+    # find newest python installation with rosetta installed
+    x <- try(reticulate::py_discover_config("rosetta"))
+    if (length(x$python_versions) > 0) {
+      xxx <- lapply(x$python_versions, function(x) {
+        y <- gsub("Python ", "", system(paste(shQuote(x), "--version"), intern = TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE))
+        if (length(y) == 0) return("0")
+        y
+      })
+      idx <- which.max(order(as.character(xxx)))
+      res <- try(reticulate::use_python(x$python_versions[idx]))
+    }
+
+    # otherwise find newest python installation
+    if (is.null(res) || inherits(res, 'try-error')) {
+      x <- try(reticulate::py_discover_config())
+      if (length(x$python_versions) > 0) {
+        xxx <- lapply(x$python_versions, function(x) {
+          y <- gsub("Python ", "", system(paste(shQuote(x), "--version"), intern = TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE))
+          if (length(y) == 0) return("0")
+          y
+        })
+        idx <- which.max(order(as.character(xxx)))
+        res <- try(reticulate::use_python(x$python_versions[idx]))
+      }
     }
   }
 
@@ -89,7 +111,6 @@ find_python <- function(envname = NULL,
 
       subres
     }, silent = TRUE)
-
 
   # User can/should use regular reticulate methods for this
 
@@ -113,5 +134,6 @@ find_python <- function(envname = NULL,
     stop(res, call. = FALSE)
   }
 
+  try(reticulate::py_config())
   res
 }
