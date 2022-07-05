@@ -34,16 +34,25 @@ predict.Rosetta <- function(object, soildata, ...) {
                                            dtype = "float"))
 }
 
-ann_predict <- function(object, soildata, sum_data = TRUE)
-  UseMethod("ann_predict", object)
-
 #' Extended _Rosetta_ Predictions, Parameter Distributions and Summary Statistics after Zhang & Schaap (2017)
 #' @param object _Rosetta_ object containing class instance (e.g. from `Rosetta()`)
 #' @param soildata A list containing vectors; with number of parameters matching the model type of `object`
 #' @param sum_data Default: `TRUE`
 #' @importFrom reticulate r_to_py import
-#' @method ann_predict Rosetta
+#' @rdname ann_predict
 #' @export
+ann_predict <- function(object, soildata, sum_data = TRUE)
+  UseMethod("ann_predict", object)
+
+#' @rdname ann_predict
+#' @export
+ann_predict.default <- function(object, soildata, sum_data = TRUE) {
+  message("ann_predict() is defined for objects with class Rosetta; see `Rosetta()` to create a new instance")
+  ann_predict.Rosetta(object = object, soildata = soildata, sum_data = sum_data)
+}
+
+#' @rdname ann_predict
+#' @method ann_predict Rosetta
 #' @examples
 #' # ann_predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 ann_predict.Rosetta <- function(object, soildata, sum_data = TRUE) {

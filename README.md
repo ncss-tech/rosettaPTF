@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/ncss-tech/rosettaPTF/workflows/R-CMD-check/badge.svg)](https://github.com/ncss-tech/rosettaPTF/actions)
 [![HTML
-Docs](https://camo.githubusercontent.com/f7ba98e46ecd14313e0e8a05bec3f92ca125b8f36302a5b1679d4a949bccbe31/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f63732d48544d4c2d696e666f726d6174696f6e616c)](https://ncss-tech.github.io/rosettaPTF/docs/)
+Docs](https://camo.githubusercontent.com/f7ba98e46ecd14313e0e8a05bec3f92ca125b8f36302a5b1679d4a949bccbe31/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f63732d48544d4c2d696e666f726d6174696f6e616c)](https://ncss-tech.github.io/rosettaPTF/)
 [![codecov](https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3)](https://codecov.io/gh/ncss-tech/rosettaPTF)
 <!-- badges: end -->
 
@@ -82,7 +82,7 @@ model relies on a minimum of 3 soil properties, with increasing
     (percentages) that sum to 100%
 
 -   Optional, `bulk density (any moisture basis)`: mass per volume after
-    accounting for >2mm fragments, units of grams/cm3
+    accounting for \>2mm fragments, units of grams/cm3
 
 -   Optional, `volumetric water content at 33 kPa`: roughly “field
     capacity” for most soils, units of cm3/cm3
@@ -150,8 +150,9 @@ module you should restart your R session.
 
 ``` r
 rosettaPTF::install_rosetta()
-#> Error in virtualenv_install(envname = envname, packages = packages, ignore_installed = pip_ignore_installed,  : 
-#>   'C:/Program Files/Python310' exists but is not a virtual environment
+#> Using virtual environment "~/.virtualenvs/r-reticulate" ...
+#> Error in system2(python, c("-c", shQuote(command)), stdout = TRUE, stderr = TRUE) : 
+#>   'CreateProcess' failed to run 'C:\Users\ANDREW~1.BRO\DOCUME~1\VIRTUA~1\R-RETI~1\Scripts\python.exe -c "import sys; import pip; sys.stdout.write(pip.__version__)"'
 #> [1] TRUE
 ```
 
@@ -227,8 +228,8 @@ results (1:1 with `mukey`).
 ``` r
 library(soilDB)
 library(terra)
-#> Warning: package 'terra' was built under R version 4.1.3
-#> terra 1.5.29
+#> Warning: package 'terra' was built under R version 4.2.1
+#> terra 1.5.50
 library(rosettaPTF)
 
 # obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)
@@ -247,7 +248,7 @@ soildata <- resprop[complete.cases(resprop), c("mukey", varnames)]
 # run Rosetta on the mapunit-level aggregate data
 system.time(resrose <- run_rosetta(soildata[,varnames]))
 #>    user  system elapsed 
-#>    0.06    0.03    0.10
+#>    0.14    0.00    0.14
 
 # transfer mukey to result
 resrose$mukey <- soildata$mukey
@@ -288,7 +289,7 @@ res3 <- rast(list(
 # SpatRaster to data.frame interface (one call on all cells)
 system.time(test2 <- run_rosetta(res3))
 #>    user  system elapsed 
-#>   20.83   12.42   27.56
+#>   28.25    9.05   33.31
 
 # make a plot of the predicted Ksat (identical to mukey-based results)
 plot(test2, "log10_Ksat_mean")
@@ -333,6 +334,7 @@ predict(my_rosetta, list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 
 ``` r
 ann_predict(my_rosetta, list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
+#> ann_predict() is defined for objects with class Rosetta; see `Rosetta()` to create a new instance
 #> $var_names
 #> $var_names[[1]]
 #> b'theta_r'
