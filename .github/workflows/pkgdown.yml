@@ -31,6 +31,16 @@ jobs:
           extra-packages: pkgdown
           needs: website
 
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.10' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          activate-environment: r-reticulate
+
       - name: Query dependencies
         run: |
           install.packages('remotes')

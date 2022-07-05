@@ -38,17 +38,17 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
-          
+
       - uses: actions/setup-python@v2
         with:
-          python-version: '3.7' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          python-version: '3.10' # Version range or exact version of a Python version to use, using SemVer's version range syntax
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
-   
+
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
           activate-environment: r-reticulate
-          
+
       - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Query dependencies
@@ -78,12 +78,12 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
-        
+
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install rosetta-soil
-        
+
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
