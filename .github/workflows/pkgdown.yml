@@ -44,8 +44,6 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages('remotes')
-          install.packages('soilDB', repos='https://ncss-tech.r-universe.dev')
-          install.packages('terra', repos='https://rspatial.r-universe.dev')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
@@ -73,6 +71,10 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
+          install.packages('aqp', dependencies = TRUE)
+          install.packages('soilDB', dependencies = TRUE)
+          install.packages('soilDB', repos='https://ncss-tech.r-universe.dev')
+          install.packages('terra', repos='https://rspatial.r-universe.dev')
         shell: Rscript {0}
 
       - name: Install package
