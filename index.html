@@ -123,7 +123,7 @@
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "C:/Program Files/Python310/python.exe"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate/Scripts/python.exe"</span></span></code></pre></div>
 <p><code><a href="reference/find_python.html">find_python()</a></code> provides heuristics for setting up {reticulate} to use Python in commonly installed locations.</p>
 <p>The first attempt makes use of <code><a href="https://rdrr.io/r/base/Sys.which.html" class="external-link">Sys.which()</a></code> to find installations available in the user path directory.</p>
 <p><code><a href="reference/find_python.html">find_python()</a></code> also provides an option for using ArcGIS Pro Conda environments–which may be needed for users who cannot install Conda by some other means. To use this option specify the <code>arcpy_path</code> argument or the <code>rosettaPTF.arcpy_path</code> option to locate both the ArcGIS Pro Conda environment and Python binaries in <em>C:/Program Files/ArcGIS/Pro/bin/Python</em>, for example:</p>
@@ -138,9 +138,8 @@
 <p>You can use <code><a href="reference/install_rosetta.html">install_rosetta()</a></code> to install into custom environments by specifying <code>envname</code> as needed. After installing a new version of the module you should restart your R session.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/install_rosetta.html">install_rosetta</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using virtual environment "~/.virtualenvs/r-reticulate" ...</span></span>
-<span><span class="co">#&gt; Error in system2(python, c("-c", shQuote(command)), stdout = TRUE, stderr = TRUE) : </span></span>
-<span><span class="co">#&gt;   'CreateProcess' failed to run 'C:\Users\ANDREW~1.BRO\DOCUME~1\VIRTUA~1\R-RETI~1\Scripts\python.exe -c "import sys; import pip; sys.stdout.write(pip.__version__)"'</span></span>
+<span><span class="co">#&gt; Using virtual environment "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate" ...</span></span>
+<span><span class="co">#&gt; + "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate/Scripts/python.exe" -m pip install --upgrade --no-user "rosetta-soil"</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Alternately, to install the module manually with <code>pip</code> you can run the following command. This assumes a Python 3 binary called <code>python</code> can be found on your path.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">python</span> -m pip install rosetta-soil</span></code></pre></div>
@@ -201,8 +200,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ncss-tech.github.io/soilDB/" class="external-link">soilDB</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: package 'terra' was built under R version 4.2.1</span></span>
-<span><span class="co">#&gt; terra 1.5.50</span></span>
+<span><span class="co">#&gt; terra 1.6.17</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rosettaPTF</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)</span></span>
@@ -221,7 +219,7 @@
 <span><span class="co"># run Rosetta on the mapunit-level aggregate data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resrose</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">[</span>,<span class="va">varnames</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;    0.14    0.00    0.14</span></span>
+<span><span class="co">#&gt;     0.2     0.0     0.2</span></span>
 <span></span>
 <span><span class="co"># transfer mukey to result</span></span>
 <span><span class="va">resrose</span><span class="op">$</span><span class="va">mukey</span> <span class="op">&lt;-</span> <span class="va">soildata</span><span class="op">$</span><span class="va">mukey</span></span>
@@ -254,7 +252,7 @@
 <span><span class="co"># SpatRaster to data.frame interface (one call on all cells)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">test2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">res3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   28.25    9.05   33.31</span></span>
+<span><span class="co">#&gt;   41.98    9.25   49.46</span></span>
 <span></span>
 <span><span class="co"># make a plot of the predicted Ksat (identical to mukey-based results)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">test2</span>, <span class="st">"log10_Ksat_mean"</span><span class="op">)</span></span></code></pre></div>
@@ -441,7 +439,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
