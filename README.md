@@ -57,11 +57,11 @@ U.S. Department of Agriculture employees.
 The Rosetta pedotransfer function predicts five parameters for the van
 Genuchten model of unsaturated soil hydraulic properties
 
--   `theta_r` : residual volumetric water content
--   `theta_s` : saturated volumetric water content
--   `log10(alpha)` : retention shape parameter `[log10(1/cm)]`
--   `log10(n)` : retention shape parameter (also referred to as `npar`)
--   `log10(ksat)` : saturated hydraulic conductivity `[log10(cm/d)]`
+- `theta_r` : residual volumetric water content
+- `theta_s` : saturated volumetric water content
+- `log10(alpha)` : retention shape parameter `[log10(1/cm)]`
+- `log10(n)` : retention shape parameter (also referred to as `npar`)
+- `log10(ksat)` : saturated hydraulic conductivity `[log10(cm/d)]`
 
 For each set of input data a mean and standard deviation of each
 parameter is given.
@@ -78,17 +78,17 @@ The [Rosetta](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html)
 model relies on a minimum of 3 soil properties, with increasing
 (expected) accuracy as additional properties are included:
 
--   Required, `sand`, `silt`, `clay`: USDA soil texture separates
-    (percentages) that sum to 100%
+- Required, `sand`, `silt`, `clay`: USDA soil texture separates
+  (percentages) that sum to 100%
 
--   Optional, `bulk density (any moisture basis)`: mass per volume after
-    accounting for \>2mm fragments, units of grams/cm3
+- Optional, `bulk density (any moisture basis)`: mass per volume after
+  accounting for \>2mm fragments, units of grams/cm3
 
--   Optional, `volumetric water content at 33 kPa`: roughly “field
-    capacity” for most soils, units of cm3/cm3
+- Optional, `volumetric water content at 33 kPa`: roughly “field
+  capacity” for most soils, units of cm3/cm3
 
--   Optional, `volumetric water content at 1500 kPa`: roughly “permanent
-    wilting point” for most plants, units of cm3/cm3
+- Optional, `volumetric water content at 1500 kPa`: roughly “permanent
+  wilting point” for most plants, units of cm3/cm3
 
 The default order of inputs is: `sand`, `silt`, `clay`,
 `bulk density (any basis)`, `water content (field capacity; 33 kPa)`,
@@ -113,7 +113,7 @@ you have not yet done so.
 
 ``` r
 rosettaPTF::find_python()
-#> [1] "C:/Program Files/Python310/python.exe"
+#> [1] "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate/Scripts/python.exe"
 ```
 
 `find_python()` provides heuristics for setting up {reticulate} to use
@@ -150,9 +150,8 @@ module you should restart your R session.
 
 ``` r
 rosettaPTF::install_rosetta()
-#> Using virtual environment "~/.virtualenvs/r-reticulate" ...
-#> Error in system2(python, c("-c", shQuote(command)), stdout = TRUE, stderr = TRUE) : 
-#>   'CreateProcess' failed to run 'C:\Users\ANDREW~1.BRO\DOCUME~1\VIRTUA~1\R-RETI~1\Scripts\python.exe -c "import sys; import pip; sys.stdout.write(pip.__version__)"'
+#> Using virtual environment "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate" ...
+#> + "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate/Scripts/python.exe" -m pip install --upgrade --no-user "rosetta-soil"
 #> [1] TRUE
 ```
 
@@ -228,8 +227,7 @@ results (1:1 with `mukey`).
 ``` r
 library(soilDB)
 library(terra)
-#> Warning: package 'terra' was built under R version 4.2.1
-#> terra 1.5.50
+#> terra 1.6.17
 library(rosettaPTF)
 
 # obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)
@@ -248,7 +246,7 @@ soildata <- resprop[complete.cases(resprop), c("mukey", varnames)]
 # run Rosetta on the mapunit-level aggregate data
 system.time(resrose <- run_rosetta(soildata[,varnames]))
 #>    user  system elapsed 
-#>    0.14    0.00    0.14
+#>     0.2     0.0     0.2
 
 # transfer mukey to result
 resrose$mukey <- soildata$mukey
@@ -289,7 +287,7 @@ res3 <- rast(list(
 # SpatRaster to data.frame interface (one call on all cells)
 system.time(test2 <- run_rosetta(res3))
 #>    user  system elapsed 
-#>   28.25    9.05   33.31
+#>   41.98    9.25   49.46
 
 # make a plot of the predicted Ksat (identical to mukey-based results)
 plot(test2, "log10_Ksat_mean")
@@ -427,19 +425,18 @@ ann_predict(my_rosetta, list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 Three versions of the ROSETTA model are available, selected using
 `rosetta_version` argument.
 
--   `rosetta_version` 1 - Schaap, M.G., F.J. Leij, and M.Th. van
-    Genuchten. 2001. ROSETTA: a computer program for estimating soil
-    hydraulic parameters with hierarchical pedotransfer functions.
-    Journal of Hydrology 251(3-4): 163-176. doi:
-    10.1016/S0022-1694(01)00466-8.
+- `rosetta_version` 1 - Schaap, M.G., F.J. Leij, and M.Th. van
+  Genuchten. 2001. ROSETTA: a computer program for estimating soil
+  hydraulic parameters with hierarchical pedotransfer functions. Journal
+  of Hydrology 251(3-4): 163-176. doi: 10.1016/S0022-1694(01)00466-8.
 
--   `rosetta_version` 2 - Schaap, M.G., A. Nemes, and M.T. van
-    Genuchten. 2004. Comparison of Models for Indirect Estimation of
-    Water Retention and Available Water in Surface Soils. Vadose Zone
-    Journal 3(4): 1455-1463. doi: 10.2136/vzj2004.1455.
+- `rosetta_version` 2 - Schaap, M.G., A. Nemes, and M.T. van
+  Genuchten. 2004. Comparison of Models for Indirect Estimation of Water
+  Retention and Available Water in Surface Soils. Vadose Zone Journal
+  3(4): 1455-1463. doi: 10.2136/vzj2004.1455.
 
--   `rosetta_version` 3 - Zhang, Y., and M.G. Schaap. 2017. Weighted
-    recalibration of the Rosetta pedotransfer model with improved
-    estimates of hydraulic parameter distributions and summary
-    statistics (Rosetta3). Journal of Hydrology 547: 39-53. doi:
-    10.1016/j.jhydrol.2017.01.004.
+- `rosetta_version` 3 - Zhang, Y., and M.G. Schaap. 2017. Weighted
+  recalibration of the Rosetta pedotransfer model with improved
+  estimates of hydraulic parameter distributions and summary statistics
+  (Rosetta3). Journal of Hydrology 547: 39-53. doi:
+  10.1016/j.jhydrol.2017.01.004.
