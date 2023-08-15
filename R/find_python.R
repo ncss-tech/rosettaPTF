@@ -72,7 +72,7 @@ find_python <- function(envname = NULL,
     x <- try(reticulate::py_discover_config("rosetta"))
     if (length(x$python_versions) > 0) {
       xxx <- lapply(x$python_versions, function(x) {
-        y <- gsub("Python ", "", system(paste(shQuote(x), "--version"), intern = TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE))
+        y <- gsub("Python ", "", system(paste(shQuote(x), "--version"), intern = TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE))
         if (length(y) == 0) return("0")
         y
       })
