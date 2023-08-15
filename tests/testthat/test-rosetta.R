@@ -41,7 +41,7 @@ test_that("run on SSURGO data", {
   mukeys <- as.numeric(terra::values(res[[1]]))
   umukeys <- unique(mukeys)
   varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
-  levels(res) <- umukeys
+  levels(res) <- data.frame(mukey = umukeys, ID = seq_along(umukeys))
 
   data("MUKEY_PROP", package = "rosettaPTF")
   resprop <- MUKEY_PROP[, c("mukey", varnames)]
