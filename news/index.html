@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rosettaPTF</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.3</span>
       </span>
     </div>
 
@@ -28,7 +28,13 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/ncss-tech/rosettaPTF/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -38,9 +44,22 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      
+      <small>Source: <a href="https://github.com/ncss-tech/rosettaPTF/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.3" id="rosettaptf-013">rosettaPTF 0.1.3<a class="anchor" aria-label="anchor" href="#rosettaptf-013"></a></h2>
+<ul><li>
+<p>Fixes for recent changes in {reticulate} (&gt;= 1.29)</p>
+<ul><li>Add custom <code>py_to_r()</code> S3 wrapper for <code>rosetta.rosetta.SoilData</code> objects (<a href="https://github.com/ncss-tech/rosettaPTF/issues/8" class="external-link">#8</a>)</li>
+</ul></li>
+<li><p>Suppress some output on non-Windows platforms</p></li>
+<li><p>Update tests for modern usage of {terra} categorical rasters</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.2" id="rosettaptf-012">rosettaPTF 0.1.2<a class="anchor" aria-label="anchor" href="#rosettaptf-012"></a></h2>
+<ul><li>Set minimum R version to 3.5</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.1" id="rosettaptf-011">rosettaPTF 0.1.1<a class="anchor" aria-label="anchor" href="#rosettaptf-011"></a></h2>
 <ul><li><p>Improvements to <code><a href="../reference/find_python.html">find_python()</a></code> (now uses user path <code>python</code> if defined, and calls <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_python()</a></code> as needed)</p></li>
@@ -48,18 +67,25 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="rosettaptf-010">rosettaPTF 0.1.0<a class="anchor" aria-label="anchor" href="#rosettaptf-010"></a></h2>
-<ul><li>Updated unit tests to skip if required Python modules are not installed</li></ul></div>
+<ul><li>Updated unit tests to skip if required Python modules are not installed</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.0.9005" id="rosettaptf-0009005">rosettaPTF 0.0.0.9005<a class="anchor" aria-label="anchor" href="#rosettaptf-0009005"></a></h2>
-<ul><li>Fixes for <code><a href="../reference/find_python.html">find_python()</a></code> heuristics</li></ul></div>
+<ul><li>Fixes for <code><a href="../reference/find_python.html">find_python()</a></code> heuristics</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.0.9004" id="rosettaptf-0009004">rosettaPTF 0.0.0.9004<a class="anchor" aria-label="anchor" href="#rosettaptf-0009004"></a></h2>
-<ul><li>Clarified virtual and Conda environments for {reticulate} setup in function documentation and README<ul><li>Add <code><a href="../reference/find_python.html">find_python()</a></code> helper method<ul><li>This method is called when you load the package with <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library(rosettaPTF)</a></code> AND in individual calls to <code><a href="../reference/install_rosetta.html">rosettaPTF::install_rosetta()</a></code>
+<ul><li>Clarified virtual and Conda environments for {reticulate} setup in function documentation and README
+<ul><li>Add <code><a href="../reference/find_python.html">find_python()</a></code> helper method
+<ul><li>This method is called when you load the package with <code><a href="https://github.com/ncss-tech/rosettaPTF" class="external-link">library(rosettaPTF)</a></code> AND in individual calls to <code><a href="../reference/install_rosetta.html">rosettaPTF::install_rosetta()</a></code>
 </li>
 <li>Sets the package option <code>rosettaPTF.python_path</code> and returns the value</li>
-</ul></li></ul></li>
+</ul></li>
+</ul></li>
 <li>
-<code><a href="../reference/run_rosetta.html">run_rosetta()</a></code><ul><li>Pass through variable order (<code>vars</code>) and parallel/block processing arguments (<code>core</code>, <code>file</code>, <code>nrows</code>, <code>overwrite</code>) to SpatRaster method for Raster* objects</li></ul></li>
+<code><a href="../reference/run_rosetta.html">run_rosetta()</a></code>
+<ul><li>Pass through variable order (<code>vars</code>) and parallel/block processing arguments (<code>core</code>, <code>file</code>, <code>nrows</code>, <code>overwrite</code>) to SpatRaster method for Raster* objects</li>
+</ul></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.0.9003" id="rosettaptf-0009003">rosettaPTF 0.0.0.9003<a class="anchor" aria-label="anchor" href="#rosettaptf-0009003"></a></h2>
@@ -70,7 +96,8 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.0.9002" id="rosettaptf-0009002">rosettaPTF 0.0.0.9002<a class="anchor" aria-label="anchor" href="#rosettaptf-0009002"></a></h2>
 <ul><li>Add S3 <code><a href="../reference/run_rosetta.html">run_rosetta()</a></code> methods for <code>data.frame</code> and <code>RasterStack</code>
-</li></ul></div>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.0.9001" id="rosettaptf-0009001">rosettaPTF 0.0.0.9001<a class="anchor" aria-label="anchor" href="#rosettaptf-0009001"></a></h2>
 <ul><li>Initial R package</li>
@@ -93,7 +120,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
