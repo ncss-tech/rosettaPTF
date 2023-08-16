@@ -33,6 +33,10 @@ jobs:
           brew install pkg-config
           brew install gdal
 
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::covr
+
       - name: Install Python dependencies
         run: |
           reticulate::virtualenv_create("r-reticulate")
