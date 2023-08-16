@@ -1,3 +1,17 @@
+# rosettaPTF 0.1.3
+
+* Fixes for recent changes in {reticulate} (>= 1.29)
+
+  * Add custom `py_to_r()` S3 wrapper for `rosetta.rosetta.SoilData` objects (#8)
+
+* Suppress some output on non-Windows platforms
+
+* Update tests for modern usage of {terra} categorical rasters
+
+# rosettaPTF 0.1.2
+
+* Set minimum R version to 3.5
+
 # rosettaPTF 0.1.1
 
 * Improvements to `find_python()` (now uses user path `python` if defined, and calls `reticulate::use_python()` as needed)
