@@ -70,7 +70,7 @@ find_python <- function(envname = NULL,
 
     # find newest python installation with rosetta installed
     x <- try(reticulate::py_discover_config("rosetta"))
-    if (length(x$python_versions) > 0) {
+    if (!is.null(x$python_versions)) {
       xxx <- lapply(x$python_versions, function(x) {
         y <- gsub("Python ", "", system(paste(shQuote(x), "--version"), intern = TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE))
         if (length(y) == 0) return("0")
@@ -83,7 +83,7 @@ find_python <- function(envname = NULL,
     # otherwise find newest python installation
     if (is.null(res) || inherits(res, 'try-error')) {
       x <- try(reticulate::py_discover_config())
-      if (length(x$python_versions) > 0) {
+      if (!is.null(x$python_versions)) {
         xxx <- lapply(x$python_versions, function(x) {
           y <- gsub("Python ", "", system(paste(shQuote(x), "--version"), intern = TRUE, ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE))
           if (length(y) == 0) return("0")
