@@ -1,11 +1,8 @@
 Package: rosettaPTF
 Title: R Frontend for Rosetta Pedotransfer Functions
 Version: 0.1.3
-Authors@R: 
-    person(given = "Andrew",
-           family = "Brown",
-           role = c("aut", "cre"),
-           email = "andrew.g.brown@usda.gov")
+Author: Soil and Plant Science Division Staff
+Maintainer: Andrew G. Brown <andrew.g.brown@usda.gov>
 Description: Access Python rosetta-soil pedotransfer functions in an R environment. Rosetta is a neural network-based model for predicting unsaturated soil hydraulic parameters from basic soil characterization data. The model predicts parameters for the van Genuchten unsaturated soil hydraulic properties model, using sand, silt, and clay, bulk density and water content. The codebase is now maintained by Dr. Todd Skaggs and other U.S. Department of Agriculture employees. This R package is intended to provide for use cases that involve many thousands of calls to the pedotransfer function. Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoints provided by the soilDB R package `ROSETTA()` method.
 Config/reticulate:
   list(
