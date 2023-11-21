@@ -9,6 +9,7 @@ install_rosetta(
   method = "auto",
   conda = "auto",
   pip = TRUE,
+  system = FALSE,
   arcpy_path = getOption("rosettaPTF.arcpy_path")
 )
 }
@@ -20,6 +21,8 @@ install_rosetta(
 \item{conda}{Default: \code{"auto"}}
 
 \item{pip}{\emph{logical}. Use \code{pip} for package installation? Default: \code{TRUE}. This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.}
+
+\item{system}{\emph{logical}. Default: \code{FALSE}. If \code{TRUE}, try installing to system (user) site library with \code{system()} and set reticulate to use system Python.}
 
 \item{arcpy_path}{Argument passed to \code{find_python()}. Path to ArcGIS Pro Python installation e.g. ``. Set as \code{NULL} (default) to prevent use of ArcGIS Pro instance.}
 }
