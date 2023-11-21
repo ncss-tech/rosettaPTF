@@ -104,16 +104,24 @@ also specify bulk density and field capacity water content.
 If you are using this package for the first time you will need to have
 Python installed and you will need to download the necessary modules.
 
-You can set up {reticulate} to install modules into a virtual or Conda
-environment. {reticulate} offers `reticulate::install_python()` and
-`reticulate::install_miniconda()` to download and set up Python/Conda if
-you have not yet done so.
+You can set up {reticulate} to install modules into a virtual
+environment. {reticulate} offers `reticulate::install_python()` to
+download and set up Python if you have not yet done so.
+
+For example, install a recent version of Python, and create a virtual
+environment called `"r-reticulate"`
+
+``` r
+# download latest python 3.10.x
+reticulate::install_python(version = "3.10:latest")
+reticulate::virtualenv_create("r-reticulate")
+```
 
 ### Finding the `python` binaries
 
 ``` r
 rosettaPTF::find_python()
-#> [1] "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate/Scripts/python.exe"
+#> [1] "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate/Scripts/python.exe"
 ```
 
 `find_python()` provides heuristics for setting up {reticulate} to use
@@ -122,16 +130,14 @@ Python in commonly installed locations.
 The first attempt makes use of `Sys.which()` to find installations
 available in the user path directory.
 
-`find_python()` also provides an option for using ArcGIS Pro Conda
-environments–which may be needed for users who cannot install Conda by
-some other means. To use this option specify the `arcpy_path` argument
-or the `rosettaPTF.arcpy_path` option to locate both the ArcGIS Pro
-Conda environment and Python binaries in *C:/Program
-Files/ArcGIS/Pro/bin/Python*, for example:
+<!--
+`find_python()` also provides an option for using ArcGIS Pro Conda environments--which may be needed for users who cannot install Conda by some other means. To use this option specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to locate both the ArcGIS Pro Conda environment and Python binaries in _C:/Program Files/ArcGIS/Pro/bin/Python_, for example:
 
-``` r
+
+```r
 rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 ```
+-->
 
 If automatic configuration via `find_python()` fails (returns `NULL`)
 you can manually set a path to the `python` executable with the
@@ -142,7 +148,10 @@ you can manually set a path to the `python` executable with the
 ### Install `rosetta-soil` Python Module
 
 The {rosettaPTF} `install_rosetta()` method wraps
-`reticulate::py_install("rosetta-soil")`.
+`reticulate::py_install("rosetta-soil")`. You may not need to install
+the `rosetta-soil` module if your environment is set up, as {reticulate}
+will install/upgrade dependencies of packages as specified in the
+package configuration section of the DESCRIPTION file.
 
 You can use `install_rosetta()` to install into custom environments by
 specifying `envname` as needed. After installing a new version of the
@@ -150,8 +159,8 @@ module you should restart your R session.
 
 ``` r
 rosettaPTF::install_rosetta()
-#> Using virtual environment "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate" ...
-#> + "C:/Users/Andrew/Documents/.virtualenvs/r-reticulate/Scripts/python.exe" -m pip install --upgrade --no-user "rosetta-soil"
+#> Using virtual environment "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate" ...
+#> + "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate/Scripts/python.exe" -m pip install --upgrade --no-user rosetta-soil
 #> [1] TRUE
 ```
 
@@ -227,7 +236,7 @@ results (1:1 with `mukey`).
 ``` r
 library(soilDB)
 library(terra)
-#> terra 1.6.17
+#> terra 1.7.55
 library(rosettaPTF)
 
 # obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)
@@ -246,14 +255,15 @@ soildata <- resprop[complete.cases(resprop), c("mukey", varnames)]
 # run Rosetta on the mapunit-level aggregate data
 system.time(resrose <- run_rosetta(soildata[,varnames]))
 #>    user  system elapsed 
-#>     0.2     0.0     0.2
+#>    0.19    0.03    0.22
 
 # transfer mukey to result
-resrose$mukey <- soildata$mukey
+resprop$mukey <- as.numeric(resprop$mukey)
+resrose$mukey <- as.numeric(soildata$mukey)
 
 # merge property (input) and rosetta parameters (output) into RAT
-levels(res) <- merge(cats(res)[[1]], resprop, by = "mukey", all.x = TRUE)
-levels(res) <- merge(cats(res)[[1]], resrose, by = "mukey", all.x = TRUE)
+levels(res) <- merge(cats(res)[[1]], resprop, by.x = "ID", by.y = "mukey", all.x = TRUE, sort = FALSE)
+levels(res) <- merge(cats(res)[[1]], resrose, by.x = "ID", by.y = "mukey", all.x = TRUE, sort = FALSE)
 
 # convert categories based on mukey to numeric values
 res2 <- catalyze(res)
@@ -262,7 +272,7 @@ res2 <- catalyze(res)
 plot(res2, "log10_Ksat_mean")
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
 ### *SpatRaster* (terra) Input Example
 
@@ -287,13 +297,13 @@ res3 <- rast(list(
 # SpatRaster to data.frame interface (one call on all cells)
 system.time(test2 <- run_rosetta(res3))
 #>    user  system elapsed 
-#>   41.98    9.25   49.46
+#>   51.77    5.69   56.06
 
 # make a plot of the predicted Ksat (identical to mukey-based results)
 plot(test2, "log10_Ksat_mean")
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 
 You will notice the results for Ksat distribution are identical since
 the same input values were used, but the latter approach took longer to

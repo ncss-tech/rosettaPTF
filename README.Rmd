@@ -78,7 +78,15 @@ If you specify field capacity water content, you must specify bulk density. If y
 
 If you are using this package for the first time you will need to have Python installed and you will need to download the necessary modules. 
 
-You can set up {reticulate} to install modules into a virtual or Conda environment. {reticulate} offers `reticulate::install_python()` and `reticulate::install_miniconda()` to download and set up Python/Conda if you have not yet done so. 
+You can set up {reticulate} to install modules into a virtual environment. {reticulate} offers `reticulate::install_python()` to download and set up Python if you have not yet done so.
+
+For example, install a recent version of Python, and create a virtual environment called `"r-reticulate"`
+
+```{r, eval = FALSE}
+# download latest python 3.10.x
+reticulate::install_python(version = "3.10:latest")
+reticulate::virtualenv_create("r-reticulate")
+```
 
 ### Finding the `python` binaries
 
@@ -90,17 +98,19 @@ rosettaPTF::find_python()
 
 The first attempt makes use of `Sys.which()` to find installations available in the user path directory.
 
+<!--
 `find_python()` also provides an option for using ArcGIS Pro Conda environments--which may be needed for users who cannot install Conda by some other means. To use this option specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to locate both the ArcGIS Pro Conda environment and Python binaries in _C:/Program Files/ArcGIS/Pro/bin/Python_, for example:
 
 ```{r, eval=FALSE}
 rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 ```
+-->
 
 If automatic configuration via `find_python()` fails (returns `NULL`) you can manually set a path to the `python` executable with the {reticulate} `RETICULATE_PYTHON` environment variable: `Sys.setenv(RETICULATE_PYTHON = "path/to/python")` or `reticulate::use_python("path/to/python")`
 
 ### Install `rosetta-soil` Python Module
 
-The {rosettaPTF} `install_rosetta()` method wraps `reticulate::py_install("rosetta-soil")`. 
+The {rosettaPTF} `install_rosetta()` method wraps `reticulate::py_install("rosetta-soil")`. You may not need to install the `rosetta-soil` module if your environment is set up, as {reticulate} will install/upgrade dependencies of packages as specified in the package configuration section of the DESCRIPTION file.
 
 You can use `install_rosetta()` to install into custom environments by specifying `envname` as needed. After installing a new version of the module you should restart your R session.
 
@@ -165,11 +175,12 @@ soildata <- resprop[complete.cases(resprop), c("mukey", varnames)]
 system.time(resrose <- run_rosetta(soildata[,varnames]))
 
 # transfer mukey to result
-resrose$mukey <- soildata$mukey
+resprop$mukey <- as.numeric(resprop$mukey)
+resrose$mukey <- as.numeric(soildata$mukey)
 
 # merge property (input) and rosetta parameters (output) into RAT
-levels(res) <- merge(cats(res)[[1]], resprop, by = "mukey", all.x = TRUE)
-levels(res) <- merge(cats(res)[[1]], resrose, by = "mukey", all.x = TRUE)
+levels(res) <- merge(cats(res)[[1]], resprop, by.x = "ID", by.y = "mukey", all.x = TRUE, sort = FALSE)
+levels(res) <- merge(cats(res)[[1]], resrose, by.x = "ID", by.y = "mukey", all.x = TRUE, sort = FALSE)
 
 # convert categories based on mukey to numeric values
 res2 <- catalyze(res)
