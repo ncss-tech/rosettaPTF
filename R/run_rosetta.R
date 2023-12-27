@@ -180,7 +180,15 @@ run_rosetta.SpatRaster <- function(soildata,
                                    file = paste0(tempfile(),".grd"),
                                    nrows = nrow(soildata),
                                    overwrite = TRUE) {
-  terra::readStart(soildata)
+
+  if (!terra::inMemory(soildata)) {
+    terra::readStart(soildata)
+    on.exit({
+      try({
+        terra::readStop(soildata)
+      }, silent = TRUE)
+    }, add = TRUE)
+  }
 
   # create template brick
   out <- terra::rast(soildata)
@@ -190,6 +198,12 @@ run_rosetta.SpatRaster <- function(soildata,
   terra::nlyr(out) <- length(cnm)
   names(out) <- cnm
   out_info <- terra::writeStart(out, filename = file, overwrite = overwrite)
+
+  on.exit({
+    try({
+      out <- terra::writeStop(out)
+    }, silent = TRUE)
+  }, add = TRUE)
 
   start_row <- seq(1, out_info$nrows, nrows)
   n_row <- diff(c(start_row, out_info$nrows + 1))
@@ -226,11 +240,9 @@ run_rosetta.SpatRaster <- function(soildata,
     }
   }
 
-  out <- terra::writeStop(out)
-  terra::readStop(soildata)
+  # replace NaN with NA_real_ (note: not compatible with calling writeStop() on.exit())
+  # out <- terra::classify(out, cbind(NaN, NA_real_)) #terra::values(out)[is.nan(terra::values(out))] <- NA_real_
 
-  # replace NaN with NA_real_
-  terra::values(out)[is.nan(terra::values(out))] <- NA_real_
   out
 }
 
