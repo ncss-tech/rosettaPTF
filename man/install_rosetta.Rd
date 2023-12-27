@@ -9,6 +9,7 @@ install_rosetta(
   method = "auto",
   conda = "auto",
   pip = TRUE,
+  user = FALSE,
   system = FALSE,
   arcpy_path = getOption("rosettaPTF.arcpy_path")
 )
@@ -21,6 +22,8 @@ install_rosetta(
 \item{conda}{Default: \code{"auto"}}
 
 \item{pip}{\emph{logical}. Use \code{pip} for package installation? Default: \code{TRUE}. This is only relevant when Conda environments are used, as otherwise packages will be installed from the Conda repositories.}
+
+\item{user}{\emph{logical}. Default: \code{FALSE}. Pass \code{--user} flag. This should only be done if other installation methods fail and it is impossible to use a virtual environment.}
 
 \item{system}{\emph{logical}. Default: \code{FALSE}. If \code{TRUE}, try installing to system (user) site library with \code{system()} and set reticulate to use system Python.}
 
