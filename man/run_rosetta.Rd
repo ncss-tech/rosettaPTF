@@ -22,7 +22,7 @@
   rosetta_version = 3,
   cores = 1,
   core_thresh = 20000L,
-  file = paste0(tempfile(), ".grd"),
+  file = paste0(tempfile(), ".tif"),
   nrows = nrow(soildata)/(terra::ncell(soildata)/core_thresh),
   overwrite = TRUE
 )
@@ -33,7 +33,7 @@
   rosetta_version = 3,
   cores = 1,
   core_thresh = 20000L,
-  file = paste0(tempfile(), ".grd"),
+  file = paste0(tempfile(), ".tif"),
   nrows = nrow(soildata)/(terra::ncell(soildata)/core_thresh),
   overwrite = TRUE
 )
@@ -44,7 +44,7 @@
   rosetta_version = 3,
   cores = 1,
   core_thresh = 20000L,
-  file = paste0(tempfile(), ".grd"),
+  file = paste0(tempfile(), ".tif"),
   nrows = nrow(soildata)/(terra::ncell(soildata)/core_thresh),
   overwrite = TRUE
 )

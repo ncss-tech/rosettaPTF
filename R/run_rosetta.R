@@ -124,7 +124,7 @@ run_rosetta.RasterStack <- function(soildata,
                                     rosetta_version = 3,
                                     cores = 1,
                                     core_thresh = 20000L,
-                                    file = paste0(tempfile(),".grd"),
+                                    file = paste0(tempfile(), ".tif"),
                                     nrows = nrow(soildata) / (terra::ncell(soildata) / core_thresh),
                                     overwrite = TRUE) {
   ## for in memory only, can just convert to data.frame and use that method
@@ -156,7 +156,7 @@ run_rosetta.RasterBrick <- function(soildata,
                                     rosetta_version = 3,
                                     cores = 1,
                                     core_thresh = 20000L,
-                                    file = paste0(tempfile(),".grd"),
+                                    file = paste0(tempfile(), ".tif"),
                                     nrows = nrow(soildata) / (terra::ncell(soildata) / core_thresh),
                                     overwrite = TRUE) {
   run_rosetta(terra::rast(soildata),
@@ -182,7 +182,7 @@ run_rosetta.SpatRaster <- function(soildata,
                                    rosetta_version = 3,
                                    cores = 1,
                                    core_thresh = 20000L,
-                                   file = paste0(tempfile(),".grd"),
+                                   file = paste0(tempfile(), ".tif"),
                                    nrows = nrow(soildata) / (terra::ncell(soildata) / core_thresh),
                                    overwrite = TRUE) {
 
