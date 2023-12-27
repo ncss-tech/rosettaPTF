@@ -50,11 +50,11 @@ test_that("run on SSURGO data", {
   resrose <- rosettaPTF::run_rosetta(soildata[,varnames])
   resrose$mukey <- resprop$mukey
 
-  rdf <- data.frame(mukey = as.numeric(terra::cats(res)[[1]][["category"]]))
+  rdf <- data.frame(mukey = as.numeric(terra::cats(res)[[1]][[1]]))
   rdf2 <- merge(rdf, resprop, by = "mukey", all.x = TRUE, sort = FALSE, incomparables = NA)
   rdf3 <- merge(rdf2, resrose, by = "mukey", all.x = TRUE, sort = FALSE, incomparables = NA)
   rdf3 <- rdf3[match(rdf3[["mukey"]], umukeys, incomparables = NA),][1:nrow(resprop),]
-  levels(res) <- data.frame(ID = 1:nrow(rdf3), rdf3)
+  terra::set.cats(res, 1, data.frame(ID = 1:nrow(rdf3), rdf3))
 
   # @params x a SpatRaster with `levels()` set such that `cats(x)[[1]]` defines the mapping between raster values and one or more new attributes
   # @params columns character vector of column names to map from the categorical levels to raster values
