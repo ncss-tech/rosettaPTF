@@ -109,8 +109,8 @@ find_python <- function(envname = NULL,
       options(rosettaPTF.python_path = PYEXE_PATH)
       options(rosettaPTF.arcpy_path = arcpy_path)
 
-      subres
-    }, silent = TRUE)
+      subres[grep("envs/arcgispro-py3", subres, fixed = TRUE)]
+    }, silent = FALSE)
 
   # User can/should use regular reticulate methods for this
 
