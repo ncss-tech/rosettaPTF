@@ -21,8 +21,9 @@
   vars = NULL,
   rosetta_version = 3,
   cores = 1,
+  core_thresh = 20000L,
   file = paste0(tempfile(), ".grd"),
-  nrows = nrow(soildata),
+  nrows = nrow(soildata)/(terra::ncell(soildata)/core_thresh),
   overwrite = TRUE
 )
 
@@ -31,8 +32,9 @@
   vars = NULL,
   rosetta_version = 3,
   cores = 1,
+  core_thresh = 20000L,
   file = paste0(tempfile(), ".grd"),
-  nrows = nrow(soildata),
+  nrows = nrow(soildata)/(terra::ncell(soildata)/core_thresh),
   overwrite = TRUE
 )
 
@@ -41,8 +43,9 @@
   vars = NULL,
   rosetta_version = 3,
   cores = 1,
+  core_thresh = 20000L,
   file = paste0(tempfile(), ".grd"),
-  nrows = nrow(soildata),
+  nrows = nrow(soildata)/(terra::ncell(soildata)/core_thresh),
   overwrite = TRUE
 )
 }
@@ -57,9 +60,11 @@
 
 \item{cores}{number of cores; used only for processing \emph{SpatRaster} or \emph{Raster*} input}
 
+\item{core_thresh}{Magic number for determining processing chunk size. Default \code{20000L}. Used to calculate default \code{nrows}}
+
 \item{file}{path to write incremental raster processing output for large inputs that do not fit in memory; passed to \code{terra::writeStart()} and used only for processing \emph{SpatRaster} or \emph{Raster*} input; defaults to a temporary file created by \code{tempfile()} if needed}
 
-\item{nrows}{number of rows to use per block; passed to \code{terra::readValues()} \code{terra::writeValues()}; used only for processing \emph{SpatRaster} or \emph{Raster*} input; defaults to number of rows in dataset if needed}
+\item{nrows}{number of rows to use per block chunk; passed to \code{terra::readValues()} and \code{terra::writeValues()}; used only for processing \emph{SpatRaster} or \emph{Raster*} inputs. Defaults to the total number of rows divided by the number of cells divided by \code{core_thresh}.}
 
 \item{overwrite}{logical; overwrite \code{file}? passed to \code{terra::writeStart()}; defaults to \code{TRUE} if needed}
 }

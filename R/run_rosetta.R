@@ -54,6 +54,7 @@ run_rosetta <- function(soildata,
                         vars = NULL,
                         rosetta_version = 3,
                         cores = 1,
+                        core_thresh = NULL,
                         file = NULL,
                         nrows = NULL,
                         overwrite = NULL)
@@ -122,8 +123,9 @@ run_rosetta.RasterStack <- function(soildata,
                                     vars = NULL,
                                     rosetta_version = 3,
                                     cores = 1,
+                                    core_thresh = 20000L,
                                     file = paste0(tempfile(),".grd"),
-                                    nrows = nrow(soildata),
+                                    nrows = nrow(soildata) / (terra::ncell(soildata) / core_thresh),
                                     overwrite = TRUE) {
   ## for in memory only, can just convert to data.frame and use that method
   # res <- run_rosetta(raster::as.data.frame(soildata),
@@ -153,8 +155,9 @@ run_rosetta.RasterBrick <- function(soildata,
                                     vars = NULL,
                                     rosetta_version = 3,
                                     cores = 1,
+                                    core_thresh = 20000L,
                                     file = paste0(tempfile(),".grd"),
-                                    nrows = nrow(soildata),
+                                    nrows = nrow(soildata) / (terra::ncell(soildata) / core_thresh),
                                     overwrite = TRUE) {
   run_rosetta(terra::rast(soildata),
               vars = vars,
@@ -166,8 +169,9 @@ run_rosetta.RasterBrick <- function(soildata,
   )
 }
 #' @param cores number of cores; used only for processing _SpatRaster_ or _Raster*_ input
+#' @param core_thresh Magic number for determining processing chunk size. Default `20000L`. Used to calculate default `nrows`
 #' @param file path to write incremental raster processing output for large inputs that do not fit in memory; passed to `terra::writeStart()` and used only for processing _SpatRaster_ or _Raster*_ input; defaults to a temporary file created by `tempfile()` if needed
-#' @param nrows number of rows to use per block; passed to `terra::readValues()` `terra::writeValues()`; used only for processing _SpatRaster_ or _Raster*_ input; defaults to number of rows in dataset if needed
+#' @param nrows number of rows to use per block chunk; passed to `terra::readValues()` and `terra::writeValues()`; used only for processing _SpatRaster_ or _Raster*_ inputs. Defaults to the total number of rows divided by the number of cells divided by `core_thresh`.
 #' @param overwrite logical; overwrite `file`? passed to `terra::writeStart()`; defaults to `TRUE` if needed
 #' @export
 #' @rdname run_rosetta
@@ -177,8 +181,9 @@ run_rosetta.SpatRaster <- function(soildata,
                                    vars = NULL,
                                    rosetta_version = 3,
                                    cores = 1,
+                                   core_thresh = 20000L,
                                    file = paste0(tempfile(),".grd"),
-                                   nrows = nrow(soildata),
+                                   nrows = nrow(soildata) / (terra::ncell(soildata) / core_thresh),
                                    overwrite = TRUE) {
 
   if (!terra::inMemory(soildata)) {
@@ -208,12 +213,12 @@ run_rosetta.SpatRaster <- function(soildata,
   start_row <- seq(1, out_info$nrows, nrows)
   n_row <- diff(c(start_row, out_info$nrows + 1))
 
-  if (cores > 1 && out_info$nrows*ncol(soildata) > 20000) {
+  if (cores > 1 && out_info$nrows*ncol(soildata) > core_thresh) {
     cls <- parallel::makeCluster(cores)
     on.exit(parallel::stopCluster(cls))
 
     # TODO: can blocks be parallelized?
-    for(i in seq_along(start_row)) {
+    for (i in seq_along(start_row)) {
       if (n_row[i] > 0) {
         blockdata <- terra::readValues(soildata, row = start_row[i], nrows = n_row[i], dataframe = TRUE)
         ids <- 1:nrow(blockdata)
@@ -221,7 +226,8 @@ run_rosetta.SpatRaster <- function(soildata,
         # run_rosetta is a "costly" function and not particularly fast, so in theory parallel would help
 
         # parallel within-block processing
-        X <- split(blockdata, rep(seq(from = 1, to = floor(length(ids) / 20000) + 1), each = 20000)[1:length(ids)])
+        n <- floor(length(ids) / core_thresh / cores) + 1
+        X <- split(blockdata, rep(seq(from = 1, to = n, each = n)))[1:length(ids)]
         r <- do.call('rbind', parallel::clusterApply(cls, X, function(x) rosettaPTF::run_rosetta(x,
                                                                                                  vars = vars,
                                                                                                  rosetta_version = rosetta_version)))
@@ -230,7 +236,7 @@ run_rosetta.SpatRaster <- function(soildata,
       }
     }
   } else {
-    for(i in seq_along(start_row)) {
+    for (i in seq_along(start_row)) {
       if (n_row[i] > 0) {
         foo <- rosettaPTF::run_rosetta(terra::readValues(soildata, row = start_row[i], nrows = n_row[i], dataframe = TRUE),
                                        vars = vars,
