@@ -45,7 +45,7 @@ find_python <- function(envname = NULL,
   }
 
   if (is.null(pypath_before)) {
-    pypath <- try(.find_python(envname = envname, pypath = pypath_before, arcpy_path = arcpy_path))
+    pypath <- try(.find_python(envname = envname, pypath = pypath_before, arcpy_path = arcpy_path), silent = TRUE)
 
     if (!inherits(pypath, 'try-error')) {
       options(rosettaPTF.python_path = pypath)
@@ -77,7 +77,7 @@ find_python <- function(envname = NULL,
         y
       })
       idx <- which.max(order(as.character(xxx)))
-      res <- try(reticulate::use_python(x$python_versions[idx]))
+      res <- try(reticulate::use_python(x$python_versions[idx]), silent = TRUE)
     }
 
     # otherwise find newest python installation
@@ -90,7 +90,7 @@ find_python <- function(envname = NULL,
           y
         })
         idx <- which.max(order(as.character(xxx)))
-        res <- try(reticulate::use_python(x$python_versions[idx]))
+        res <- try(reticulate::use_python(x$python_versions[idx]), silent = TRUE)
       }
     }
   }
@@ -134,6 +134,6 @@ find_python <- function(envname = NULL,
     stop(res, call. = FALSE)
   }
 
-  try(reticulate::py_config())
+  try(reticulate::py_config(), silent = TRUE)
   res
 }

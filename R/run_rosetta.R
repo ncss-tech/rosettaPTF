@@ -186,7 +186,7 @@ run_rosetta.SpatRaster <- function(soildata,
                                    nrows = nrow(soildata) / (terra::ncell(soildata) / core_thresh),
                                    overwrite = TRUE) {
 
-  if (!terra::inMemory(soildata)) {
+  if (any(!terra::inMemory(soildata))) {
     terra::readStart(soildata)
     on.exit({
       try({
@@ -227,7 +227,7 @@ run_rosetta.SpatRaster <- function(soildata,
 
         # parallel within-block processing
         n <- floor(length(ids) / core_thresh / cores) + 1
-        X <- split(blockdata, rep(seq(from = 1, to = n, each = n)))[1:length(ids)]
+        X <- split(blockdata, rep(seq(from = 1, to = n)))[1:length(ids)]
         r <- do.call('rbind', parallel::clusterApply(cls, X, function(x) rosettaPTF::run_rosetta(x,
                                                                                                  vars = vars,
                                                                                                  rosetta_version = rosetta_version)))

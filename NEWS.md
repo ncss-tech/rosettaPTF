@@ -1,3 +1,15 @@
+# rosettaPTF 0.1.5
+
+* Fix check logic for whether input SpatRaster is in memory
+
+# rosettaPTF 0.1.4
+
+* Added arguments to `install_rosetta()` 
+
+  * `system` argument for installing to user site packages with `--user` flag
+  
+  * `upgrade` argument for forcing upgrade of rosetta-soil module
+
 # rosettaPTF 0.1.3
 
 * Fixes for recent changes in {reticulate} (>= 1.29)
