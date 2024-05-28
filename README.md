@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/ncss-tech/rosettaPTF/workflows/R-CMD-check/badge.svg)](https://github.com/ncss-tech/rosettaPTF/actions)
 [![HTML
-Docs](https://camo.githubusercontent.com/f7ba98e46ecd14313e0e8a05bec3f92ca125b8f36302a5b1679d4a949bccbe31/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f63732d48544d4c2d696e666f726d6174696f6e616c)](https://ncss-tech.github.io/rosettaPTF/)
+Docs](https://img.shields.io/badge/docs-HTML-informational)](https://ncss-tech.github.io/rosettaPTF/)
 [![codecov](https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3)](https://codecov.io/gh/ncss-tech/rosettaPTF)
 <!-- badges: end -->
 
@@ -46,6 +46,8 @@ will be notified.
 
 ``` r
 library(rosettaPTF)
+#> Error in system2(command = python, args = shQuote(script), stdout = TRUE,  : 
+#>   'CreateProcess' failed to run 'C:\Users\ANDREW~1.BRO\ONEDRI~1\DOCUME~1\VIRTUA~1\R-RETI~1\Scripts\python.exe "C:/Users/Andrew.G.Brown/AppData/Local/R/win-library/4.3/reticulate/config/config.py"' "C:/Users/Andrew.G.Brown/OneDrive - USDA/Documents/.virtualenvs/r-reticulate/Scripts/python.exe"
 ```
 
 ### `rosetta-soil` Python module
@@ -121,7 +123,7 @@ reticulate::virtualenv_create("r-reticulate")
 
 ``` r
 rosettaPTF::find_python()
-#> [1] "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate/Scripts/python.exe"
+#> [1] "C:/Program Files/Python312/python.exe"
 ```
 
 `find_python()` provides heuristics for setting up {reticulate} to use
@@ -132,9 +134,8 @@ available in the user path directory.
 
 <!--
 `find_python()` also provides an option for using ArcGIS Pro Conda environments--which may be needed for users who cannot install Conda by some other means. To use this option specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to locate both the ArcGIS Pro Conda environment and Python binaries in _C:/Program Files/ArcGIS/Pro/bin/Python_, for example:
-
-
-```r
+&#10;
+``` r
 rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 ```
 -->
@@ -159,8 +160,7 @@ module you should restart your R session.
 
 ``` r
 rosettaPTF::install_rosetta()
-#> Using virtual environment "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate" ...
-#> + "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate/Scripts/python.exe" -m pip install --upgrade --no-user rosetta-soil
+#> Using virtual environment "~/.virtualenvs/r-reticulate" ...
 #> [1] TRUE
 ```
 
@@ -236,12 +236,19 @@ results (1:1 with `mukey`).
 ``` r
 library(soilDB)
 library(terra)
-#> terra 1.7.55
+#> Warning: package 'terra' was built under R version 4.3.3
+#> terra 1.7.78
+```
+
+``` r
 library(rosettaPTF)
 
 # obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)
 res <- mukey.wcs(aoi = list(aoi = c(-114.16, 47.65,-114.08, 47.68), crs = 'EPSG:4326'))
 #> Loading required namespace: sf
+```
+
+``` r
 
 # request input data from SDA
 varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
@@ -255,7 +262,10 @@ soildata <- resprop[complete.cases(resprop), c("mukey", varnames)]
 # run Rosetta on the mapunit-level aggregate data
 system.time(resrose <- run_rosetta(soildata[,varnames]))
 #>    user  system elapsed 
-#>    0.19    0.03    0.22
+#>    0.03    0.00    0.06
+```
+
+``` r
 
 # transfer mukey to result
 resprop$mukey <- as.numeric(resprop$mukey)
@@ -297,7 +307,10 @@ res3 <- rast(list(
 # SpatRaster to data.frame interface (one call on all cells)
 system.time(test2 <- run_rosetta(res3))
 #>    user  system elapsed 
-#>   51.77    5.69   56.06
+#>    6.20    0.55   14.42
+```
+
+``` r
 
 # make a plot of the predicted Ksat (identical to mukey-based results)
 plot(test2, "log10_Ksat_mean")
@@ -307,9 +320,9 @@ plot(test2, "log10_Ksat_mean")
 
 You will notice the results for Ksat distribution are identical since
 the same input values were used, but the latter approach took longer to
-run. The time difference is the difference of estimating \~40 (1
-estimate per mapunit key) versus \~30,000 (1 estimate per raster cell)
-sets of Rosetta parameters.
+run. The time difference is the difference of estimating ~40 (1 estimate
+per mapunit key) versus ~30,000 (1 estimate per raster cell) sets of
+Rosetta parameters.
 
 ## Extended Output with `Rosetta` S3 Class
 
