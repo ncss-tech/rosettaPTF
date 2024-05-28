@@ -83,7 +83,9 @@
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ncss-tech/rosettaPTF"</span><span class="op">)</span></span></code></pre></div>
 <p>Then load the <code>rosetta-soil</code> module by loading the R package. If you do not have an available <code>python</code> installation or <code>rosetta-soil</code> module you will be notified.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncss-tech/rosettaPTF" class="external-link">rosettaPTF</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncss-tech/rosettaPTF" class="external-link">rosettaPTF</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in system2(command = python, args = shQuote(script), stdout = TRUE,  : </span></span>
+<span><span class="co">#&gt;   'CreateProcess' failed to run 'C:\Users\ANDREW~1.BRO\ONEDRI~1\DOCUME~1\VIRTUA~1\R-RETI~1\Scripts\python.exe "C:/Users/Andrew.G.Brown/AppData/Local/R/win-library/4.3/reticulate/config/config.py"' "C:/Users/Andrew.G.Brown/OneDrive - USDA/Documents/.virtualenvs/r-reticulate/Scripts/python.exe"</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="rosetta-soil-python-module">
 <code>rosetta-soil</code> Python module<a class="anchor" aria-label="anchor" href="#rosetta-soil-python-module"></a>
@@ -136,14 +138,13 @@
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate/Scripts/python.exe"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "C:/Program Files/Python312/python.exe"</span></span></code></pre></div>
 <p><code><a href="reference/find_python.html">find_python()</a></code> provides heuristics for setting up {reticulate} to use Python in commonly installed locations.</p>
 <p>The first attempt makes use of <code><a href="https://rdrr.io/r/base/Sys.which.html" class="external-link">Sys.which()</a></code> to find installations available in the user path directory.</p>
 <!--
 `find_python()` also provides an option for using ArcGIS Pro Conda environments--which may be needed for users who cannot install Conda by some other means. To use this option specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to locate both the ArcGIS Pro Conda environment and Python binaries in _C:/Program Files/ArcGIS/Pro/bin/Python_, for example:
-
-
-```r
+&#10;
+``` r
 rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 ```
 -->
@@ -156,8 +157,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <p>You can use <code><a href="reference/install_rosetta.html">install_rosetta()</a></code> to install into custom environments by specifying <code>envname</code> as needed. After installing a new version of the module you should restart your R session.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/install_rosetta.html">install_rosetta</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using virtual environment "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate" ...</span></span>
-<span><span class="co">#&gt; + "C:/Users/Andrew/OneDrive/Documents/.virtualenvs/r-reticulate/Scripts/python.exe" -m pip install --upgrade --no-user rosetta-soil</span></span>
+<span><span class="co">#&gt; Using virtual environment "~/.virtualenvs/r-reticulate" ...</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Alternately, to install the module manually with <code>pip</code> you can run the following command. This assumes a Python 3 binary called <code>python</code> can be found on your path.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install rosetta-soil</span></code></pre></div>
@@ -218,13 +218,16 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ncss-tech.github.io/soilDB/" class="external-link">soilDB</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; terra 1.7.55</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncss-tech/rosettaPTF" class="external-link">rosettaPTF</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: package 'terra' was built under R version 4.3.3</span></span>
+<span><span class="co">#&gt; terra 1.7.78</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncss-tech/rosettaPTF" class="external-link">rosettaPTF</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">mukey.wcs</span><span class="op">(</span>aoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>aoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">114.16</span>, <span class="fl">47.65</span>,<span class="op">-</span><span class="fl">114.08</span>, <span class="fl">47.68</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">'EPSG:4326'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required namespace: sf</span></span>
-<span></span>
+<span><span class="co">#&gt; Loading required namespace: sf</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># request input data from SDA</span></span>
 <span><span class="va">varnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sandtotal_r"</span>, <span class="st">"silttotal_r"</span>, <span class="st">"claytotal_r"</span>, <span class="st">"dbthirdbar_r"</span><span class="op">)</span></span>
 <span><span class="va">resprop</span> <span class="op">&lt;-</span> <span class="fu">get_SDA_property</span><span class="op">(</span>property <span class="op">=</span> <span class="va">varnames</span>,</span>
@@ -237,8 +240,9 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <span><span class="co"># run Rosetta on the mapunit-level aggregate data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resrose</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">[</span>,<span class="va">varnames</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;    0.19    0.03    0.22</span></span>
-<span></span>
+<span><span class="co">#&gt;    0.03    0.00    0.06</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># transfer mukey to result</span></span>
 <span><span class="va">resprop</span><span class="op">$</span><span class="va">mukey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">resprop</span><span class="op">$</span><span class="va">mukey</span><span class="op">)</span></span>
 <span><span class="va">resrose</span><span class="op">$</span><span class="va">mukey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">$</span><span class="va">mukey</span><span class="op">)</span></span>
@@ -260,7 +264,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 </h3>
 <p>The above example shows how to create raster output based on <em>discrete</em> (SSURGO polygon derived) data. A more general case is when each raster cell has “unique” values (i.e. <em>continuous</em> raster inputs). <code><a href="reference/run_rosetta.html">run_rosetta()</a></code> has an S3 method defined for <em>SpatRaster</em> input.</p>
 <p>We previously merged the input data from SDA (an ordinary <em>data.frame</em>) into the RAT of <code>res</code>; exploiting the linkage between <code>mukey</code> and raster cells to make the map. For comparison with the <code>mukey</code> results above we stack de-ratified input layers and create a new <em>SpatRaster</em>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="va">res2</span><span class="op">[[</span><span class="st">"sandtotal_r"</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>  <span class="va">res2</span><span class="op">[[</span><span class="st">"silttotal_r"</span><span class="op">]</span><span class="op">]</span>,</span>
@@ -271,8 +275,9 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <span><span class="co"># SpatRaster to data.frame interface (one call on all cells)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">test2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">res3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   51.77    5.69   56.06</span></span>
-<span></span>
+<span><span class="co">#&gt;    6.20    0.55   14.42</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># make a plot of the predicted Ksat (identical to mukey-based results)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">test2</span>, <span class="st">"log10_Ksat_mean"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-11-1.png" width="100%"></p>
@@ -286,7 +291,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <h3 id="make-a-rosetta-class-instance-for-running-extended-output-methods">Make a <em>Rosetta</em> class instance for running extended output methods<a class="anchor" aria-label="anchor" href="#make-a-rosetta-class-instance-for-running-extended-output-methods"></a>
 </h3>
 <p>Note that each instance of <em>Rosetta</em> has a fixed version and model code, so if you have heterogeneous input you need to iterate over model code.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># defaults are version 3 and model code 3 (4 parameters: sand, silt, clay and bulk density)</span></span>
 <span><span class="va">my_rosetta</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Rosetta-class.html">Rosetta</a></span><span class="op">(</span>rosetta_version <span class="op">=</span> <span class="fl">3</span>, model_code <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -294,7 +299,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <h3 id="predict-rosetta-parameter-values-and-standard-deviations-from-a-rosetta-instance">
 <code>predict()</code> Rosetta Parameter Values and Standard Deviations from a <em>Rosetta</em> instance<a class="anchor" aria-label="anchor" href="#predict-rosetta-parameter-values-and-standard-deviations-from-a-rosetta-instance"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt;            [,1]     [,2]      [,3]      [,4]      [,5]</span></span>
@@ -310,7 +315,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <h3 id="extended-rosetta-predictions-parameter-distributions-and-summary-statistics-after-zhang--schaap-2017-with-ann_predict">Extended <em>Rosetta</em> Predictions, Parameter Distributions and Summary Statistics after Zhang &amp; Schaap (2017) with <code>ann_predict()</code>
 <a class="anchor" aria-label="anchor" href="#extended-rosetta-predictions-parameter-distributions-and-summary-statistics-after-zhang--schaap-2017-with-ann_predict"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ann_predict.html">ann_predict</a></span><span class="op">(</span><span class="va">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ann_predict() is defined for objects with class Rosetta; see `Rosetta()` to create a new instance</span></span>
 <span><span class="co">#&gt; $var_names</span></span>
@@ -450,7 +455,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/ncss-tech/rosettaPTF/actions" class="external-link"><img src="https://github.com/ncss-tech/rosettaPTF/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://ncss-tech.github.io/rosettaPTF/" class="external-link"><img src="https://camo.githubusercontent.com/f7ba98e46ecd14313e0e8a05bec3f92ca125b8f36302a5b1679d4a949bccbe31/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f63732d48544d4c2d696e666f726d6174696f6e616c" alt="HTML Docs"></a></li>
+<li><a href="https://ncss-tech.github.io/rosettaPTF/" class="external-link"><img src="https://img.shields.io/badge/docs-HTML-informational" alt="HTML Docs"></a></li>
 <li><a href="https://codecov.io/gh/ncss-tech/rosettaPTF" class="external-link"><img src="https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3" alt="codecov"></a></li>
 </ul>
 </div>
