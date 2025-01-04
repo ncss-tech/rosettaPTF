@@ -50,7 +50,7 @@
 )
 }
 \arguments{
-\item{soildata}{A list of numeric vectors each containing 3 to 6 values: \code{"sand"}, \code{"silt"}, \code{"clay"}, \code{"bulkdensity"}, \code{"th33"}, \code{"th1500"}, a \emph{data.frame} or \emph{matrix} with 3 to 6 columns OR a \verb{Raster*}/\code{SpatRaster} object with 3 to 6 layers.}
+\item{soildata}{A list of numeric vectors each containing 3 to 6 values: \code{"sand"}, \code{"silt"}, \code{"clay"}, \code{"bulkdensity"}, \code{"th33"}, \code{"th1500"}, a \emph{data.frame} or \emph{matrix} with 3 to 6 columns OR a \verb{Raster*}/\code{SpatRaster} object with 3 to 6 layers. Sand, silt, and clay must sum to a total of 100\%.}
 
 \item{vars}{\emph{character}. Optional: names and order of custom column names if \code{soildata} is a \emph{data.frame}, \emph{RasterStack}, \emph{RasterBrick} or \emph{SpatRaster}. Default \code{NULL} assumes input column order follows \code{sand}, \code{silt}, \code{clay}, \code{bulkdensity}, \code{th33}, \code{th1500} and does not check names.}
 
@@ -77,6 +77,8 @@ A \emph{data.frame} containing \code{mean} and \code{stdev} for following five c
 \item \code{"log10(npar)"}, 'n' shape parameter
 \item \code{"log10(Ksat)"}, saturated hydraulic conductivity, log10(cm/day)
 }
+
+If the sum of sand, silt, and clay is not 100\%, the parameter value estimates will be \code{NaN}.
 }
 \description{
 Run \code{rosetta()} method from Python module

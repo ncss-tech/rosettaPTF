@@ -1,6 +1,6 @@
 #' Heuristics to Find Python
 #'
-#' If you are using the {rosettaPTF} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up {reticulate} to install into a virtual or Conda environment. Usually {reticulate} should cover most or all of the setup.
+#' If you are using the \{rosettaPTF\} package for the first time you will need to have Python installed to obtain the necessary modules. You can set up \{reticulate\} to install into a virtual or Conda environment. Usually \{reticulate\} should cover most or all of the setup.
 #'
 #' @param envname As in `reticulate::py_install()`:	The name, or full path, of the environment in which Python packages are to be installed. When NULL (the default), the active environment as set by the RETICULATE_PYTHON_ENV variable will be used; if that is unset, then the r-reticulate environment will be used.
 #' @param pypath Optional: Path to `python` executable
@@ -9,7 +9,7 @@
 #'@details
 #' If you have Python set up correctly you should be able to run `reticulate::py_config()` or `reticulate::py_discover_config()` and discover your shared library.
 #'
-#' A common problem with {reticulate} is not pointing at the correct (or any) `python` binary or `libpython` shared library. Use `reticulate::use_python("/path/to/python", required = TRUE)` to set the path or, alternately, be sure `python` can be found on your PATH. {reticulate} has a preference for Python environments that have `numpy` installed.
+#' A common problem with \{reticulate\} is not pointing at the correct (or any) `python` binary or `libpython` shared library. Use `reticulate::use_python("/path/to/python", required = TRUE)` to set the path or, alternately, be sure `python` can be found on your PATH. \{reticulate\} has a preference for Python environments that have `numpy` installed.
 #'
 #' ### Windows / Miniconda
 #'

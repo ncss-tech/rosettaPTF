@@ -1,16 +1,19 @@
 #' Run `rosetta()` method from Python module
 #'
-#' @param soildata A list of numeric vectors each containing 3 to 6 values: `"sand"`, `"silt"`, `"clay"`, `"bulkdensity"`, `"th33"`, `"th1500"`, a _data.frame_ or _matrix_ with 3 to 6 columns OR a `Raster*`/`SpatRaster` object with 3 to 6 layers.
-#'
+#' @param soildata A list of numeric vectors each containing 3 to 6 values: `"sand"`, `"silt"`, `"clay"`, `"bulkdensity"`, `"th33"`, `"th1500"`, a _data.frame_ or _matrix_ with 3 to 6 columns OR a `Raster*`/`SpatRaster` object with 3 to 6 layers. Sand, silt, and clay must sum to a total of 100%.
 #' @param vars _character_. Optional: names and order of custom column names if `soildata` is a _data.frame_, _RasterStack_, _RasterBrick_ or _SpatRaster_. Default `NULL` assumes input column order follows `sand`, `silt`, `clay`, `bulkdensity`, `th33`, `th1500` and does not check names.
 #' @param rosetta_version Default: 3
 #' @param ... additional arguments not used
+#'
 #' @return A _data.frame_ containing `mean` and `stdev` for following five columns (parameters for van Genuchten-Mualem equation)
 #' -	`"theta_r"`, residual water content
 #' -	`"theta_s"`, saturated water content
 #' -	`"log10(alpha)"`, 'alpha' shape parameter, log10(1/cm)
 #' -	`"log10(npar)"`, 'n' shape parameter
 #' -	`"log10(Ksat)"`, saturated hydraulic conductivity, log10(cm/day)
+#'
+#' If the sum of sand, silt, and clay is not 100%, the parameter value estimates will be `NaN`.
+#'
 #' @aliases run_rosetta
 #' @rdname run_rosetta
 #' @export
