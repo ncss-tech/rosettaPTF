@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 ^rosettaPTF\.Rproj$
+README.html
+/doc/
+/Meta/

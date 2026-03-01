@@ -6,7 +6,7 @@
 \alias{rosettaPTF-package}
 \title{rosettaPTF: R Frontend for Rosetta Pedotransfer Functions}
 \description{
-Access Python rosetta-soil pedotransfer functions in an R environment. Rosetta is a neural network-based model for predicting unsaturated soil hydraulic parameters from basic soil characterization data. The model predicts parameters for the van Genuchten unsaturated soil hydraulic properties model, using sand, silt, and clay, bulk density and water content. The codebase is now maintained by Dr. Todd Skaggs and other U.S. Department of Agriculture employees. This R package is intended to provide for use cases that involve many thousands of calls to the pedotransfer function. Less demanding use cases are encouraged to use the web interface or API endpoint. There are additional wrappers of the API endpoints provided by the soilDB R package `ROSETTA()` method.
+Access the rosetta-soil Python pedotransfer functions from R. Rosetta is a neural network-based model for predicting unsaturated soil hydraulic parameters from basic soil characterization data (sand, silt, clay, bulk density, and water content). Predictions are made for the van Genuchten unsaturated hydraulic properties model, with uncertainty quantification via bootstrap ensemble. Designed for efficient batch processing of large datasets through vectorized computation and optional parallel processing.
 }
 \seealso{
 Useful links:

@@ -16,7 +16,7 @@ SoilDataFromArray(x)
 an object reference to a Rosetta \emph{SoilData} Python object constructed from \code{x}
 }
 \description{
-\code{SoilDataFromArray}: convert a list of numeric vectors containing soil properties to a \code{rosetta.rosetta.SoilData} class
+\code{SoilDataFromArray}: convert a list of numeric vectors containing soil properties to a \code{rosetta.rosetta.SoilData} class. In \code{rosetta-soil} >= 0.3, direct list input is preferred.
 
 \verb{py_to_r(<rosetta.rosetta.SoilData>)}: Wrapper S3 method for SoilData objects to prevent automatic conversion of SoilData (subclass of \code{"python.builtin.list"}) to an R \code{"list"}
 }

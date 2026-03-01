@@ -10,16 +10,35 @@
 \alias{run_rosetta.SpatRaster}
 \title{Run \code{rosetta()} method from Python module}
 \usage{
-\method{run_rosetta}{default}(soildata, vars = NULL, rosetta_version = 3, ...)
+\method{run_rosetta}{default}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  estimate_type = "log",
+  ...
+)
 
-\method{run_rosetta}{data.frame}(soildata, vars = NULL, rosetta_version = 3, ...)
+\method{run_rosetta}{data.frame}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  estimate_type = "log",
+  ...
+)
 
-\method{run_rosetta}{matrix}(soildata, vars = NULL, rosetta_version = 3, ...)
+\method{run_rosetta}{matrix}(
+  soildata,
+  vars = NULL,
+  rosetta_version = 3,
+  estimate_type = "log",
+  ...
+)
 
 \method{run_rosetta}{RasterStack}(
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  estimate_type = "log",
   cores = 1,
   core_thresh = 20000L,
   file = paste0(tempfile(), ".tif"),
@@ -31,6 +50,7 @@
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  estimate_type = "log",
   cores = 1,
   core_thresh = 20000L,
   file = paste0(tempfile(), ".tif"),
@@ -42,6 +62,7 @@
   soildata,
   vars = NULL,
   rosetta_version = 3,
+  estimate_type = "log",
   cores = 1,
   core_thresh = 20000L,
   file = paste0(tempfile(), ".tif"),
@@ -56,6 +77,8 @@
 
 \item{rosetta_version}{Default: 3}
 
+\item{estimate_type}{\emph{character}. One of \code{"log"} (default), \code{"arith"}, or \code{"geo"}. Only used if \code{rosetta-soil} >= 0.3.1. Default \code{"log"} preserves logarithmic (log10) scale for \code{alpha}, \code{npar}, and \code{Ksat}. \code{"geo"} returns the geometric mean of bootstrap estimates (exponent of the mean of log-transformed values). This is often preferred for parameters that vary by orders of magnitude, such as \code{alpha} and \code{Ksat}.}
+
 \item{...}{additional arguments not used}
 
 \item{cores}{number of cores; used only for processing \emph{SpatRaster} or \emph{Raster*} input}
@@ -69,17 +92,25 @@
 \item{overwrite}{logical; overwrite \code{file}? passed to \code{terra::writeStart()}; defaults to \code{TRUE} if needed}
 }
 \value{
-A \emph{data.frame} containing \code{mean} and \code{stdev} for following five columns (parameters for van Genuchten-Mualem equation)
+A \emph{data.frame} containing \code{mean} and \code{stdev} for the following columns (parameters for van Genuchten-Mualem equation)
 \itemize{
 \item \code{"theta_r"}, residual water content
 \item \code{"theta_s"}, saturated water content
-\item \code{"log10(alpha)"}, 'alpha' shape parameter, log10(1/cm)
-\item \code{"log10(npar)"}, 'n' shape parameter
-\item \code{"log10(Ksat)"}, saturated hydraulic conductivity, log10(cm/day)
+\item \code{"alpha"}, 'alpha' shape parameter (1/cm). Logarithmic (log10) scale if \code{estimate_type="log"} (default); Geometric mean if \code{estimate_type="geo"}.
+\item \code{"npar"}, 'n' shape parameter. Logarithmic (log10) scale if \code{estimate_type="log"} (default); Geometric mean if \code{estimate_type="geo"}.
+\item \code{"Ksat"}, saturated hydraulic conductivity (cm/day). Logarithmic (log10) scale if \code{estimate_type="log"} (default); Geometric mean if \code{estimate_type="geo"}.
+\item \code{"K0"}, unsaturated hydraulic conductivity (cm/day). Only if \code{rosetta-soil} >= 0.3.1. Logarithmic (log10) scale if \code{estimate_type="log"} (default); Geometric mean if \code{estimate_type="geo"}.
+\item \code{"lpar"}, unsaturated hydraulic conductivity exponent. Only if \code{rosetta-soil} >= 0.3.1.
 }
 
 If the sum of sand, silt, and clay is not 100\%, the parameter value estimates will be \code{NaN}.
 }
 \description{
 Run \code{rosetta()} method from Python module
+}
+\details{
+\subsection{Performance Note}{
+
+Use \code{cores > 1} with \code{SpatRaster} or \verb{Raster*} inputs to parallelize processing of cells across multiple cores.
+}
 }

@@ -1,3 +1,14 @@
+# rosettaPTF 0.2.0
+
+* Compatible with `rosetta-soil` Python package v0.3
+  * Updated `run_rosetta()` and `predict.Rosetta()` to handle the 7-parameter output (adding `K0` and `L`) introduced in `rosetta-soil` v0.3.
+  * Added `estimate_type` argument to `run_rosetta()` to support linear, logarithmic (default), and geometric parameter estimations. Improved documentation and added examples for the geometric scale.
+  * Added `UnsaturatedK()` R constructor and `predict.UnsaturatedK()` method for predicting `K0` and `L` from retention parameters (requires `rosetta-soil` >= 0.3).
+  * Added `rosesoil()` R wrapper for the new upstream `rosesoil()` function (requires `rosetta-soil` >= 0.3).
+  * Deprecated `SoilDataFromArray()` in favor of direct list input (supported in `rosetta-soil` >= 0.3.
+  * Deprecated `ann_predict()` as the underlying Python method has been removed in v0.3. It now redirects to `predict()`.
+* Added a new vignette: **"Performance Optimization and Raster Processing"** covering best practices for high-throughput workflows.
+
 # rosettaPTF 0.1.5
 
 * Fix check logic for whether input SpatRaster is in memory

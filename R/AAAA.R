@@ -31,7 +31,6 @@ numpy_module <- NULL
   }
 
   !is.null(rosetta_module) && !is.null(numpy_module)
-
 }
 
 #' @importFrom reticulate configure_environment
