@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rosettaPTF</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -25,6 +25,16 @@
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/performance-raster.html">High-Throughput Raster Processing</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -47,6 +57,18 @@
       <small>Source: <a href="https://github.com/ncss-tech/rosettaPTF/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.2.0" id="rosettaptf-020">rosettaPTF 0.2.0<a class="anchor" aria-label="anchor" href="#rosettaptf-020"></a></h2>
+<ul><li>Compatible with <code>rosetta-soil</code> Python package v0.3
+<ul><li>Updated <code><a href="../reference/run_rosetta.html">run_rosetta()</a></code> and <code><a href="../reference/predict.Rosetta.html">predict.Rosetta()</a></code> to handle the 7-parameter output (adding <code>K0</code> and <code>L</code>) introduced in <code>rosetta-soil</code> v0.3.</li>
+<li>Added <code>estimate_type</code> argument to <code><a href="../reference/run_rosetta.html">run_rosetta()</a></code> to support linear, logarithmic (default), and geometric parameter estimations. Improved documentation and added examples for the geometric scale.</li>
+<li>Added <code><a href="../reference/UnsaturatedK.html">UnsaturatedK()</a></code> R constructor and <code><a href="../reference/predict.UnsaturatedK.html">predict.UnsaturatedK()</a></code> method for predicting <code>K0</code> and <code>L</code> from retention parameters (requires <code>rosetta-soil</code> &gt;= 0.3).</li>
+<li>Added <code><a href="../reference/rosesoil.html">rosesoil()</a></code> R wrapper for the new upstream <code><a href="../reference/rosesoil.html">rosesoil()</a></code> function (requires <code>rosetta-soil</code> &gt;= 0.3).</li>
+<li>Deprecated <code><a href="../reference/SoilDataFromArray.html">SoilDataFromArray()</a></code> in favor of direct list input (supported in <code>rosetta-soil</code> &gt;= 0.3.</li>
+<li>Deprecated <code><a href="../reference/ann_predict.html">ann_predict()</a></code> as the underlying Python method has been removed in v0.3. It now redirects to <code><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict()</a></code>.</li>
+</ul></li>
+<li>Added a new vignette: <strong>“Performance Optimization and Raster Processing”</strong> covering best practices for high-throughput workflows.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.5" id="rosettaptf-015">rosettaPTF 0.1.5<a class="anchor" aria-label="anchor" href="#rosettaptf-015"></a></h2>
 <ul><li>Fix check logic for whether input SpatRaster is in memory</li>
@@ -132,7 +154,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>

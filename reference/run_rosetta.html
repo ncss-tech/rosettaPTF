@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rosettaPTF</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
       </span>
     </div>
 
@@ -25,6 +25,16 @@
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/performance-raster.html">High-Throughput Raster Processing</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -54,19 +64,38 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">run_rosetta</span><span class="op">(</span><span class="va">soildata</span>, vars <span class="op">=</span> <span class="cn">NULL</span>, rosetta_version <span class="op">=</span> <span class="fl">3</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">run_rosetta</span><span class="op">(</span></span>
+<span>  <span class="va">soildata</span>,</span>
+<span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rosetta_version <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  estimate_type <span class="op">=</span> <span class="st">"log"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'data.frame'</span></span>
-<span><span class="fu">run_rosetta</span><span class="op">(</span><span class="va">soildata</span>, vars <span class="op">=</span> <span class="cn">NULL</span>, rosetta_version <span class="op">=</span> <span class="fl">3</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">run_rosetta</span><span class="op">(</span></span>
+<span>  <span class="va">soildata</span>,</span>
+<span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rosetta_version <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  estimate_type <span class="op">=</span> <span class="st">"log"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'matrix'</span></span>
-<span><span class="fu">run_rosetta</span><span class="op">(</span><span class="va">soildata</span>, vars <span class="op">=</span> <span class="cn">NULL</span>, rosetta_version <span class="op">=</span> <span class="fl">3</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">run_rosetta</span><span class="op">(</span></span>
+<span>  <span class="va">soildata</span>,</span>
+<span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rosetta_version <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  estimate_type <span class="op">=</span> <span class="st">"log"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'RasterStack'</span></span>
 <span><span class="fu">run_rosetta</span><span class="op">(</span></span>
 <span>  <span class="va">soildata</span>,</span>
 <span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rosetta_version <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  estimate_type <span class="op">=</span> <span class="st">"log"</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  core_thresh <span class="op">=</span> <span class="fl">20000L</span>,</span>
 <span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">".tif"</span><span class="op">)</span>,</span>
@@ -79,6 +108,7 @@
 <span>  <span class="va">soildata</span>,</span>
 <span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rosetta_version <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  estimate_type <span class="op">=</span> <span class="st">"log"</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  core_thresh <span class="op">=</span> <span class="fl">20000L</span>,</span>
 <span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">".tif"</span><span class="op">)</span>,</span>
@@ -91,6 +121,7 @@
 <span>  <span class="va">soildata</span>,</span>
 <span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rosetta_version <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  estimate_type <span class="op">=</span> <span class="st">"log"</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  core_thresh <span class="op">=</span> <span class="fl">20000L</span>,</span>
 <span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">".tif"</span><span class="op">)</span>,</span>
@@ -113,6 +144,10 @@
 
 <dt id="arg-rosetta-version">rosetta_version<a class="anchor" aria-label="anchor" href="#arg-rosetta-version"></a></dt>
 <dd><p>Default: 3</p></dd>
+
+
+<dt id="arg-estimate-type">estimate_type<a class="anchor" aria-label="anchor" href="#arg-estimate-type"></a></dt>
+<dd><p><em>character</em>. One of <code>"log"</code> (default), <code>"arith"</code>, or <code>"geo"</code>. Only used if <code>rosetta-soil</code> &gt;= 0.3.1. Default <code>"log"</code> preserves logarithmic (log10) scale for <code>alpha</code>, <code>npar</code>, and <code>Ksat</code>. <code>"geo"</code> returns the geometric mean of bootstrap estimates (exponent of the mean of log-transformed values). This is often preferred for parameters that vary by orders of magnitude, such as <code>alpha</code> and <code>Ksat</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -141,12 +176,25 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <em>data.frame</em> containing <code>mean</code> and <code>stdev</code> for following five columns (parameters for van Genuchten-Mualem equation)</p><ul><li><p><code>"theta_r"</code>, residual water content</p></li>
+    <p>A <em>data.frame</em> containing <code>mean</code> and <code>stdev</code> for the following columns (parameters for van Genuchten-Mualem equation)</p><ul><li><p><code>"theta_r"</code>, residual water content</p></li>
 <li><p><code>"theta_s"</code>, saturated water content</p></li>
-<li><p><code>"log10(alpha)"</code>, 'alpha' shape parameter, log10(1/cm)</p></li>
-<li><p><code>"log10(npar)"</code>, 'n' shape parameter</p></li>
-<li><p><code>"log10(Ksat)"</code>, saturated hydraulic conductivity, log10(cm/day)</p></li>
+<li><p><code>"alpha"</code>, 'alpha' shape parameter (1/cm). Logarithmic (log10) scale if <code>estimate_type="log"</code> (default); Geometric mean if <code>estimate_type="geo"</code>.</p></li>
+<li><p><code>"npar"</code>, 'n' shape parameter. Logarithmic (log10) scale if <code>estimate_type="log"</code> (default); Geometric mean if <code>estimate_type="geo"</code>.</p></li>
+<li><p><code>"Ksat"</code>, saturated hydraulic conductivity (cm/day). Logarithmic (log10) scale if <code>estimate_type="log"</code> (default); Geometric mean if <code>estimate_type="geo"</code>.</p></li>
+<li><p><code>"K0"</code>, unsaturated hydraulic conductivity (cm/day). Only if <code>rosetta-soil</code> &gt;= 0.3.1. Logarithmic (log10) scale if <code>estimate_type="log"</code> (default); Geometric mean if <code>estimate_type="geo"</code>.</p></li>
+<li><p><code>"lpar"</code>, unsaturated hydraulic conductivity exponent. Only if <code>rosetta-soil</code> &gt;= 0.3.1.</p></li>
 </ul><p>If the sum of sand, silt, and clay is not 100%, the parameter value estimates will be <code>NaN</code>.</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+
+<div class="section">
+<h3 id="performance-note">Performance Note<a class="anchor" aria-label="anchor" href="#performance-note"></a></h3>
+
+
+<p>Use <code>cores &gt; 1</code> with <code>SpatRaster</code> or <code>Raster*</code> inputs to parallelize processing of cells across multiple cores.</p>
+</div>
+
     </div>
 
   </div>
@@ -161,7 +209,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>
