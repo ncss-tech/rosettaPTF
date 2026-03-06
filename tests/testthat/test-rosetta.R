@@ -1,32 +1,56 @@
-test_that("run_rosetta() works", {
+test_that("run_rosetta() with sample data", {
   skip_if_not(py_module_available("numpy"))
   skip_if_not(py_module_available("rosetta"))
 
-  res <- run_rosetta(list(c(30, 30, 40, 1.5), c(55, 25, 20),  c(55, 25, 20, 1.1)),
-                     rosetta_version = 3)
+  data("MUKEY_PROP")
+  varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
+  res <- run_rosetta(MUKEY_PROP[1:10, varnames], rosetta_version = 3)
+
   expect_true(inherits(res, 'data.frame'))
+  if (rosetta_pkg_version() >= package_version("0.3.0")) {
+    expect_true(ncol(res) >= 15)
+    expect_true("log10_K0_mean" %in% colnames(res))
+  } else {
+    expect_true(ncol(res) == 12)
+  }
+})
+
+test_that("estimate_type argument with sample data", {
+  skip_if_not(py_module_available("rosetta"))
+  skip_if(rosetta_pkg_version() < package_version("0.3.0"))
+
+  data("MUKEY_PROP")
+  varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
+
+  res_log <- run_rosetta(MUKEY_PROP[1:5, varnames], estimate_type = "log")
+  expect_true("log10_Ksat_mean" %in% colnames(res_log))
+
+  res_lin <- run_rosetta(MUKEY_PROP[1:5, varnames], estimate_type = "arith")
+  expect_true("ksat_mean" %in% colnames(res_lin))
+  expect_false("log10_Ksat_mean" %in% colnames(res_lin))
+
+  res_geo <- run_rosetta(MUKEY_PROP[1:5, varnames], estimate_type = "geo")
+  expect_true("ksat_mean" %in% colnames(res_geo))
 })
 
 test_that("data.frame interface", {
-
   skip_if_not(py_module_available("numpy"))
   skip_if_not(py_module_available("rosetta"))
 
-  # data.frame interface: using default column order
-  expect_true(inherits(run_rosetta(data.frame(
-    a = 20,
-    b = 60,
-    c = 20,
-    d = c(NA, 1.5)
-  )), 'data.frame'))
+  # Default column order with sample data
+  data("MUKEY_PROP")
+  varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
+  res1 <- run_rosetta(MUKEY_PROP[1:5, varnames])
+  expect_true(inherits(res1, 'data.frame'))
 
-  # data.frame interface: using custom column names/order
-  expect_true(inherits(run_rosetta(data.frame(
+  # Custom column order with synthetic data
+  res2 <- run_rosetta(data.frame(
     d = c(NA, 1.5),
     b = 60,
     a = 20,
     c = 20
-  ), vars = letters[1:4]), 'data.frame'))
+  ), vars = letters[1:4])
+  expect_true(inherits(res2, 'data.frame'))
 })
 
 test_that("run on SSURGO data", {
@@ -34,8 +58,8 @@ test_that("run on SSURGO data", {
   skip_if_not(py_module_available("rosetta"))
 
   data("MUKEY_WCS", package = "rosettaPTF")
-  res <- terra::rast(MUKEY_WCS, crs = "EPSG:6350")
-  terra::ext(res) <- c(-114.16, 47.65, -114.08, 47.68)
+  res <- terra::rast(MUKEY_WCS, crs = "EPSG:5070")
+  terra::ext(res) <- c(-1365495, -1358925, 2869245, 2873655)
   names(res) <- "mukey"
 
   mukeys <- as.numeric(terra::values(res[[1]]))

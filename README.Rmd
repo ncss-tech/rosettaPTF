@@ -1,11 +1,23 @@
 ---
 output: github_document
+knit: (function(input, ...) {
+    litedown::fuse(input, 'README.md')
+    x = readLines('README.md')
+    if (length(x) > 0 && x[1] == '---') {
+      i = grep('^---$', x)
+      if (length(i) >= 2) x = x[-(1:i[2])]
+    }
+    writeLines(x, 'README.md')
+  })
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
+```{r setup, include = FALSE}
+library(rosettaPTF)
+library(terra)
+
+litedown::reactor(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
@@ -46,13 +58,15 @@ library(rosettaPTF)
 
 The [rosetta-soil](https://github.com/usda-ars-ussl/rosetta-soil) module is a Python package maintained by Dr. Todd Skaggs (USDA-ARS) and other U.S. Department of Agriculture employees. 
 
-The Rosetta pedotransfer function predicts five parameters for the van Genuchten model of unsaturated soil hydraulic properties
+The Rosetta pedotransfer function predicts seven parameters (five in versions < 0.2.0) for the van Genuchten model of unsaturated soil hydraulic properties:
 
- - `theta_r` : residual volumetric water content
- - `theta_s` : saturated volumetric water content
- - `log10(alpha)` : retention shape parameter `[log10(1/cm)]`
- - `log10(n)` : retention shape parameter (also referred to as `npar`)
- - `log10(ksat)` : saturated hydraulic conductivity `[log10(cm/d)]`
+* `theta_r` : residual volumetric water content
+* `theta_s` : saturated volumetric water content
+* `alpha` : retention shape parameter `[1/cm]`. Logarithmic (log10) scale if `estimate_type="log"` (default); Geometric mean if `estimate_type="geo"`.
+* `npar` : retention shape parameter (also referred to as `n`). Logarithmic (log10) scale if `estimate_type="log"` (default); Geometric mean if `estimate_type="geo"`.
+* `ksat` : saturated hydraulic conductivity `[cm/d]`. Logarithmic (log10) scale if `estimate_type="log"` (default); Geometric mean if `estimate_type="geo"`.
+* `K0` : unsaturated hydraulic conductivity matching point `[cm/d]`. Logarithmic (log10) scale if `estimate_type="log"` (default); Geometric mean if `estimate_type="geo"`.
+* `lpar` : unsaturated hydraulic conductivity exponent.
 
 For each set of input data a mean and standard deviation of each parameter is given.
 
@@ -62,13 +76,10 @@ Less demanding use cases are encouraged to use the web interface or API endpoint
 
 The [Rosetta](http://ncss-tech.github.io/AQP/soilDB/ROSETTA-API.html) model relies on a minimum of 3 soil properties, with increasing (expected) accuracy as additional properties are included:
 
-  *  Required, `sand`, `silt`, `clay`: USDA soil texture separates (percentages) that sum to 100%
-
-  *  Optional, `bulk density (any moisture basis)`: mass per volume after accounting for >2mm fragments, units of grams/cm3
-
-  *  Optional, `volumetric water content at 33 kPa`: roughly “field capacity” for most soils, units of cm3/cm3
-
-  *  Optional, `volumetric water content at 1500 kPa`: roughly “permanent wilting point” for most plants, units of cm3/cm3
+  * Required, `sand`, `silt`, `clay`: USDA soil texture separates (percentages) that sum to 100%
+  * Optional, `bulk density (any moisture basis)`: mass per volume after accounting for >2mm fragments, units of grams/cm3
+  * Optional, `volumetric water content at 33 kPa`: roughly “field capacity” for most soils, units of cm3/cm3
+  * Optional, `volumetric water content at 1500 kPa`: roughly “permanent wilting point” for most plants, units of cm3/cm3
 
 The default order of inputs is: `sand`, `silt`, `clay`, `bulk density (any basis)`, `water content (field capacity; 33 kPa)`, `water content (permanent wilting point; 1500 kPa)` of which the first three are required. 
 
@@ -124,22 +135,48 @@ Alternately, to install the module manually with `pip` you can run the following
 python -m pip install rosetta-soil
 ```
 
+## High-Throughput Processing
+
+`{rosettaPTF}` supports efficient batch processing of large soil datasets through vectorized computation in the underlying `rosetta-soil` backend.
+
+For large datasets:
+
+* Use `cores > 1` with `run_rosetta()` and `SpatRaster` or `Raster*` inputs to parallelize the calls.
+
 ## `run_rosetta()`
 
-Batch runs of Rosetta models can be done using using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` objects as input. 
+Batch runs of Rosetta models can be done using `list`, `data.frame`, `matrix`, `RasterStack`, `RasterBrick` and `SpatRaster` objects as input.
+
+Plain R lists are the preferred input format. The helper `SoilDataFromArray()` is deprecated.
 
 ### `list()` Input Example
 
 ```{r}
+# Plain R lists are passed directly to Python
 run_rosetta(list(c(30, 30, 40, 1.5), c(55, 25, 20),  c(55, 25, 20, 1.1)),
             rosetta_version = 3)
 ```
 
 Output `model_code` reflects the number of parameters in the input. 
 
-### `data.frame()` Input Example
+### Parameter Estimation Scales
 
-The `data.frame` interface allows for using using custom column names and order. If the `vars` argument is not specified it is assumed that the columns are in the order specified in the `run_rosetta()` manual page.
+By default, `{rosettaPTF}` uses `estimate_type = "log"` to maintain backward compatibility with previous versions, returning `alpha`, `npar`, and `Ksat` on a logarithmic (log10) scale. You can now request estimates on a linear scale directly:
+
+```{r}
+run_rosetta(list(c(30, 30, 40, 1.5)), estimate_type = "arith")
+```
+
+Note that the output column names will change to reflect the linear scale (e.g., `ksat_mean` instead of `log10_Ksat_mean`).
+
+Additionally, `estimate_type = "geo"` can be used to return the **geometric mean** of the bootstrap estimates. This is often preferred for parameters like $K_{sat}$ and $\alpha$ which can span several orders of magnitude, as the geometric mean is less sensitive to extreme outliers in the bootstrap ensemble than the arithmetic mean. Mathematically, the geometric mean is equivalent to the exponent of the mean of the log-transformed values.
+
+```{r}
+run_rosetta(list(c(30, 30, 40, 1.5)), estimate_type = "geo")
+```
+
+The `data.frame` interface allows for using using custom column names and order.
+ If the `vars` argument is not specified it is assumed that the columns are in the order specified in the `run_rosetta()` manual page.
 
 ```{r}
 run_rosetta(data.frame(
@@ -231,16 +268,35 @@ predict(my_rosetta, list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 
 ### Extended _Rosetta_ Predictions, Parameter Distributions and Summary Statistics after Zhang & Schaap (2017) with `ann_predict()`
 
+`ann_predict()` is deprecated and redirects to `predict()`, as the underlying bootstrap data is now returned by `predict()` and summarized by R.
+
 ```{r}
 ann_predict(my_rosetta, list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
 ```
 
+## New Features in `rosetta-soil` 0.3.0
+
+### `rosesoil()`
+
+`rosesoil()` is a new R wrapper for the upstream `rosesoil()` function, which returns a structured result including all model metadata.
+
+```{r}
+rosesoil(list(c(33, 33, 34, 1.5)))
+```
+
+### `UnsaturatedK()`
+
+`UnsaturatedK` provides a way to predict unsaturated hydraulic conductivity parameters `K0` and `lpar` from retention parameters.
+
+```{r}
+uk <- UnsaturatedK()
+predict(uk, list(c(0.12, 0.42, 0.008, 1.29)))
+```
+
 ## Selected References
 
-Three versions of the ROSETTA model are available, selected using `rosetta_version` argument.
+Three versions of the ROSETTA model are available, selected using `rosetta_version` argument:
 
-  - `rosetta_version` 1 - Schaap, M.G., F.J. Leij, and M.Th. van Genuchten. 2001. ROSETTA: a computer program for estimating soil hydraulic parameters with hierarchical pedotransfer functions. Journal of Hydrology 251(3-4): 163-176. doi: 10.1016/S0022-1694(01)00466-8.
-
-  - `rosetta_version` 2 - Schaap, M.G., A. Nemes, and M.T. van Genuchten. 2004. Comparison of Models for Indirect Estimation of Water Retention and Available Water in Surface Soils. Vadose Zone Journal 3(4): 1455-1463. doi: 10.2136/vzj2004.1455.
-
-  - `rosetta_version` 3 - Zhang, Y., and M.G. Schaap. 2017. Weighted recalibration of the Rosetta pedotransfer model with improved estimates of hydraulic parameter distributions and summary statistics (Rosetta3). Journal of Hydrology 547: 39-53. doi: 10.1016/j.jhydrol.2017.01.004.
+  - `rosetta_version` 1: Schaap, M.G., F.J. Leij, and M.Th. van Genuchten. 2001. ROSETTA: a computer program for estimating soil hydraulic parameters with hierarchical pedotransfer functions. Journal of Hydrology 251(3-4): 163-176. doi: 10.1016/S0022-1694(01)00466-8.
+  - `rosetta_version` 2: Schaap, M.G., A. Nemes, and M.T. van Genuchten. 2004. Comparison of Models for Indirect Estimation of Water Retention and Available Water in Surface Soils. Vadose Zone Journal 3(4): 1455-1463. doi: 10.2136/vzj2004.1455.
+  - `rosetta_version` 3: Zhang, Y., and M.G. Schaap. 2017. Weighted recalibration of the Rosetta pedotransfer model with improved estimates of hydraulic parameter distributions and summary statistics (Rosetta3). Journal of Hydrology 547: 39-53. doi: 10.1016/j.jhydrol.2017.01.004. Version 3 includes predictions for unsaturated conductivity parameters `K0` and `lpar`.

@@ -1,0 +1,155 @@
+---
+title: "High-Throughput Raster Processing"
+knit: litedown:::knit
+vignette: >
+  %\VignetteIndexEntry{High-Throughput Raster Processing}
+  %\VignetteEngine{litedown::vignette}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(rosettaPTF)
+library(terra)
+
+EVAL <- rosettaPTF::rosetta_module_available()
+
+litedown::reactor(
+  eval = EVAL,
+  collapse = TRUE,
+  fig.width = 8,
+  fig.align = 'center'
+)
+```
+
+## Introduction
+
+`{rosettaPTF}` is designed for efficient batch processing of soil hydraulic parameters. The package supports multiple input formats and offers options for scaling analysis to large datasets.
+
+The core implementation uses the `rosetta-soil` Python module, which provides vectorized computation over multiple samples. This vignette demonstrates key parameters for controlling performance and handling large-scale analyses.
+
+## Processing Point Data
+
+The `run_rosetta()` function accepts point data as a `data.frame`, where each row represents a single observation. Let's use the sample soil property dataset included with the package.
+
+```{r point_data}
+data("MUKEY_PROP")
+
+# View the structure of the sample data
+str(MUKEY_PROP)
+
+# Run rosetta on the sample property data
+system.time({
+  res_points <- run_rosetta(MUKEY_PROP[, c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")])
+})
+
+head(res_points)
+```
+
+## Processing Continuously Varying Raster Data
+
+Spatial soil property predictions are commonly stored as raster grids. The `run_rosetta()` function can process `SpatRaster` objects directly, computing predictions for every cell in the grid.
+
+### Creating a Raster Stack from Sample Data
+
+We'll use the sample spatial dataset (MUKEY_WCS) to create a continuous raster surface by interpolating soil properties.
+
+```{r raster_setup}
+# Convert MUKEY_WCS matrix to SpatRaster
+data("MUKEY_WCS", package = "rosettaPTF")
+data("MUKEY_PROP", package = "rosettaPTF")
+
+r_template <- terra::rast(MUKEY_WCS, crs = "EPSG:5070")
+terra::ext(r_template) <- c(-1365495, -1358925, 2869245, 2873655)
+names(r_template) <- "mukey"
+
+levels(r_template) <- MUKEY_PROP[, c("mukey",
+  "sandtotal_r", "silttotal_r", "claytotal_r",
+  "dbthirdbar_r")]
+
+r_input <- terra::catalyze(r_template)
+plot(r_input)
+```
+
+### Running Rosetta on Raster Data
+
+Pass the `SpatRaster` object to `run_rosetta()`. The output is a multi-layer raster containing mean and standard deviation for each predicted parameter.
+
+```{r raster_processing}
+# Process the raster stack
+system.time({
+  r_output <- run_rosetta(r_input)
+})
+
+# Inspect the layers
+names(r_output)
+
+# Plot predicted Ksat (log10 cm/day)
+plot(r_output[["log10_Ksat_mean"]], main = "Predicted Ksat")
+```
+
+## Scaling to Large Datasets
+
+### Parallel Processing with Multiple Cores
+
+For large rasters, the `cores` argument enables block-wise processing across multiple CPU cores. This parameter controls how the raster is divided and processed in parallel.
+
+```{r parallel_raster, eval=FALSE}
+# Divide the raster into blocks and process each block on separate cores
+r_output_parallel <- run_rosetta(r_input, cores = 2)
+```
+
+Note that with small rasters, as in this example, parallel processing may be significantly slower than sequential processing.
+
+### Key Parameters for Scaling
+
+- **`cores`**: Number of CPU cores to use for parallel processing. Set to 1 (default) for sequential processing, or 2+ for parallel block-wise processing. Useful for rasters that are memory-intensive or computationally demanding.
+
+- **Input format**: `SpatRaster` objects are preferred for spatial workflows. The function handles memory-efficient extraction and output reconstruction automatically.
+
+### Batch Processing Workflows
+
+For extremely large regions or high-resolution grids, consider processing tiles or regions sequentially:
+
+```{r batch_example, eval=FALSE}
+# Example: process raster in regional tiles
+tiles <- terra::getTileExtents(r_input, 125)
+
+results <- terra::merge(terra::sprc(apply(tiles, 1, function(x) {
+  terra::window(r_input) <- x
+  run_rosetta(r_input)
+})))
+```
+
+## Advanced Options
+
+### Controlling Parameter Estimation Scale
+
+By default, parameters like `alpha`, `npar`, and `Ksat` are returned on a logarithmic (log10) scale. Alternative scales are available via the `estimate_type` argument:
+
+```{r estimate_scales}
+# Linear scale estimates
+res_linear <- run_rosetta(MUKEY_PROP[, c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")],
+                          estimate_type = "arith")
+
+# Geometric mean (recommended for log-transformed parameters)
+res_geo <- run_rosetta(MUKEY_PROP[, c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")],
+                       estimate_type = "geo")
+```
+
+### Bootstrap Ensemble
+
+By default, predictions include the full 1,000-member bootstrap ensemble for uncertainty quantification. The output includes both mean and standard deviation for each parameter.
+
+```{r uncertainty}
+# The output includes uncertainty estimates
+head(res_points[, c("log10_Ksat_mean", "log10_Ksat_sd")])
+```
+
+## Summary
+
+Key considerations for high-throughput analysis:
+
+1. Use `SpatRaster` objects as input for spatial workflows; the function handles data conversion automatically.
+2. Set `cores > 1` to enable parallel block-wise processing for large rasters.
+3. Choose `estimate_type` based on your application requirements.
+4. For extremely large regions, consider tiling or regional batch processing workflows.

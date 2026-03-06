@@ -13,6 +13,12 @@
 
 \item{...}{not used}
 }
+\value{
+A list containing \code{mean} and \code{stdev} matrices (one row per sample).
+
+For \code{rosetta-soil} >= 0.3, the columns are: \code{theta_r}, \code{theta_s}, \code{alpha}, \code{npar}, \code{ksat}.
+Note that these parameters are in the scale produced by the underlying model (often log10 for alpha, npar, and ksat).
+}
 \description{
 Predict Rosetta Parameter Values and Standard Deviations from a \emph{Rosetta} instance
 }
