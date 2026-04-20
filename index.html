@@ -149,14 +149,14 @@
 <h3 id="finding-the-python-binaries">Finding the <code>python</code> binaries<a class="anchor" aria-label="anchor" href="#finding-the-python-binaries"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">## [1] "/home/andrew/.virtualenvs/r-reticulate/bin/python"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/find_python.html">find_python</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;[1] "D:/workspace/rosettaPTF/.venv/Scripts/python.exe"</span></span></code></pre></div>
 <p><code><a href="reference/find_python.html">find_python()</a></code> provides heuristics for setting up {reticulate} to use Python in commonly installed locations.</p>
 <p>The first attempt makes use of <code><a href="https://rdrr.io/r/base/Sys.which.html" class="external-link">Sys.which()</a></code> to find installations available in the user path directory.</p>
 <!--
 `find_python()` also provides an option for using ArcGIS Pro Conda environments--which may be needed for users who cannot install Conda by some other means. To use this option specify the `arcpy_path` argument or the `rosettaPTF.arcpy_path` option to locate both the ArcGIS Pro Conda environment and Python binaries in _C:/Program Files/ArcGIS/Pro/bin/Python_, for example:
-&#10;
-``` r
+
+```{r, eval=FALSE}
 rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 ```
 -->
@@ -167,15 +167,13 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 </h3>
 <p>The {rosettaPTF} <code><a href="reference/install_rosetta.html">install_rosetta()</a></code> method wraps <code>reticulate::py_install("rosetta-soil")</code>. You may not need to install the <code>rosetta-soil</code> module if your environment is set up, as {reticulate} will install/upgrade dependencies of packages as specified in the package configuration section of the DESCRIPTION file.</p>
 <p>You can use <code><a href="reference/install_rosetta.html">install_rosetta()</a></code> to install into custom environments by specifying <code>envname</code> as needed. After installing a new version of the module you should restart your R session.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/install_rosetta.html">install_rosetta</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="do">## Using virtual environment '/home/andrew/.virtualenvs/r-reticulate' ...</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="do">## + /home/andrew/.virtualenvs/r-reticulate/bin/python -m pip install --upgrade --no-user NA --upgrade 'rosetta-soil==0.3.1'</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="do">## [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">rosettaPTF</span><span class="fu">::</span><span class="fu"><a href="reference/install_rosetta.html">install_rosetta</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;+ "D:/workspace/rosettaPTF/.venv/Scripts/python.exe" -m pip install --upgrade --no-user NA --upgrade rosetta-soil</span></span>
+<span><span class="co">#&gt;Using virtual environment "D:/workspace/rosettaPTF/.venv" ...</span></span>
+<span><span class="co">#&gt;[1] TRUE</span></span></code></pre></div>
 <p>Alternately, to install the module manually with <code>pip</code> you can run the following command. This assumes a Python 3 binary called <code>python</code> can be found on your path.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install rosetta-soil</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install rosetta-soil</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -197,93 +195,340 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <h3 id="list-input-example">
 <code>list()</code> Input Example<a class="anchor" aria-label="anchor" href="#list-input-example"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plain R lists are passed directly to Python</span></span>
 <span><span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span><span class="op">)</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>            rosetta_version <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="do">##   id model_code theta_r_mean theta_s_mean log10_alpha_mean log10_npar_mean</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="do">## 1  1          3   0.11535773    0.4179120        -2.067139       0.1120102</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="do">## 2  2          2   0.08613275    0.3888528        -1.898150       0.1347136</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="do">## 3  3          3   0.09130753    0.4850320        -2.022388       0.1510716</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="do">##   log10_Ksat_mean log10_K0_mean  lpar_mean  theta_r_sd  theta_s_sd</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="do">## 1       0.8325407    0.02327444 -1.0349735 0.013356794 0.009382669</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="do">## 2       1.1858005    0.41950414 -0.9533283 0.006017454 0.006276675</span></span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="do">## 3       1.9060148    0.37302013 -0.3253938 0.012777798 0.013068707</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="do">##   log10_alpha_sd log10_npar_sd log10_Ksat_sd log10_K0_sd  lpar_sd</span></span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="do">## 1     0.08255271    0.01324075    0.09249903   0.2317968 1.588173</span></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="do">## 2     0.07485046    0.01161000    0.08432796   0.2275761 1.099102</span></span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="do">## 3     0.10025326    0.01764865    0.14170654   0.2540277 1.244062</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">id</th>
+<th align="right">model_code</th>
+<th align="right">theta_r_mean</th>
+<th align="right">theta_s_mean</th>
+<th align="right">log10_alpha_mean</th>
+<th align="right">log10_npar_mean</th>
+<th align="right">log10_Ksat_mean</th>
+<th align="right">log10_K0_mean</th>
+<th align="right">lpar_mean</th>
+<th align="right">theta_r_sd</th>
+<th align="right">theta_s_sd</th>
+<th align="right">log10_alpha_sd</th>
+<th align="right">log10_npar_sd</th>
+<th align="right">log10_Ksat_sd</th>
+<th align="right">log10_K0_sd</th>
+<th align="right">lpar_sd</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0.115</td>
+<td align="right">0.418</td>
+<td align="right">-2.067</td>
+<td align="right">0.112</td>
+<td align="right">0.833</td>
+<td align="right">0.023</td>
+<td align="right">-1.035</td>
+<td align="right">0.013</td>
+<td align="right">0.009</td>
+<td align="right">0.083</td>
+<td align="right">0.013</td>
+<td align="right">0.092</td>
+<td align="right">0.232</td>
+<td align="right">1.588</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0.086</td>
+<td align="right">0.389</td>
+<td align="right">-1.898</td>
+<td align="right">0.135</td>
+<td align="right">1.186</td>
+<td align="right">0.420</td>
+<td align="right">-0.953</td>
+<td align="right">0.006</td>
+<td align="right">0.006</td>
+<td align="right">0.075</td>
+<td align="right">0.012</td>
+<td align="right">0.084</td>
+<td align="right">0.228</td>
+<td align="right">1.099</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">0.091</td>
+<td align="right">0.485</td>
+<td align="right">-2.022</td>
+<td align="right">0.151</td>
+<td align="right">1.906</td>
+<td align="right">0.373</td>
+<td align="right">-0.325</td>
+<td align="right">0.013</td>
+<td align="right">0.013</td>
+<td align="right">0.100</td>
+<td align="right">0.018</td>
+<td align="right">0.142</td>
+<td align="right">0.254</td>
+<td align="right">1.244</td>
+</tr>
+</tbody>
+</table>
 <p>Output <code>model_code</code> reflects the number of parameters in the input.</p>
 </div>
 <div class="section level3">
 <h3 id="parameter-estimation-scales">Parameter Estimation Scales<a class="anchor" aria-label="anchor" href="#parameter-estimation-scales"></a>
 </h3>
 <p>By default, <a href="https://github.com/ncss-tech/rosettaPTF" class="external-link">rosettaPTF</a> uses <code>estimate_type = "log"</code> to maintain backward compatibility with previous versions, returning <code>alpha</code>, <code>npar</code>, and <code>Ksat</code> on a logarithmic (log10) scale. You can now request estimates on a linear scale directly:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span>, estimate_type <span class="op">=</span> <span class="st">"arith"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="do">##   id model_code theta_r_mean theta_s_mean  alpha_mean npar_mean ksat_mean</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="do">## 1  1          3    0.1153577     0.417912 0.008722012  1.294826  6.954245</span></span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="do">##    k0_mean lpar_mean theta_r_sd  theta_s_sd    alpha_sd    npar_sd  ksat_sd</span></span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="do">## 1 1.250061 -1.048504 0.01335679 0.009382669 0.001649266 0.03939482 1.470258</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="do">##       k0_sd  lpar_sd</span></span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="do">## 1 0.7856297 1.576854</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">id</th>
+<th align="right">model_code</th>
+<th align="right">theta_r_mean</th>
+<th align="right">theta_s_mean</th>
+<th align="right">alpha_mean</th>
+<th align="right">npar_mean</th>
+<th align="right">ksat_mean</th>
+<th align="right">k0_mean</th>
+<th align="right">lpar_mean</th>
+<th align="right">theta_r_sd</th>
+<th align="right">theta_s_sd</th>
+<th align="right">alpha_sd</th>
+<th align="right">npar_sd</th>
+<th align="right">ksat_sd</th>
+<th align="right">k0_sd</th>
+<th align="right">lpar_sd</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0.115</td>
+<td align="right">0.418</td>
+<td align="right">0.009</td>
+<td align="right">1.295</td>
+<td align="right">6.954</td>
+<td align="right">1.25</td>
+<td align="right">-1.049</td>
+<td align="right">0.013</td>
+<td align="right">0.009</td>
+<td align="right">0.002</td>
+<td align="right">0.039</td>
+<td align="right">1.47</td>
+<td align="right">0.786</td>
+<td align="right">1.577</td>
+</tr></tbody>
+</table>
 <p>Note that the output column names will change to reflect the linear scale (e.g., <code>ksat_mean</code> instead of <code>log10_Ksat_mean</code>).</p>
 <p>Additionally, <code>estimate_type = "geo"</code> can be used to return the <strong>geometric mean</strong> of the bootstrap estimates. This is often preferred for parameters like <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>K</mi><mrow><mi>s</mi><mi>a</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">K_{sat}</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math> which can span several orders of magnitude, as the geometric mean is less sensitive to extreme outliers in the bootstrap ensemble than the arithmetic mean. Mathematically, the geometric mean is equivalent to the exponent of the mean of the log-transformed values.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span>, estimate_type <span class="op">=</span> <span class="st">"geo"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="do">##   id model_code theta_r_mean theta_s_mean  alpha_mean npar_mean ksat_mean</span></span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="do">## 1  1          3    0.1153577     0.417912 0.008567645  1.294226  6.800498</span></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="do">##    k0_mean lpar_mean theta_r_sd  theta_s_sd    alpha_sd    npar_sd  ksat_sd</span></span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="do">## 1 1.055053 -1.034973 0.01335679 0.009382669 0.001649266 0.03939482 1.470258</span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="do">##       k0_sd  lpar_sd</span></span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="do">## 1 0.7666369 1.588173</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">id</th>
+<th align="right">model_code</th>
+<th align="right">theta_r_mean</th>
+<th align="right">theta_s_mean</th>
+<th align="right">alpha_mean</th>
+<th align="right">npar_mean</th>
+<th align="right">ksat_mean</th>
+<th align="right">k0_mean</th>
+<th align="right">lpar_mean</th>
+<th align="right">theta_r_sd</th>
+<th align="right">theta_s_sd</th>
+<th align="right">alpha_sd</th>
+<th align="right">npar_sd</th>
+<th align="right">ksat_sd</th>
+<th align="right">k0_sd</th>
+<th align="right">lpar_sd</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0.115</td>
+<td align="right">0.418</td>
+<td align="right">0.009</td>
+<td align="right">1.294</td>
+<td align="right">6.8</td>
+<td align="right">1.055</td>
+<td align="right">-1.035</td>
+<td align="right">0.013</td>
+<td align="right">0.009</td>
+<td align="right">0.002</td>
+<td align="right">0.039</td>
+<td align="right">1.47</td>
+<td align="right">0.767</td>
+<td align="right">1.588</td>
+</tr></tbody>
+</table>
 <p>The <code>data.frame</code> interface allows for using using custom column names and order. If the <code>vars</code> argument is not specified it is assumed that the columns are in the order specified in the <code><a href="reference/run_rosetta.html">run_rosetta()</a></code> manual page.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  d <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
 <span>  b <span class="op">=</span> <span class="fl">60</span>,</span>
 <span>  a <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  c <span class="op">=</span> <span class="fl">20</span></span>
 <span><span class="op">)</span>, vars <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="do">##   id model_code theta_r_mean theta_s_mean log10_alpha_mean log10_npar_mean</span></span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="do">## 1  1          2   0.08994502    0.4301366        -2.426236       0.1756873</span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="do">## 2  2          3   0.08495731    0.3887858        -2.318826       0.1598879</span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="do">##   log10_Ksat_mean log10_K0_mean  lpar_mean  theta_r_sd  theta_s_sd</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="do">## 1       1.1927311   -0.10923995  0.1813931 0.006710949 0.008790221</span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="do">## 2       0.9961317   -0.03714337 -0.1213272 0.010189780 0.008104114</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="do">##   log10_alpha_sd log10_npar_sd log10_Ksat_sd log10_K0_sd  lpar_sd</span></span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="do">## 1     0.07416849    0.01323730    0.08713804   0.2194768 1.622813</span></span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="do">## 2     0.07980946    0.01754707    0.07775370   0.2056933 1.363478</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+<col width="6%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">id</th>
+<th align="right">model_code</th>
+<th align="right">theta_r_mean</th>
+<th align="right">theta_s_mean</th>
+<th align="right">log10_alpha_mean</th>
+<th align="right">log10_npar_mean</th>
+<th align="right">log10_Ksat_mean</th>
+<th align="right">log10_K0_mean</th>
+<th align="right">lpar_mean</th>
+<th align="right">theta_r_sd</th>
+<th align="right">theta_s_sd</th>
+<th align="right">log10_alpha_sd</th>
+<th align="right">log10_npar_sd</th>
+<th align="right">log10_Ksat_sd</th>
+<th align="right">log10_K0_sd</th>
+<th align="right">lpar_sd</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0.090</td>
+<td align="right">0.430</td>
+<td align="right">-2.426</td>
+<td align="right">0.176</td>
+<td align="right">1.193</td>
+<td align="right">-0.109</td>
+<td align="right">0.181</td>
+<td align="right">0.007</td>
+<td align="right">0.009</td>
+<td align="right">0.074</td>
+<td align="right">0.013</td>
+<td align="right">0.087</td>
+<td align="right">0.219</td>
+<td align="right">1.623</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">0.085</td>
+<td align="right">0.389</td>
+<td align="right">-2.319</td>
+<td align="right">0.160</td>
+<td align="right">0.996</td>
+<td align="right">-0.037</td>
+<td align="right">-0.121</td>
+<td align="right">0.010</td>
+<td align="right">0.008</td>
+<td align="right">0.080</td>
+<td align="right">0.018</td>
+<td align="right">0.078</td>
+<td align="right">0.206</td>
+<td align="right">1.363</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level3">
 <h3 id="soil-data-access--ssurgo-mapunit-aggregate-input-example">Soil Data Access / SSURGO Mapunit Aggregate Input Example<a class="anchor" aria-label="anchor" href="#soil-data-access--ssurgo-mapunit-aggregate-input-example"></a>
 </h3>
 <p>This example pulls mapunit/component data from Soil Data Access (SDA). We use the {soilDB} function <code>get_SDA_property()</code> to obtain representative values for <code>sand</code>, <code>silt</code>, <code>clay</code>, and <code>bulk density (1/3 bar)</code> we run Rosetta on the resulting data.frame (one row per mapunit) then use raster attribute table (RAT) to display the results (1:1 with <code>mukey</code>).</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncss-tech/soilDB/" class="external-link">soilDB</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ncss-tech/rosettaPTF" class="external-link">rosettaPTF</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># obtain mukey map from SoilWeb Web Coverage Service (800m resolution SSURGO derived)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">mukey.wcs</span><span class="op">(</span>aoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>aoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">114.16</span>, <span class="fl">47.65</span>,<span class="op">-</span><span class="fl">114.08</span>, <span class="fl">47.68</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">'EPSG:4326'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="do">## Loading required namespace: sf</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># request input data from SDA</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">mukey.wcs</span><span class="op">(</span>aoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>aoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">114.16</span>, <span class="fl">47.65</span>,<span class="op">-</span><span class="fl">114.08</span>, <span class="fl">47.68</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">'EPSG:4326'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;Loading required namespace: sf</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co"># request input data from SDA</span></span>
 <span><span class="va">varnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sandtotal_r"</span>, <span class="st">"silttotal_r"</span>, <span class="st">"claytotal_r"</span>, <span class="st">"dbthirdbar_r"</span><span class="op">)</span></span>
 <span><span class="va">resprop</span> <span class="op">&lt;-</span> <span class="fu">get_SDA_property</span><span class="op">(</span>property <span class="op">=</span> <span class="va">varnames</span>,</span>
 <span>                            method <span class="op">=</span> <span class="st">"Dominant Component (numeric)"</span>,</span>
-<span>                            mukeys <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">mukey</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="do">## single result set, returning a data.frame</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># keep only those where we have a complete set of 4 parameters (sand, silt, clay, bulk density; model code #3)</span></span>
+<span>                            mukeys <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">mukey</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;single result set, returning a data.frame</span></span>
+<span><span class="co"># keep only those where we have a complete set of 4 parameters (sand, silt, clay, bulk density; model code #3)</span></span>
 <span><span class="va">soildata</span> <span class="op">&lt;-</span> <span class="va">resprop</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/stats/complete.cases.html" class="external-link">complete.cases</a></span><span class="op">(</span><span class="va">resprop</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mukey"</span>, <span class="va">varnames</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># run Rosetta on the mapunit-level aggregate data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resrose</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">[</span>,<span class="va">varnames</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="do">##    user  system elapsed </span></span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="do">##   0.022   0.005   0.027</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># transfer mukey to result</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resrose</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">[</span>,<span class="va">varnames</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   user  system elapsed </span></span>
+<span><span class="co">#&gt;   0.00    0.00    0.02 </span></span>
+<span><span class="co"># transfer mukey to result</span></span>
 <span><span class="va">resprop</span><span class="op">$</span><span class="va">mukey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">resprop</span><span class="op">$</span><span class="va">mukey</span><span class="op">)</span></span>
 <span><span class="va">resrose</span><span class="op">$</span><span class="va">mukey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">$</span><span class="va">mukey</span><span class="op">)</span></span>
 <span></span>
@@ -296,7 +541,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <span></span>
 <span><span class="co"># make a plot of the predicted Ksat</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res2</span>, <span class="st">"log10_Ksat_mean"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="README_files/figure-gfm/unnamed-chunk-11-1.png"><!-- --></p>
+<p><img src="reference/figures/README-chunk-11-1.png"></p>
 </div>
 <div class="section level3">
 <h3 id="spatraster-terra-input-example">
@@ -304,7 +549,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 </h3>
 <p>The above example shows how to create raster output based on <em>discrete</em> (SSURGO polygon derived) data. A more general case is when each raster cell has “unique” values (i.e. <em>continuous</em> raster inputs). <code><a href="reference/run_rosetta.html">run_rosetta()</a></code> has an S3 method defined for <em>SpatRaster</em> input.</p>
 <p>We previously merged the input data from SDA (an ordinary <em>data.frame</em>) into the RAT of <code>res</code>; exploiting the linkage between <code>mukey</code> and raster cells to make the map. For comparison with the <code>mukey</code> results above we stack de-ratified input layers and create a new <em>SpatRaster</em>.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="va">res2</span><span class="op">[[</span><span class="st">"sandtotal_r"</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>  <span class="va">res2</span><span class="op">[[</span><span class="st">"silttotal_r"</span><span class="op">]</span><span class="op">]</span>,</span>
@@ -313,13 +558,12 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># SpatRaster to data.frame interface (one call on all cells)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">test2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">res3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="do">##    user  system elapsed </span></span>
-<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="do">##   5.312   8.671  13.721</span></span></code></pre></div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># make a plot of the predicted Ksat (identical to mukey-based results)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">test2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">res3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   user  system elapsed </span></span>
+<span><span class="co">#&gt;   3.23    5.41   19.59 </span></span>
+<span><span class="co"># make a plot of the predicted Ksat (identical to mukey-based results)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">test2</span>, <span class="st">"log10_Ksat_mean"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="README_files/figure-gfm/unnamed-chunk-12-1.png"><!-- --></p>
+<p><img src="reference/figures/README-chunk-12-1.png"></p>
 <p>You will notice the results for Ksat distribution are identical since the same input values were used, but the latter approach took longer to run. The time difference is the difference of estimating ~40 (1 estimate per mapunit key) versus ~30,000 (1 estimate per raster cell) sets of Rosetta parameters.</p>
 </div>
 </div>
@@ -330,7 +574,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <h3 id="make-a-rosetta-class-instance-for-running-extended-output-methods">Make a <em>Rosetta</em> class instance for running extended output methods<a class="anchor" aria-label="anchor" href="#make-a-rosetta-class-instance-for-running-extended-output-methods"></a>
 </h3>
 <p>Note that each instance of <em>Rosetta</em> has a fixed version and model code, so if you have heterogeneous input you need to iterate over model code.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># defaults are version 3 and model code 3 (4 parameters: sand, silt, clay and bulk density)</span></span>
 <span><span class="va">my_rosetta</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/Rosetta-class.html">Rosetta</a></span><span class="op">(</span>rosetta_version <span class="op">=</span> <span class="fl">3</span>, model_code <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -338,37 +582,37 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <h3 id="predict-rosetta-parameter-values-and-standard-deviations-from-a-rosetta-instance">
 <code>predict()</code> Rosetta Parameter Values and Standard Deviations from a <em>Rosetta</em> instance<a class="anchor" aria-label="anchor" href="#predict-rosetta-parameter-values-and-standard-deviations-from-a-rosetta-instance"></a>
 </h3>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb29"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="do">## $mean</span></span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="do">##            [,1]     [,2]      [,3]      [,4]      [,5]</span></span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a><span class="do">## [1,] 0.11535773 0.417912 -2.067139 0.1120102 0.8325407</span></span>
-<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a><span class="do">## [2,] 0.09130753 0.485032 -2.022388 0.1510716 1.9060148</span></span>
-<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a><span class="do">## $stdev</span></span>
-<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a><span class="do">##            [,1]        [,2]       [,3]       [,4]       [,5]</span></span>
-<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="do">## [1,] 0.01335011 0.009377977 0.08251142 0.01323413 0.09245277</span></span>
-<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a><span class="do">## [2,] 0.01277141 0.013062171 0.10020312 0.01763982 0.14163567</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;$mean</span></span>
+<span><span class="co">#&gt;           [,1]     [,2]      [,3]      [,4]      [,5]</span></span>
+<span><span class="co">#&gt;[1,] 0.11535773 0.417912 -2.067139 0.1120102 0.8325407</span></span>
+<span><span class="co">#&gt;[2,] 0.09130753 0.485032 -2.022388 0.1510716 1.9060148</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt;$stdev</span></span>
+<span><span class="co">#&gt;           [,1]        [,2]       [,3]       [,4]       [,5]</span></span>
+<span><span class="co">#&gt;[1,] 0.01335011 0.009377977 0.08251142 0.01323413 0.09245277</span></span>
+<span><span class="co">#&gt;[2,] 0.01277141 0.013062171 0.10020312 0.01763982 0.14163567</span></span>
+<span><span class="co">#&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="extended-rosetta-predictions-parameter-distributions-and-summary-statistics-after-zhang--schaap-2017-with-ann_predict">Extended <em>Rosetta</em> Predictions, Parameter Distributions and Summary Statistics after Zhang &amp; Schaap (2017) with <code>ann_predict()</code>
 <a class="anchor" aria-label="anchor" href="#extended-rosetta-predictions-parameter-distributions-and-summary-statistics-after-zhang--schaap-2017-with-ann_predict"></a>
 </h3>
 <p><code><a href="reference/ann_predict.html">ann_predict()</a></code> is deprecated and redirects to <code><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict()</a></code>, as the underlying bootstrap data is now returned by <code><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict()</a></code> and summarized by R.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ann_predict.html">ann_predict</a></span><span class="op">(</span><span class="va">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="do">## Warning in ann_predict.Rosetta(my_rosetta, list(c(30, 30, 40, 1.5), c(55, :</span></span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="do">## ann_predict() is deprecated in rosetta-soil &gt;= 0.3.0. Use predict() instead.</span></span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a></span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="do">## $mean</span></span>
-<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="do">##            [,1]     [,2]      [,3]      [,4]      [,5]</span></span>
-<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="do">## [1,] 0.11535773 0.417912 -2.067139 0.1120102 0.8325407</span></span>
-<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a><span class="do">## [2,] 0.09130753 0.485032 -2.022388 0.1510716 1.9060148</span></span>
-<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="do">## $stdev</span></span>
-<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a><span class="do">##            [,1]        [,2]       [,3]       [,4]       [,5]</span></span>
-<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="do">## [1,] 0.01335011 0.009377977 0.08251142 0.01323413 0.09245277</span></span>
-<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="do">## [2,] 0.01277141 0.013062171 0.10020312 0.01763982 0.14163567</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ann_predict.html">ann_predict</a></span><span class="op">(</span><span class="va">my_rosetta</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="fl">25</span>, <span class="fl">20</span>, <span class="fl">1.1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;ann_predict() is deprecated in rosetta-soil &gt;= 0.3.0. Use predict() instead.</span></span>
+<span><span class="co">#&gt;$mean</span></span>
+<span><span class="co">#&gt;           [,1]     [,2]      [,3]      [,4]      [,5]</span></span>
+<span><span class="co">#&gt;[1,] 0.11535773 0.417912 -2.067139 0.1120102 0.8325407</span></span>
+<span><span class="co">#&gt;[2,] 0.09130753 0.485032 -2.022388 0.1510716 1.9060148</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt;$stdev</span></span>
+<span><span class="co">#&gt;           [,1]        [,2]       [,3]       [,4]       [,5]</span></span>
+<span><span class="co">#&gt;[1,] 0.01335011 0.009377977 0.08251142 0.01323413 0.09245277</span></span>
+<span><span class="co">#&gt;[2,] 0.01277141 0.013062171 0.10020312 0.01763982 0.14163567</span></span>
+<span><span class="co">#&gt;</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -379,25 +623,108 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <code>rosesoil()</code><a class="anchor" aria-label="anchor" href="#rosesoil"></a>
 </h3>
 <p><code><a href="reference/rosesoil.html">rosesoil()</a></code> is a new R wrapper for the upstream <code><a href="reference/rosesoil.html">rosesoil()</a></code> function, which returns a structured result including all model metadata.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rosesoil.html">rosesoil</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">33</span>, <span class="fl">34</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="do">##   sand silt clay rhob th33 th1500 version estimate_type code       thr</span></span>
-<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="do">## 1   33   33   34  1.5   NA     NA       3        linear    3 0.1076822</span></span>
-<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="do">##         ths      alpha     npar     ksat       k0       lpar    thr_std</span></span>
-<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a><span class="do">## 1 0.4060782 0.00817606 1.320054 7.141391 1.281258 -0.8606394 0.01221764</span></span>
-<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a><span class="do">##       ths_std   alpha_std   npar_std ksat_std    k0_std lpar_std</span></span>
-<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a><span class="do">## 1 0.008092908 0.001314515 0.03752358 1.415595 0.7639638 1.481137</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+<col width="4%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">sand</th>
+<th align="right">silt</th>
+<th align="right">clay</th>
+<th align="right">rhob</th>
+<th align="right">th33</th>
+<th align="right">th1500</th>
+<th align="right">version</th>
+<th>estimate_type</th>
+<th align="right">code</th>
+<th align="right">thr</th>
+<th align="right">ths</th>
+<th align="right">alpha</th>
+<th align="right">npar</th>
+<th align="right">ksat</th>
+<th align="right">k0</th>
+<th align="right">lpar</th>
+<th align="right">thr_std</th>
+<th align="right">ths_std</th>
+<th align="right">alpha_std</th>
+<th align="right">npar_std</th>
+<th align="right">ksat_std</th>
+<th align="right">k0_std</th>
+<th align="right">lpar_std</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="right">33</td>
+<td align="right">33</td>
+<td align="right">34</td>
+<td align="right">1.5</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right">3</td>
+<td>arith</td>
+<td align="right">3</td>
+<td align="right">0.108</td>
+<td align="right">0.406</td>
+<td align="right">0.008</td>
+<td align="right">1.32</td>
+<td align="right">7.141</td>
+<td align="right">1.281</td>
+<td align="right">-0.861</td>
+<td align="right">0.012</td>
+<td align="right">0.008</td>
+<td align="right">0.001</td>
+<td align="right">0.038</td>
+<td align="right">1.416</td>
+<td align="right">0.764</td>
+<td align="right">1.481</td>
+</tr></tbody>
+</table>
 </div>
 <div class="section level3">
 <h3 id="unsaturatedk">
 <code>UnsaturatedK()</code><a class="anchor" aria-label="anchor" href="#unsaturatedk"></a>
 </h3>
 <p><code>UnsaturatedK</code> provides a way to predict unsaturated hydraulic conductivity parameters <code>K0</code> and <code>lpar</code> from retention parameters.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uk</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/UnsaturatedK.html">UnsaturatedK</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">uk</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.12</span>, <span class="fl">0.42</span>, <span class="fl">0.008</span>, <span class="fl">1.29</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb35"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="do">##   log10_K0_mean lpar_mean log10_K0_sd  lpar_sd</span></span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="do">## 1   -0.04057941 -1.033027   0.2309726 1.662214</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="right">log10_K0_mean</th>
+<th align="right">lpar_mean</th>
+<th align="right">log10_K0_sd</th>
+<th align="right">lpar_sd</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="right">-0.041</td>
+<td align="right">-1.033</td>
+<td align="right">0.231</td>
+<td align="right">1.662</td>
+</tr></tbody>
+</table>
 </div>
 </div>
 <div class="section level2">
@@ -445,7 +772,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Andrew G. Brown <br><small class="roles"> Maintainer </small>   </li>
+<li>Andrew Brown <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-4565-533X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -464,7 +791,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Andrew G. Brown.</p>
+<p>Developed by Andrew Brown.</p>
 </div>
 
 <div class="pkgdown">
