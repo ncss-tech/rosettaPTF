@@ -1,14 +1,6 @@
 ---
 output: github_document
-knit: (function(input, ...) {
-    litedown::fuse(input, 'README.md')
-    x = readLines('README.md')
-    if (length(x) > 0 && x[1] == '---') {
-      i = grep('^---$', x)
-      if (length(i) >= 2) x = x[-(1:i[2])]
-    }
-    writeLines(x, 'README.md')
-  })
+knit: (function(input, ...) { litedown::fuse(input, 'README.md'); x = readLines('README.md'); if (length(x) > 0 && x[1] == '---') { i = grep('^---$', x); if (length(i) >= 2) x = x[-(1:i[2])] };  writeLines(x, 'README.md'); })
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->

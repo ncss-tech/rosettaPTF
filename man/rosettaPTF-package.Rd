@@ -17,4 +17,8 @@ Useful links:
 }
 
 }
+\author{
+\strong{Maintainer}: Andrew Brown \email{andrew.g.brown@usda.gov} (\href{https://orcid.org/0000-0002-4565-533X}{ORCID})
+
+}
 \keyword{internal}
