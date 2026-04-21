@@ -1,6 +1,7 @@
 test_that("run_rosetta() with sample data", {
   skip_if_not(py_module_available("numpy"))
   skip_if_not(py_module_available("rosetta"))
+  skip_on_cran()
 
   data("MUKEY_PROP")
   varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
@@ -18,6 +19,7 @@ test_that("run_rosetta() with sample data", {
 test_that("estimate_type argument with sample data", {
   skip_if_not(py_module_available("rosetta"))
   skip_if(rosetta_pkg_version() < package_version("0.3.0"))
+  skip_on_cran()
 
   data("MUKEY_PROP")
   varnames <- c("sandtotal_r", "silttotal_r", "claytotal_r", "dbthirdbar_r")
@@ -36,6 +38,7 @@ test_that("estimate_type argument with sample data", {
 test_that("data.frame interface", {
   skip_if_not(py_module_available("numpy"))
   skip_if_not(py_module_available("rosetta"))
+  skip_on_cran()
 
   # Default column order with sample data
   data("MUKEY_PROP")
@@ -56,6 +59,7 @@ test_that("data.frame interface", {
 test_that("run on SSURGO data", {
   skip_if_not(py_module_available("numpy"))
   skip_if_not(py_module_available("rosetta"))
+  skip_on_cran()
 
   data("MUKEY_WCS", package = "rosettaPTF")
   res <- terra::rast(MUKEY_WCS, crs = "EPSG:5070")

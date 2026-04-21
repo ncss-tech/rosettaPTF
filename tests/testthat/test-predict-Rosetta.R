@@ -2,6 +2,7 @@ test_that("prediction with Rosetta class works", {
 
   skip_if_not(py_module_available("numpy"))
   skip_if_not(py_module_available("rosetta"))
+  skip_on_cran()
 
   one <- predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1)))
   expect_warning({ two <- ann_predict(Rosetta(), list(c(30, 30, 40, 1.5), c(55, 25, 20, 1.1))) })
@@ -15,6 +16,7 @@ test_that("UnsaturatedK works", {
   skip_if_not(py_module_available("numpy"))
   skip_if_not(py_module_available("rosetta"))
   skip_if(rosetta_pkg_version() < package_version("0.3.0"))
+  skip_on_cran()
 
   uk <- UnsaturatedK()
   res <- predict(uk, list(c(0.12, 0.42, 0.008, 1.29)))

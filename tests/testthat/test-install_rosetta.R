@@ -1,5 +1,6 @@
 test_that("rosetta-soil module can be installed", {
   skip_if_not(py_module_available("numpy"))
+  skip_on_cran()
 
   # rosetta may be available
   avail <- rosetta_module_available()
@@ -7,8 +8,7 @@ test_that("rosetta-soil module can be installed", {
   # install rosetta (does not fail if already installed)
   cat("\n\n")
 
-  # use pip (if available) or use ArcGIS Pro Conda environment (if available)
-  res <- try(install_rosetta(system = TRUE, arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python/"))
+  res <- try(install_rosetta())
 
   if (inherits(res, 'try-error'))
     skip("Unable to install")
@@ -28,6 +28,7 @@ test_that("rosetta-soil module is available", {
 
   skip_if_not(py_module_available("numpy"))
   skip_if_not(py_module_available("rosetta"))
+  skip_on_cran()
 
   # should be available
   avail <- rosetta_module_available()
