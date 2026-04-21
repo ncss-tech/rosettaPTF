@@ -22,7 +22,7 @@ litedown::reactor(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ncss-tech/rosettaPTF/workflows/R-CMD-check/badge.svg)](https://github.com/ncss-tech/rosettaPTF/actions)
 [![HTML Docs](https://img.shields.io/badge/docs-HTML-informational)](https://ncss-tech.github.io/rosettaPTF/)
-[![codecov](https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3)](https://codecov.io/gh/ncss-tech/rosettaPTF)
+[![codecov](https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3)](https://app.codecov.io/gh/ncss-tech/rosettaPTF)
 <!-- badges: end -->
 
 Rosetta is a neural network-based model for predicting unsaturated soil hydraulic parameters from basic soil characterization data. The model predicts parameters for the van Genuchten unsaturated soil hydraulic properties model, using sand, silt, and clay, bulk density and water content. 

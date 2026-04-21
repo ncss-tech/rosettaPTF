@@ -5,7 +5,7 @@ Authors@R:
     person("Andrew", "Brown", role = c("aut", "cre"), 
            email = "andrew.g.brown@usda.gov",
            comment=c(ORCID="0000-0002-4565-533X"))
-Maintainer: Andrew G. Brown <andrew.g.brown@usda.gov>
+Maintainer: Andrew Brown <andrew.g.brown@usda.gov>
 Description: Access the rosetta-soil Python pedotransfer functions from R. Rosetta is a neural network-based model for predicting unsaturated soil hydraulic parameters from basic soil characterization data (sand, silt, clay, bulk density, and water content). Predictions are made for the van Genuchten unsaturated hydraulic properties model, with uncertainty quantification via bootstrap ensemble. Designed for efficient batch processing of large datasets through vectorized computation and optional parallel processing.
 Config/reticulate:
   list(

@@ -8,7 +8,7 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ncss-tech/rosettaPTF/workflows/R-CMD-check/badge.svg)](https://github.com/ncss-tech/rosettaPTF/actions)
 [![HTML Docs](https://img.shields.io/badge/docs-HTML-informational)](https://ncss-tech.github.io/rosettaPTF/)
-[![codecov](https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3)](https://codecov.io/gh/ncss-tech/rosettaPTF)
+[![codecov](https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3)](https://app.codecov.io/gh/ncss-tech/rosettaPTF)
 <!-- badges: end -->
 
 Rosetta is a neural network-based model for predicting unsaturated soil hydraulic parameters from basic soil characterization data. The model predicts parameters for the van Genuchten unsaturated soil hydraulic properties model, using sand, silt, and clay, bulk density and water content. 
@@ -213,7 +213,7 @@ soildata <- resprop[complete.cases(resprop), c("mukey", varnames)]
 # run Rosetta on the mapunit-level aggregate data
 system.time(resrose <- run_rosetta(soildata[,varnames]))
 #>   user  system elapsed 
-#>   0.00    0.00    0.02 
+#>   0.00    0.00    0.03 
 # transfer mukey to result
 resprop$mukey <- as.numeric(resprop$mukey)
 resrose$mukey <- as.numeric(soildata$mukey)
@@ -247,7 +247,7 @@ res3 <- rast(list(
 # SpatRaster to data.frame interface (one call on all cells)
 system.time(test2 <- run_rosetta(res3))
 #>   user  system elapsed 
-#>   3.23    5.41   19.59 
+#>   3.10    3.88   17.37 
 # make a plot of the predicted Ksat (identical to mukey-based results)
 plot(test2, "log10_Ksat_mean")
 ```
