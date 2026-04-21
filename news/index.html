@@ -59,13 +59,13 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.0" id="rosettaptf-020">rosettaPTF 0.2.0<a class="anchor" aria-label="anchor" href="#rosettaptf-020"></a></h2>
-<ul><li>Compatible with <code>rosetta-soil</code> Python package v0.3
-<ul><li>Updated <code><a href="../reference/run_rosetta.html">run_rosetta()</a></code> and <code><a href="../reference/predict.Rosetta.html">predict.Rosetta()</a></code> to handle the 7-parameter output (adding <code>K0</code> and <code>L</code>) introduced in <code>rosetta-soil</code> v0.3.</li>
+<ul><li>Compatible with <code>rosetta-soil</code> Python package v0.3.0
+<ul><li>Updated <code><a href="../reference/run_rosetta.html">run_rosetta()</a></code> and <code><a href="../reference/predict.Rosetta.html">predict.Rosetta()</a></code> to handle the 7-parameter output (adding <code>K0</code> and <code>L</code>) introduced in <code>rosetta-soil</code> v0.3.0.</li>
 <li>Added <code>estimate_type</code> argument to <code><a href="../reference/run_rosetta.html">run_rosetta()</a></code> to support linear, logarithmic (default), and geometric parameter estimations. Improved documentation and added examples for the geometric scale.</li>
-<li>Added <code><a href="../reference/UnsaturatedK.html">UnsaturatedK()</a></code> R constructor and <code><a href="../reference/predict.UnsaturatedK.html">predict.UnsaturatedK()</a></code> method for predicting <code>K0</code> and <code>L</code> from retention parameters (requires <code>rosetta-soil</code> &gt;= 0.3).</li>
-<li>Added <code><a href="../reference/rosesoil.html">rosesoil()</a></code> R wrapper for the new upstream <code><a href="../reference/rosesoil.html">rosesoil()</a></code> function (requires <code>rosetta-soil</code> &gt;= 0.3).</li>
-<li>Deprecated <code><a href="../reference/SoilDataFromArray.html">SoilDataFromArray()</a></code> in favor of direct list input (supported in <code>rosetta-soil</code> &gt;= 0.3.</li>
-<li>Deprecated <code><a href="../reference/ann_predict.html">ann_predict()</a></code> as the underlying Python method has been removed in v0.3. It now redirects to <code><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict()</a></code>.</li>
+<li>Added <code><a href="../reference/UnsaturatedK.html">UnsaturatedK()</a></code> R constructor and <code><a href="../reference/predict.UnsaturatedK.html">predict.UnsaturatedK()</a></code> method for predicting <code>K0</code> and <code>L</code> from retention parameters (requires <code>rosetta-soil</code> &gt;= 0.3.0).</li>
+<li>Added <code><a href="../reference/rosesoil.html">rosesoil()</a></code> R wrapper for the new upstream <code><a href="../reference/rosesoil.html">rosesoil()</a></code> function (requires <code>rosetta-soil</code> &gt;= 0.3.0).</li>
+<li>Deprecated <code><a href="../reference/SoilDataFromArray.html">SoilDataFromArray()</a></code> in favor of direct list input (supported in <code>rosetta-soil</code> &gt;= 0.3.0).</li>
+<li>Deprecated <code><a href="../reference/ann_predict.html">ann_predict()</a></code> as the underlying Python method has been removed in v0.3.0. It now redirects to <code><a href="https://rspatial.github.io/terra/reference/predict.html" class="external-link">predict()</a></code>.</li>
 </ul></li>
 <li>Added a new vignette: <strong>“Performance Optimization and Raster Processing”</strong> covering best practices for high-throughput workflows.</li>
 </ul></div>

@@ -126,7 +126,7 @@ package.</p>
 <span>  <span class="va">res_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">MUKEY_PROP</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sandtotal_r"</span>, <span class="st">"silttotal_r"</span>, <span class="st">"claytotal_r"</span>, <span class="st">"dbthirdbar_r"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   0.036   0.006   0.041</span></span></code></pre>
+<span><span class="co">##   0.036   0.004   0.040</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_points</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   id model_code theta_r_mean theta_s_mean log10_alpha_mean log10_npar_mean</span></span>
@@ -192,7 +192,7 @@ containing mean and standard deviation for each predicted parameter.</p>
 <span>  <span class="va">r_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">r_input</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user  system elapsed </span></span>
-<span><span class="co">##   8.759   1.446   9.973</span></span></code></pre>
+<span><span class="co">##   8.596   1.413   9.776</span></span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inspect the layers</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">r_output</span><span class="op">)</span></span></code></pre></div>

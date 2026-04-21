@@ -527,7 +527,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <span><span class="co"># run Rosetta on the mapunit-level aggregate data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">resrose</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">[</span>,<span class="va">varnames</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.00    0.00    0.02 </span></span>
+<span><span class="co">#&gt;   0.00    0.00    0.03 </span></span>
 <span><span class="co"># transfer mukey to result</span></span>
 <span><span class="va">resprop</span><span class="op">$</span><span class="va">mukey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">resprop</span><span class="op">$</span><span class="va">mukey</span><span class="op">)</span></span>
 <span><span class="va">resrose</span><span class="op">$</span><span class="va">mukey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">soildata</span><span class="op">$</span><span class="va">mukey</span><span class="op">)</span></span>
@@ -560,7 +560,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <span><span class="co"># SpatRaster to data.frame interface (one call on all cells)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">test2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_rosetta.html">run_rosetta</a></span><span class="op">(</span><span class="va">res3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   user  system elapsed </span></span>
-<span><span class="co">#&gt;   3.23    5.41   19.59 </span></span>
+<span><span class="co">#&gt;   3.10    3.88   17.37 </span></span>
 <span><span class="co"># make a plot of the predicted Ksat (identical to mukey-based results)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">test2</span>, <span class="st">"log10_Ksat_mean"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-chunk-12-1.png"></p>
@@ -781,7 +781,7 @@ rosettaPTF::find_python(arcpy_path = "C:/Program Files/ArcGIS/Pro/bin/Python")
 <ul class="list-unstyled">
 <li><a href="https://github.com/ncss-tech/rosettaPTF/actions" class="external-link"><img src="https://github.com/ncss-tech/rosettaPTF/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://ncss-tech.github.io/rosettaPTF/" class="external-link"><img src="https://img.shields.io/badge/docs-HTML-informational" alt="HTML Docs"></a></li>
-<li><a href="https://codecov.io/gh/ncss-tech/rosettaPTF" class="external-link"><img src="https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3" alt="codecov"></a></li>
+<li><a href="https://app.codecov.io/gh/ncss-tech/rosettaPTF" class="external-link"><img src="https://codecov.io/gh/ncss-tech/rosettaPTF/branch/main/graph/badge.svg?token=BYBKW7PKC3" alt="codecov"></a></li>
 </ul>
 </div>
 
